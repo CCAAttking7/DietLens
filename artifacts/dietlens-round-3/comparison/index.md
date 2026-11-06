@@ -1,6 +1,6 @@
 # Round 3 Before / After comparison
 
-Captured 50 matching screenshot pairs using the same fixture and viewport matrix. Before was rendered from `b5dd6e2`; After was rendered from the Round 3 working tree.
+Captured 55 matching screenshot pairs using the same fixture and viewport matrix. Before was rendered from `b5dd6e2`; After was rendered from the Round 3 working tree.
 
 | Screen / viewport | Before | After |
 |---|---|---|
@@ -9,6 +9,11 @@ Captured 50 matching screenshot pairs using the same fixture and viewport matrix
 | `dietlens-food-375.png` | [before](../before/dietlens-food-375.png) | [after](../after/dietlens-food-375.png) |
 | `dietlens-food-390.png` | [before](../before/dietlens-food-390.png) | [after](../after/dietlens-food-390.png) |
 | `dietlens-food-768.png` | [before](../before/dietlens-food-768.png) | [after](../after/dietlens-food-768.png) |
+| `dietlens-home-1280.png` | [before](../before/dietlens-home-1280.png) | [after](../after/dietlens-home-1280.png) |
+| `dietlens-home-1440.png` | [before](../before/dietlens-home-1440.png) | [after](../after/dietlens-home-1440.png) |
+| `dietlens-home-375.png` | [before](../before/dietlens-home-375.png) | [after](../after/dietlens-home-375.png) |
+| `dietlens-home-390.png` | [before](../before/dietlens-home-390.png) | [after](../after/dietlens-home-390.png) |
+| `dietlens-home-768.png` | [before](../before/dietlens-home-768.png) | [after](../after/dietlens-home-768.png) |
 | `dietlens-inventory-1280.png` | [before](../before/dietlens-inventory-1280.png) | [after](../after/dietlens-inventory-1280.png) |
 | `dietlens-inventory-1440.png` | [before](../before/dietlens-inventory-1440.png) | [after](../after/dietlens-inventory-1440.png) |
 | `dietlens-inventory-375.png` | [before](../before/dietlens-inventory-375.png) | [after](../after/dietlens-inventory-375.png) |

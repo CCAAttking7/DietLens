@@ -2,7 +2,8 @@
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const fs=require('node:fs');
 const path=require('node:path');
-const artifactRoot=process.env.DIETLENS_ARTIFACT_DIR||path.join(process.cwd(),'artifacts/dietlens-round-2');
+const artifactRoot=process.env.DIETLENS_ARTIFACT_DIR||path.join(process.cwd(),'artifacts/dietlens-round-3');
+const screenshotDir=process.env.DIETLENS_SCREENSHOT_DIR||'after';
 fs.mkdirSync(path.join(artifactRoot,'after'),{recursive:true});
 fs.mkdirSync(path.join(artifactRoot,'before'),{recursive:true});
 (async()=>{
@@ -36,6 +37,7 @@ fs.mkdirSync(path.join(artifactRoot,'before'),{recursive:true});
   await page.setViewportSize({width,height:900});
   await page.goto(process.env.DIETLENS_PREVIEW_URL||'http://127.0.0.1:5174/');
   await page.getByRole('textbox',{name:'描述这一餐'}).waitFor();
+  await page.screenshot({animations:'disabled',path:path.join(artifactRoot,screenshotDir,`dietlens-home-${width}.png`)});
   for(const [screen,label] of [['plan','饮食计划'],['saved-plans','饮食计划'],['inventory','食材库存'],['review','饮食回顾'],['journal','饮食回顾'],['food','食品资料'],['settings','设置']]){
    if(screen==='settings')await openTool('设置',width);
    else await openTool(label,width);

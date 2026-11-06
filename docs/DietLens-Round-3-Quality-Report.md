@@ -110,7 +110,7 @@ The automated matrix currently passes all listed normal-text pairs at 4.5:1 or h
 | Mobile browser tests | PASS | `test-results/mobile.log` |
 | Settings browser tests | PASS | `test-results/settings.log` |
 | Async delete browser tests | PASS | `test-results/delete.log` |
-| Responsive visual screenshots | PASS | 50 before/after pairs in `artifacts/dietlens-round-3/` |
+| Responsive visual screenshots | PASS | 55 before/after pairs, including Home, in `artifacts/dietlens-round-3/` |
 | Authenticated Supabase tests | BLOCKED | No authenticated fixture/session |
 | CI workflow | NOT RUN | Branch is pushed; CI runs after GitHub Actions pickup |
 
@@ -122,7 +122,7 @@ The visual harness is configured for 375, 390, 768, 1280, and 1440px. At mobile 
 
 ## Before/After screenshots
 
-`artifacts/dietlens-round-3/{before,after,comparison}` contains 50 actual matching PNG pairs. Before was rendered from `b5dd6e2`; After was rendered from this Round 3 branch with the same fixtures and viewport matrix. `comparison/index.md` links each pair.
+`artifacts/dietlens-round-3/{before,after,comparison}` contains 55 actual matching PNG pairs, including Home at every viewport. Before was rendered from `b5dd6e2`; After was rendered from this Round 3 branch with the same fixtures and viewport matrix. `comparison/index.md` links each pair.
 
 ## Known issues and remaining blocked items
 
