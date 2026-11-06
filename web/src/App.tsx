@@ -29,6 +29,8 @@ export default function App() {
   const [screen, setScreen] = useScreen()
   const [recordingMeal, setRecordingMeal] = useState(false)
   const [mobileMore, setMobileMore] = useState(false)
+  const mobileMoreRef = useRef<HTMLDivElement>(null)
+  const mobileMoreTriggerRef = useRef<HTMLButtonElement>(null)
   const [setupReturn, setSetupReturn] = useState<Screen>(screen)
   const [setupStart, setSetupStart] = useState(0)
   const drawerRef = useRef<HTMLElement>(null)
@@ -112,6 +114,26 @@ export default function App() {
   }
   const editProfile = (returnTo: Screen, step = 0) => { setSetupReturn(returnTo); setSetupStart(step); setOnboarding(true) }
   const panelOpen = screen !== 'care' && !onboarding && profileReady && profileOwner === userId && !profileError
+  useEffect(() => {
+    if (!mobileMore) return
+    const previous = document.activeElement as HTMLElement | null
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const first = mobileMoreRef.current?.querySelector<HTMLElement>('button')
+    first?.focus()
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); setMobileMore(false); return }
+      if (event.key !== 'Tab') return
+      event.stopPropagation()
+      const items = focusableWithin(mobileMoreRef.current)
+      if (!items?.length) return
+      const firstItem = items[0], lastItem = items[items.length - 1]
+      if (event.shiftKey && document.activeElement === firstItem) { event.preventDefault(); lastItem.focus() }
+      else if (!event.shiftKey && document.activeElement === lastItem) { event.preventDefault(); firstItem.focus() }
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => { document.body.style.overflow = previousOverflow; document.removeEventListener('keydown', onKeyDown); if (previous?.isConnected) previous.focus() }
+  }, [mobileMore])
   useEffect(() => { document.title = `${onboarding ? '饮食档案' : screenLabels[screen]} · DietLens` }, [screen, onboarding])
   useEffect(() => {
     if (!panelOpen) {
@@ -130,7 +152,7 @@ export default function App() {
     drawerRef.current?.focus()
     if (drawerRef.current) drawerRef.current.scrollTop = 0
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setScreen('care')
+      if (event.key === 'Escape' && !event.defaultPrevented && !(event.target instanceof HTMLElement && event.target.closest('.confirm-modal-layer, .mobile-more-sheet'))) setScreen('care')
       if (event.key !== 'Tab') return
       const items = focusableWithin(drawerRef.current)
       if (!items?.length) return
@@ -151,19 +173,19 @@ export default function App() {
       <div className="brand"><span className="brand-mark">D</span><span>DietLens</span></div>
       <div className="side-date">{new Intl.DateTimeFormat('zh-CN', { month: 'long', day: 'numeric', weekday: 'short' }).format(new Date())}</div>
       <nav className="side-nav" aria-label="主要页面">
-        <button data-tooltip="记录今天的饮食" className={screen === 'care' ? 'side-active' : ''} onClick={() => openPanel('care')}><span>✦</span>今日饮食</button>
-        <button data-tooltip="安排未来几天" className={screen === 'plan' ? 'side-active' : ''} onClick={() => openPanel('plan')}><span>▦</span>饮食计划</button>
-        <button data-tooltip="查看来源和未知项" className={screen === 'food' ? 'side-active' : ''} onClick={() => openPanel('food')}><span>◌</span>食品资料</button>
-        <button data-tooltip="看看已有的食材" className={screen === 'inventory' ? 'side-active' : ''} onClick={() => openPanel('inventory')}><span>□</span>食材库存</button>
-        <button data-tooltip="回看计划、记录和行动" className={screen === 'workbench' ? 'side-active' : ''} onClick={() => openPanel('workbench')}><span>↗</span>饮食回顾</button>
+        <button aria-current={screen === 'care' ? 'page' : undefined} data-tooltip="记录今天的饮食" className={screen === 'care' ? 'side-active' : ''} onClick={() => openPanel('care')}><span>✦</span>今日饮食</button>
+        <button aria-current={screen === 'plan' ? 'page' : undefined} data-tooltip="安排未来几天" className={screen === 'plan' ? 'side-active' : ''} onClick={() => openPanel('plan')}><span>▦</span>饮食计划</button>
+        <button aria-current={screen === 'food' ? 'page' : undefined} data-tooltip="查看来源和未知项" className={screen === 'food' ? 'side-active' : ''} onClick={() => openPanel('food')}><span>◌</span>食品资料</button>
+        <button aria-current={screen === 'inventory' ? 'page' : undefined} data-tooltip="看看已有的食材" className={screen === 'inventory' ? 'side-active' : ''} onClick={() => openPanel('inventory')}><span>□</span>食材库存</button>
+        <button aria-current={screen === 'workbench' ? 'page' : undefined} data-tooltip="回看计划、记录和行动" className={screen === 'workbench' ? 'side-active' : ''} onClick={() => openPanel('workbench')}><span>↗</span>饮食回顾</button>
       </nav>
-    <div className="sidebar-bottom"><button data-tooltip="档案、授权和数据" className={screen === 'settings' ? 'side-active' : ''} onClick={() => openPanel('settings')}><span>⚙</span>设置</button><div className="user-chip"><span className="avatar">{session?.user.email?.slice(0, 1).toUpperCase() ?? 'D'}</span><span>{session?.user.email ?? '演示空间'}</span></div></div>
+    <div className="sidebar-bottom"><button aria-current={screen === 'settings' ? 'page' : undefined} data-tooltip="档案、授权和数据" className={screen === 'settings' ? 'side-active' : ''} onClick={() => openPanel('settings')}><span>⚙</span>设置</button><div className="user-chip"><span className="avatar">{session?.user.email?.slice(0, 1).toUpperCase() ?? 'D'}</span><span>{session?.user.email ?? '演示空间'}</span></div></div>
     </aside>
     <nav className="mobile-nav" aria-label="移动端主要页面">
-      {(['care','plan','workbench'] as const).map(item => <button key={item} className={screen === item ? 'active' : ''} onClick={() => { setMobileMore(false); openPanel(item) }}><span aria-hidden="true">{item === 'care' ? '✦' : item === 'plan' ? '▦' : '↗'}</span>{screenLabels[item]}</button>)}
-      <button className={mobileMore || ['food','inventory','settings'].includes(screen) ? 'active' : ''} onClick={() => setMobileMore(value => !value)}><span aria-hidden="true">•••</span>更多</button>
+      {(['care','plan','workbench'] as const).map(item => <button key={item} aria-current={screen === item ? 'page' : undefined} className={screen === item ? 'active' : ''} onClick={() => { setMobileMore(false); openPanel(item) }}><span aria-hidden="true">{item === 'care' ? '✦' : item === 'plan' ? '▦' : '↗'}</span>{screenLabels[item]}</button>)}
+      <button ref={mobileMoreTriggerRef} id="mobile-more-trigger" aria-expanded={mobileMore} aria-controls="mobile-more-sheet" className={mobileMore || ['food','inventory','settings'].includes(screen) ? 'active' : ''} onClick={() => setMobileMore(value => !value)}><span aria-hidden="true">•••</span>更多</button>
     </nav>
-    {mobileMore && <div className="mobile-more-sheet" role="dialog" aria-label="更多页面" onClick={() => setMobileMore(false)}><div className="mobile-more-panel" onClick={event => event.stopPropagation()}><div className="mobile-more-handle" />{(['food','inventory','settings'] as const).map(item => <button key={item} className={screen === item ? 'active' : ''} onClick={() => { setMobileMore(false); openPanel(item) }}>{screenLabels[item]}<span aria-hidden="true">→</span></button>)}</div></div>}
+    {mobileMore && <div id="mobile-more-sheet" className="mobile-more-sheet" role="dialog" aria-modal="true" aria-labelledby="mobile-more-title" onClick={() => setMobileMore(false)}><div ref={mobileMoreRef} className="mobile-more-panel" onClick={event => event.stopPropagation()}><div className="mobile-more-head"><h2 id="mobile-more-title">更多页面</h2><button className="mobile-more-close" aria-label="关闭更多页面" onClick={() => setMobileMore(false)}>×</button></div>{(['food','inventory','settings'] as const).map(item => <button key={item} aria-current={screen === item ? 'page' : undefined} className={screen === item ? 'active' : ''} onClick={() => { setMobileMore(false); openPanel(item) }}>{screenLabels[item]}<span aria-hidden="true">→</span></button>)}</div></div>}
     <section className="main-stage" inert={panelOpen || onboarding}>
       <header className="stage-header"><div><p className="eyebrow">今天 · 轻一点</p><h2>陪你处理眼前这一餐</h2></div><div className="stage-actions"><span className="live-dot">{authMode === 'demo' ? '本地演示' : '私人空间'}</span><button className="quiet-button" aria-label="打开设置" onClick={() => openPanel('settings')}>设</button></div></header>
       <CareScreen key={`${userId}:${workspaceRevision}`} userId={userId} setupCompletion={setupCompletion} onWorkbench={() => openPanel('workbench')} onPlan={() => openPanel('plan')} onFood={() => openPanel('food')} onInventory={() => openPanel('inventory')} onSetup={() => editProfile('care')} onRecord={() => { setRecordingMeal(true); setScreen('workbench') }} ready={hasProfile} />

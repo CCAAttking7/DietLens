@@ -6,7 +6,7 @@
   --surface-warm: #fbf8f1;
   --ink: #24231f;
   --ink-muted: #6f6b63;
-  --ink-faint: #9a958b;
+  --ink-faint: #756f66;
   --line: #dfdbd2;
   --brand: #b24e32;
   --brand-strong: #913b27;
@@ -66,9 +66,9 @@ button,input,textarea,select { font-family: var(--font-ui); }
 .food-card:hover,.settings-card:hover,.review-panel:hover,.metric:hover { transform: none; box-shadow: var(--shadow-raised); }
 .primary-action,.composer button,.review-card button,.candidate button,.plan-form button,.search-form button,.inventory-form button { min-height: 44px; border-radius: var(--radius-control); background: var(--brand); }
 .primary-action:hover,.composer button:hover,.review-card button:hover,.candidate button:hover,.plan-form button:hover,.search-form button:hover,.inventory-form button:hover { background: var(--brand-strong); transform: none; box-shadow: var(--shadow-raised); }
-.secondary { background: var(--surface-subtle) !important; color: var(--ink) !important; }
-input,textarea,select { border-radius: var(--radius-control) !important; border-color: var(--line) !important; background: var(--surface) !important; }
-input:focus,textarea:focus,select:focus { border-color: var(--brand) !important; box-shadow: 0 0 0 4px rgba(178,78,50,.14) !important; }
+.secondary { background: var(--surface-subtle); color: var(--ink); }
+input,textarea,select { border-radius: var(--radius-control); border-color: var(--line); background: var(--surface); }
+input:focus,textarea:focus,select:focus { border-color: var(--brand); box-shadow: 0 0 0 4px rgba(178,78,50,.14); }
 button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible { outline: 3px solid rgba(178,78,50,.32); outline-offset: 2px; box-shadow: none; }
 .status-card { top: 24px; background: var(--surface); }
 .tool-loading { background: var(--surface); border-color: var(--line); }
@@ -107,3 +107,24 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 }
 @media (prefers-reduced-motion: reduce) { .skeleton-line,.skeleton-panel { animation: none; } }
 
+
+/* Round 2: destination-specific loading geometry and explicit semantic controls. */
+.skeleton-search,.skeleton-date { display:flex; gap:12px; align-items:center; }
+.skeleton-search .skeleton-line { flex:1; height:44px; }
+.skeleton-button { width:90px; height:44px; border-radius:var(--radius-control); background:var(--brand-soft); }
+.skeleton-date .skeleton-line { height:44px; flex:1; }
+.skeleton-date .skeleton-line:last-child { max-width:160px; }
+.skeleton-metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.skeleton-list { display:grid; gap:12px; margin-top:12px; }
+.skeleton-card { min-height:76px; padding:16px; display:grid; gap:10px; border:1px solid var(--line); border-radius:var(--radius-card); background:var(--surface-subtle); }
+.skeleton-card .skeleton-line { height:12px; }
+.skeleton-card .skeleton-line:first-child { width:54%; }
+.skeleton-card .skeleton-line:nth-child(2) { width:82%; }
+.skeleton-card .skeleton-short { width:34%; }
+.food-nutrition-summary { margin-top:14px; padding-top:4px; border-top:1px solid var(--line); }
+.food-nutrition-summary .nutrient-basis { margin-top:10px; color:var(--ink-muted); font-weight:600; }
+.food-nutrition-summary .food-nutrients { margin-bottom:10px; }
+.mobile-more-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px; }
+.mobile-more-head h2 { margin:0; font-size:18px; }
+.mobile-more-close { width:40px; height:40px; border:1px solid var(--line); border-radius:var(--radius-control); background:var(--surface); color:var(--ink-muted); font-size:22px; }
+@media (max-width:600px) { .skeleton-metrics { grid-template-columns:1fr; } .skeleton-card { min-height:68px; } }

@@ -42,14 +42,17 @@ export function SettingsScreen({userId,onSignOut,onEditProfile,onDataDeleted,onR
   const [deleteOpen,setDeleteOpen]=useState(false)
   const deleteCancelRef=useRef<HTMLButtonElement>(null)
   const deleteTriggerRef=useRef<HTMLButtonElement>(null)
+  const busyRef=useRef(busy)
+  busyRef.current=busy
   useEffect(()=>{
     if(!deleteOpen)return
-    const previous=document.activeElement as HTMLElement|null
+    const previous=deleteTriggerRef.current ?? document.activeElement as HTMLElement|null
     const focusTarget=deleteCancelRef.current
     focusTarget?.focus()
     const onKeyDown=(event:KeyboardEvent)=>{
-      if(event.key==='Escape'&&!busy){event.preventDefault();setDeleteOpen(false);return}
+      if(event.key==='Escape'&&!busyRef.current){event.preventDefault();event.stopPropagation();setDeleteOpen(false);return}
       if(event.key!=='Tab')return
+      event.stopPropagation()
       const dialog=document.querySelector<HTMLElement>('.confirm-modal')
       if(!dialog)return
       const items=Array.from(dialog.querySelectorAll<HTMLElement>('button:not([disabled]),[href],input:not([disabled])'))
@@ -60,7 +63,7 @@ export function SettingsScreen({userId,onSignOut,onEditProfile,onDataDeleted,onR
     }
     document.addEventListener('keydown',onKeyDown)
     return()=>{document.removeEventListener('keydown',onKeyDown);if(previous?.isConnected)previous.focus()}
-  },[deleteOpen,busy])
+  },[deleteOpen])
   useEffect(()=>{
     let active=true;setProfileLoading(true);setProfileError('')
     api.profile(userId).then(result=>{if(active)setProfile(result)}).catch(e=>{

@@ -1,5 +1,10 @@
 // Deterministic rendering fixtures; this does not assert upstream source availability.
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+const fs=require('node:fs');
+const path=require('node:path');
+const artifactRoot=process.env.DIETLENS_ARTIFACT_DIR||path.join(process.cwd(),'artifacts/dietlens-round-2');
+fs.mkdirSync(path.join(artifactRoot,'after'),{recursive:true});
+fs.mkdirSync(path.join(artifactRoot,'before'),{recursive:true});
 (async()=>{
  const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{}),args:['--no-sandbox']});
  const page=await browser.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -16,13 +21,20 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
  await page.route('**/api/plans/visual-plan-*/shopping-list',r=>r.fulfill({json:{list_id:'visual-shopping',status:'active',items:[]}}));
  await page.route('**/api/shopping-lists/*/inventory-diff',r=>r.fulfill({json:[{item_id:'visual-chicken',name:'合成测试鸡肉配料长规格名称',quantity:200,unit:'g',needed:50}]}));
  const reports=[];
- for(const width of [1440,768,390]){
+ const mobile = width => width <= 760;
+ const openTool = async (label, width) => {
+   if (!mobile(width)) { await page.locator('.side-nav button').filter({hasText:label}).click(); return; }
+   if (['今日饮食','饮食计划','饮食回顾'].includes(label)) { await page.locator('.mobile-nav button').filter({hasText:label}).click(); return; }
+   await page.locator('#mobile-more-trigger').click();
+   await page.locator('#mobile-more-sheet').getByRole('button',{name:label,exact:true}).click();
+ };
+ for(const width of [1440,1280,768,390,375]){
   await page.setViewportSize({width,height:900});
   await page.goto(process.env.DIETLENS_PREVIEW_URL||'http://127.0.0.1:5174/');
   await page.getByRole('textbox',{name:'描述这一餐'}).waitFor();
   for(const [screen,label] of [['plan','饮食计划'],['saved-plans','饮食计划'],['inventory','食材库存'],['review','饮食回顾'],['journal','饮食回顾'],['food','食品资料'],['settings','设置']]){
-   if(screen==='settings')await page.locator('.sidebar-bottom>button').click();
-   else await page.locator('.side-nav button').filter({hasText:label}).click();
+   if(screen==='settings')await openTool('设置',width);
+   else await openTool(label,width);
    if(screen==='food'){
     await page.getByRole('textbox',{name:'搜索食品'}).fill('测试燕麦');
     await page.getByRole('button',{name:'查资料',exact:true}).click();
@@ -34,22 +46,24 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
    if(screen==='settings')await page.locator('.recent-tasks>button').first().waitFor();
    if(screen==='saved-plans'){await page.getByRole('button',{name:'已保存的计划',exact:true}).click();await page.locator('.saved-plan-list>button').first().waitFor();}
    const overflow=await page.locator('.drawer').evaluate(e=>e.scrollWidth>e.clientWidth+1);
+   const pageOverflow=await page.evaluate(() => ({clientWidth:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth,clientHeight:document.documentElement.clientHeight}));
+   if(pageOverflow.scrollWidth>pageOverflow.clientWidth+1)throw Error(`${screen} page overflow at ${width}px: ${JSON.stringify(pageOverflow)}`);
    if(overflow)throw Error(`${screen} overflow at ${width}px`);
-   await page.screenshot({animations:'disabled',path:`/tmp/dietlens-${screen}-${width}.png`});
+   await page.screenshot({animations:'disabled',path:path.join(artifactRoot,'after',`dietlens-${screen}-${width}.png`)});
    reports.push({screen,width,overflow});
    if(screen==='saved-plans'){
     await page.locator('.saved-plan-list>button').filter({hasText:'当前版本'}).first().click();
     await page.getByRole('button',{name:'生成采购清单',exact:true}).click();
     await page.locator('.shopping-row').waitFor();
     if(await page.locator('.drawer').evaluate(e=>e.scrollWidth>e.clientWidth+1))throw Error('saved plan details overflow');
-    await page.screenshot({animations:'disabled',path:`/tmp/dietlens-saved-plan-detail-${width}.png`});
+    await page.screenshot({animations:'disabled',path:path.join(artifactRoot,'after',`dietlens-saved-plan-detail-${width}.png`)});
    }
-   if(screen==='settings'){await page.locator('.recent-tasks').scrollIntoViewIfNeeded();await page.screenshot({animations:'disabled',path:`/tmp/dietlens-settings-recent-${width}.png`});}
+   if(screen==='settings'){await page.locator('.recent-tasks').scrollIntoViewIfNeeded();await page.screenshot({animations:'disabled',path:path.join(artifactRoot,'after',`dietlens-settings-recent-${width}.png`)});}
    if(screen==='journal'){
     await page.getByRole('button',{name:'记录已吃的一餐',exact:true}).click();
     await page.getByRole('textbox',{name:'实际餐食名称',exact:true}).fill('合成视觉测试晚餐');
     if(await page.locator('.drawer').evaluate(e=>e.scrollWidth>e.clientWidth+1))throw Error('journal form overflow');
-    await page.screenshot({animations:'disabled',path:`/tmp/dietlens-journal-form-${width}.png`});
+    await page.screenshot({animations:'disabled',path:path.join(artifactRoot,'after',`dietlens-journal-form-${width}.png`)});
     await page.getByRole('button',{name:'取消填写',exact:true}).click();
    }
    await page.keyboard.press('Escape');

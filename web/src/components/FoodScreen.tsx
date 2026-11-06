@@ -27,8 +27,9 @@ function FoodCard({item,onEditProfile}:{item:Assessment;onEditProfile:()=>void})
     {item.reasons?.length? <p className="food-interpretation">{item.status==='blocked'?'这项选择触及已确认的边界。':item.unknown_fields?.length?'资料还不完整，先不要把它当成安全结论。':'目前没有发现已知边界冲突。'}</p>:null}
     {!!item.unknown_fields?.length&&<p>待核对：{item.unknown_fields.map(field=>fieldLabels[field]??field).join('、')}</p>}
     {item.reasons?.includes('hard_constraints_unknown')&&<button className="primary-action secondary" onClick={onEditProfile}>核对饮食边界</button>}
-    <details className="food-data-summary"><summary>查看营养与核对字段</summary><Nutrients record={record}/>
-    <div className="food-field-status"><span>配料：{record.ingredients_known?'来源有提供':'待核对'}</span><span>过敏原：{record.allergens_known?'来源有提供':'待核对'}</span></div></details>
+    <section className="food-nutrition-summary" aria-label="营养摘要"><Nutrients record={record}/>
+      <details className="food-data-summary"><summary>查看营养字段状态</summary><div className="food-field-status"><span>配料：{record.ingredients_known?'来源有提供':'待核对'}</span><span>过敏原：{record.allergens_known?'来源有提供':'待核对'}</span></div></details>
+    </section>
     <details className="food-provenance"><summary>查看来源与配料详情</summary>
       <p>来源编号：{record.source_id||'未提供'}</p>
       {timestamp&&!Number.isNaN(timestamp.getTime())&&<p>资料读取时间：<time dateTime={record.retrieved_at}>{timestamp.toLocaleString('zh-CN')}</time></p>}
