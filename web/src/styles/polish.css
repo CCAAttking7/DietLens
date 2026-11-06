@@ -1,0 +1,93 @@
+/* DietLens interaction polish: quiet surfaces, clear escalation, Apple-like motion. */
+:root {
+  --surface-0: #f7f6f2;
+  --surface-1: rgba(255,255,255,.62);
+  --surface-2: rgba(255,255,255,.78);
+  --surface-3: rgba(255,255,255,.9);
+  --ink-soft: #4d504f;
+  --focus-ring: rgba(176,71,43,.18);
+  --focus-ring-strong: rgba(176,71,43,.28);
+}
+
+body { background: var(--surface-0); color: var(--ink); text-wrap: pretty; }
+p, li, label, dd, dt, button, input, textarea { text-wrap: pretty; }
+h1, h2, h3, strong, .brand { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Noto Sans CJK SC", sans-serif; font-weight: 360; }
+body, button, input, textarea { font-weight: 400; }
+body { overflow-x: hidden; }
+strong, .side-nav .side-active, .sidebar-bottom .side-active, .drawer-tools button[aria-current='page'] { font-weight: 420; }
+.metric strong, .status, .food-status, .profile-facts dd { font-variant-numeric: tabular-nums; }
+
+/* Four near-white layers instead of black panels. */
+.product-shell, .main-stage, .drawer { background: var(--surface-0); }
+.sidebar { background: var(--surface-1); }
+.composer, .review-card, .candidate, .plan-form, .search-form, .inventory-form,
+.food-card, .settings-card, .metric, .review-panel, .status-card { background: var(--surface-2); }
+.drawer-topbar, .drawer-context { background: var(--surface-2); }
+.drawer-tools button[aria-current='page'], .mode-tabs button.active, .period-tabs button.nav-active { background: var(--surface-3); }
+.brand-mark, .avatar { background: #454745; }
+.chat-board { border-radius: 22px; box-shadow: none; background: radial-gradient(circle at 78% 12%, rgba(255,255,255,.7), transparent 26%), linear-gradient(145deg, #eee5d3, #e9dfcf); }
+.chat-column { padding-top: clamp(58px, 8vh, 84px); }
+.chat-welcome h1 { letter-spacing: -.055em; line-height: 1.08; }
+.chat-welcome>p:last-child { max-width: 430px; }
+.board-cards { gap: 9px; margin-top: 34px; }
+.board-card { min-height: 82px; border-radius: 17px; background: rgba(253,251,247,.42); box-shadow: none; }
+.board-card-wide { min-height: 78px; }
+.resume-task-card { border-color: rgba(176,71,43,.22); background: linear-gradient(135deg, rgba(253,251,247,.72), rgba(239,227,204,.52)); }
+.board-card-note { min-height: 72px; }
+.board-card strong { font-family: inherit; font-weight: 450; }
+.chat-side { opacity: .92; }
+.side-card, .goal-context-card { border-radius: 16px; }
+.chat-composer { border-radius: 17px; box-shadow: 0 8px 22px rgba(70,52,38,.07); }
+.chat-bubble { border-radius: 15px; }
+.decor-lemon, .decor-leaf, .decor-tomato { opacity: .22; }
+
+/* Focus is communicated with a deep double shadow, never a focus outline/border. */
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, summary:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 2px var(--surface-0), 0 0 0 5px var(--focus-ring-strong), 0 8px 24px rgba(70,52,38,.12);
+}
+input:focus, textarea:focus, .onboarding-fields input:focus, .onboarding-textarea:focus,
+.composer input:focus, .composer textarea:focus, .plan-form input:focus,
+.search-form input:focus, .inventory-form input:focus {
+  border-color: transparent;
+  outline: 0;
+  box-shadow: 0 0 0 2px var(--surface-0), 0 0 0 5px var(--focus-ring), 0 10px 28px rgba(70,52,38,.12);
+}
+
+/* Icon baseline and stable numeric columns. */
+button > span:first-child, .card-icon, .brand-mark, .avatar, .spinner { transform: translateY(.125em); }
+.metric strong, .review-grid strong, time { font-variant-numeric: tabular-nums; }
+
+/* Escalation ladder: tooltip → toast → alert → popconfirm → drawer → modal. */
+[data-tooltip] { position: relative; }
+[data-tooltip]::after { content: attr(data-tooltip); position: absolute; z-index: 80; left: 50%; bottom: calc(100% + 8px); transform: translate(-50%, 4px); opacity: 0; pointer-events: none; white-space: nowrap; padding: 6px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-3); color: var(--ink-soft); box-shadow: 0 8px 24px rgba(70,52,38,.12); font-size: 11px; transition: opacity .16s ease, transform .16s ease; }
+[data-tooltip]:hover::after, [data-tooltip]:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+.notice, [role='status'].notice { border: 1px solid rgba(176,71,43,.12); background: var(--accent-soft); box-shadow: 0 8px 22px rgba(70,52,38,.05); animation: toast-in .2s ease both; }
+.error, [role='alert'].error { text-wrap: pretty; }
+.drawer-layer { background: rgba(66,55,42,.16); }
+.drawer { box-shadow: 24px 0 70px rgba(70,52,38,.14); }
+
+/* Content disclosure uses grid interpolation rather than abrupt height changes. */
+.recovery-details > :not(summary), .food-provenance > :not(summary) { display: grid; grid-template-rows: 0fr; overflow: hidden; transition: grid-template-rows .28s ease, opacity .2s ease; opacity: 0; }
+.recovery-details[open] > :not(summary), .food-provenance[open] > :not(summary) { grid-template-rows: 1fr; opacity: 1; }
+.recovery-details > :not(summary) > *, .food-provenance > :not(summary) > * { min-height: 0; }
+
+/* Streaming/model copy: soft blur, 120ms reveal, 30ms stagger via children. */
+.busy-note + .meal-flow-card, .model-review-card { animation: stream-reveal .12s ease both; }
+.model-review-card > * { animation: stream-reveal .12s ease both; animation-delay: calc(var(--stream-index, 0) * 30ms); }
+
+button, input, textarea { transition-duration: .18s; }
+button:active { transform: translateY(1px) scale(.99); }
+.drawer, .onboarding-drawer { animation-duration: .32s; animation-timing-function: cubic-bezier(.22,.9,.24,1); }
+.board-action:active, .choice:active { transition-duration: .38s; transform: scale(.985); }
+.confirm-modal-layer { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 24px; background: rgba(66,55,42,.2); backdrop-filter: blur(8px); animation: fade-in .18s ease both; }
+.confirm-modal { width: min(440px, 100%); padding: 28px; border: 1px solid var(--line); border-radius: 24px; background: var(--surface-3); box-shadow: 0 28px 90px rgba(70,52,38,.2); animation: modal-in .22s cubic-bezier(.22,.9,.24,1) both; }
+.confirm-modal h2 { margin: 4px 0 12px; font-size: 24px; }
+.confirm-modal p:not(.eyebrow) { color: var(--muted); line-height: 1.65; }
+.danger-action { border: 0; border-radius: 12px; padding: 12px 18px; background: #a84938; color: #fff; font-weight: 420; cursor: pointer; }
+.danger-action:hover { background: #8f3b2d; }
+
+@keyframes stream-reveal { from { opacity: 0; filter: blur(6px); transform: translateY(2px); } to { opacity: 1; filter: blur(0); transform: translateY(0); } }
+@keyframes toast-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes modal-in { from { opacity: 0; transform: scale(.97) translateY(6px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }

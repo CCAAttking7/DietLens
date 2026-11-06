@@ -1,0 +1,19 @@
+
+> dietlens-web@0.1.0 build
+> tsc -b && vite build
+
+vite v6.4.5 building for production...
+transforming...
+✓ 88 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                            0.58 kB │ gzip:  0.41 kB
+dist/assets/index-6ilpRuZn.css            72.21 kB │ gzip: 14.94 kB
+dist/assets/InventoryScreen-Cwp7hr2P.js    6.27 kB │ gzip:  2.71 kB
+dist/assets/FoodScreen-DY9GVchC.js         7.71 kB │ gzip:  3.54 kB
+dist/assets/SettingsScreen-Cxki2mBj.js    10.30 kB │ gzip:  4.12 kB
+dist/assets/PlanScreen-DvFJPJVL.js        13.26 kB │ gzip:  4.74 kB
+dist/assets/WorkbenchScreen-B__XD1Od.js   21.36 kB │ gzip:  7.51 kB
+dist/assets/index-DGhDXxpu.js            228.20 kB │ gzip: 59.40 kB
+dist/assets/index-CkVonvuu.js            275.63 kB │ gzip: 86.02 kB
+✓ built in 3.79s

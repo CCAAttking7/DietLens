@@ -1,0 +1,66 @@
+// Deterministic settings failures and recovery, including blocked sessionStorage.
+const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+(async()=>{
+ const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{}),args:['--no-sandbox']});
+ const page=await browser.newPage({viewport:{width:1440,height:900}}),errors=[];
+ page.on('pageerror',e=>errors.push(e.message));
+ await page.addInitScript(()=>{
+   for(const method of ['getItem','setItem','removeItem']){
+     const original=Storage.prototype[method];
+     Storage.prototype[method]=function(...args){if(this===window.sessionStorage)throw new DOMException('Blocked for regression','SecurityError');return original.apply(this,args)};
+   }
+ });
+ const profile={user_id:'web-demo-user',goal:'合成设置流程测试',budget:40,allergies:[],hard_avoids:[],consents:{review_history:false},version:1};
+ const task={task_id:'fixture-adopted',state:'adopted',version:2,context:{meal:'午餐',options:['鸡肉饭','番茄面']},candidates:[],updated_at:'2026-11-04T06:00:00+00:00'};
+ let profileFailure=false,recentFailure=true,resumeFailure=true;
+ await page.route('**/api/status',r=>r.fulfill({json:{auth_mode:'demo'}}));
+ await page.route('**/api/profile/**',r=>profileFailure?r.fulfill({status:503,json:{}}):r.fulfill({json:profile}));
+ await page.route('**/api/tasks?**',r=>recentFailure?r.fulfill({status:503,json:{}}):r.fulfill({json:[task,{...task,task_id:'fixture-cancelled',state:'cancelled',context:{meal:'晚餐',options:['蔬菜面']}}]}));
+ await page.route('**/api/tasks/*',r=>resumeFailure?r.fulfill({status:503,json:{}}):r.fulfill({json:r.request().url().endsWith('fixture-cancelled')?{...task,task_id:'fixture-cancelled',state:'cancelled',context:{meal:'晚餐',options:['蔬菜面']}}:task}));
+ await page.goto(process.env.DIETLENS_PREVIEW_URL||'http://127.0.0.1:5174');
+ await page.getByRole('textbox',{name:'描述这一餐'}).fill('切换前的未发送描述');
+ profileFailure=true;
+ await page.locator('.sidebar-bottom>button').click();
+ await page.getByRole('button',{name:'重新读取档案',exact:true}).waitFor();
+ await page.getByRole('button',{name:'重新读取最近餐次',exact:true}).waitFor();
+ if(await page.getByRole('button',{name:'设置饮食档案',exact:true}).count())throw Error('profile failure shown as new account');
+ if(await page.getByText('还没有餐次记录。开始描述这一餐后，会出现在这里。',{exact:true}).count())throw Error('recent failure shown as empty');
+ profileFailure=false;
+ await page.getByRole('button',{name:'重新读取档案',exact:true}).click();
+ await page.getByRole('button',{name:'编辑档案与授权',exact:true}).waitFor();
+ await page.getByRole('button',{name:'← 回到这一餐',exact:true}).focus();
+ await page.keyboard.press('Shift+Tab');
+ if(!await page.getByRole('button',{name:'删除全部数据',exact:true}).evaluate(el=>el===document.activeElement))throw Error('closed recovery details broke keyboard focus wrap');
+ await page.keyboard.press('Tab');
+ if(!await page.getByRole('button',{name:'← 回到这一餐',exact:true}).evaluate(el=>el===document.activeElement))throw Error('focus escaped settings');
+ if(!await page.getByRole('button',{name:'重新读取最近餐次',exact:true}).count())throw Error('profile retry erased recent error');
+ recentFailure=false;
+ await page.getByRole('button',{name:'重新读取最近餐次',exact:true}).click();
+ await page.locator('.recent-tasks>button').first().waitFor();
+ await page.locator('.recent-tasks>button').first().click();
+ await page.getByRole('region',{name:'最近餐次'}).getByRole('alert').waitFor();
+ if(!await page.getByRole('button',{name:'编辑档案与授权',exact:true}).isVisible())throw Error('resume failure broke profile section');
+ resumeFailure=false;
+ await page.locator('.recent-tasks>button').first().click();
+ await page.getByRole('heading',{name:'这一步已经记下了'}).waitFor();
+ if(await page.getByRole('textbox',{name:'描述这一餐'}).inputValue()!=='')throw Error('resume leaked previous meal draft');
+ await page.locator('.sidebar-bottom>button').click();
+ await page.locator('.recent-tasks>button').filter({hasText:'晚餐'}).click();
+ await page.getByRole('heading',{name:'这一餐已取消'}).waitFor();
+ await page.getByRole('button',{name:'重新描述这一餐',exact:true}).click();
+ if(await page.getByRole('textbox',{name:'描述这一餐'}).inputValue()!=='晚餐可选蔬菜面')throw Error('cancelled meal did not provide a usable next step');
+ await page.locator('.sidebar-bottom>button').click();
+ await page.locator('.recovery-details summary').click();
+ await page.getByRole('textbox',{name:'任务 ID',exact:true}).fill('fixture-adopted');
+ await page.getByRole('button',{name:'查找',exact:true}).click();
+ await page.getByRole('button',{name:'继续这一餐',exact:true}).waitFor();
+ await page.getByRole('textbox',{name:'任务 ID',exact:true}).fill('fixture-another');
+ if(await page.getByRole('button',{name:'继续这一餐',exact:true}).count())throw Error('lookup kept stale result after ID changed');
+ await page.getByRole('textbox',{name:'任务 ID',exact:true}).fill('fixture-adopted');
+ await page.getByRole('button',{name:'查找',exact:true}).click();
+ await page.getByRole('button',{name:'继续这一餐',exact:true}).click();
+ await page.getByRole('heading',{name:'这一步已经记下了'}).waitFor();
+ if(errors.length)throw Error(errors.join(';'));
+ console.log(JSON.stringify({independentReadFailures:'passed',profileAndRecentRetries:'passed',resumeFailureRetry:'passed',resumeWithBlockedStorage:'passed',lookupClearsOldResult:'passed',lookupContinuesMeal:'passed',closedDetailsKeyboardFocus:'passed',cancelledMealRestart:'passed',pageErrors:errors}));
+ await browser.close();
+})().catch(e=>{console.error(e);process.exit(1)});

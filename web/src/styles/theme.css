@@ -1,0 +1,49 @@
+/* 拾光台式视觉收束：暖纸张、朱砂强调和安静的层次 */
+
+body { background: #f3efe6; }
+h1, h2, h3, strong, .brand { font-family: 'Songti SC', 'STSong', 'Noto Serif CJK SC', Georgia, serif; font-weight: 600; }
+h1 { letter-spacing: -.045em; }
+.product-shell { background: #f3efe6; }
+.sidebar { background: rgba(243,239,230,.82); border-color: var(--line); }
+.sidebar .brand { letter-spacing: .04em; }
+.brand-mark { width: 34px; height: 34px; border-radius: 8px; background: var(--accent); font-family: 'Songti SC', serif; font-size: 19px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.14), 0 1px 2px rgba(46,37,24,.08); }
+.side-date { font-family: 'Cascadia Mono', Consolas, monospace; letter-spacing: .06em; }
+.side-nav button, .sidebar-bottom>button { border-radius: 9px; color: #4b4439; }
+.side-nav button:hover, .sidebar-bottom>button:hover { background: #efe9dd; color: var(--ink); transform: none; }
+.side-nav .side-active, .sidebar-bottom .side-active { color: var(--ink); background: #fdfbf7; box-shadow: 0 1px 2px rgba(46,37,24,.05), inset 0 0 0 1px var(--line); }
+.side-nav .side-active span, .sidebar-bottom .side-active span { color: var(--accent); }
+.main-stage { padding-top: 26px; background: #f3efe6; position: relative; }
+.main-stage::before { content: ''; position: fixed; inset: 0; pointer-events: none; opacity: .035; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.stage-header { border-color: var(--line); }
+.stage-header h2 { font-family: 'Songti SC', serif; font-weight: 600; letter-spacing: .04em; }
+.quiet-button { border-color: var(--line); background: #fdfbf7; }
+.chat-board { margin: 0; border-radius: 14px; background: radial-gradient(circle at 78% 18%, rgba(255,255,255,.8), transparent 28%), #e9dfcf; box-shadow: var(--shadow); }
+.chat-board:before { opacity: .08; }
+.chat-welcome h1 em, .workspace-main h1 em, .auth-card h1 em { color: var(--accent); }
+.chat-welcome>p:last-child, .board-card p { color: #756b5d; }
+.welcome-mark { border-radius: 8px; background: var(--accent); font-family: 'Songti SC', serif; }
+.board-card { border-color: rgba(109,76,27,.14); background: rgba(253,251,247,.52); box-shadow: 0 2px 6px rgba(46,37,24,.03); }
+.board-action { width: 100%; color: inherit; text-align: left; cursor: pointer; font: inherit; }
+.board-action:hover { border-color: rgba(176,71,43,.32); background: rgba(253,251,247,.82); transform: translateY(-2px); box-shadow: 0 8px 18px rgba(46,37,24,.08); }
+.board-action:focus-visible { outline: 3px solid rgba(176,71,43,.22); outline-offset: 3px; }
+.board-card strong { font-family: 'Songti SC', serif; font-weight: 600; }
+.card-icon { color: var(--accent); }
+.chat-composer { border-color: var(--line); background: rgba(253,251,247,.86); box-shadow: var(--shadow); }
+.composer-bar button { background: var(--accent); }
+.chat-bubble.user { background: var(--ink); }
+.chat-bubble.assistant { background: rgba(253,251,247,.72); }
+.drawer { background: #f3efe6; }
+.composer, .review-card, .candidate, .plan-form, .search-form, .inventory-form, .food-card, .settings-card, .metric, .review-panel { border-color: var(--line); background: rgba(253,251,247,.82); box-shadow: var(--shadow); }
+.composer input, .composer textarea, .plan-form input, .search-form input, .inventory-form input, .onboarding-fields input, .onboarding-textarea { background: #efe9dd; }
+.composer button, .review-card button, .candidate button, .plan-form button, .search-form button, .inventory-form button { background: var(--accent); }
+.composer button:hover, .review-card button:hover, .candidate button:hover, .plan-form button:hover, .search-form button:hover, .inventory-form button:hover { background: var(--accent-strong, #963a22); }
+.status-card { border-color: var(--line); background: rgba(253,251,247,.78); }
+.state-track span.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
+.onboarding-backdrop { background: rgba(78,55,15,.28); }
+.onboarding-drawer { border-color: rgba(255,255,255,.7); background: rgba(253,251,247,.97); }
+.onboarding-progress span, .dot.active { background: var(--accent); }
+.onboarding-actions button { background: var(--accent); }
+.mode-tabs button.active, .choice.selected { color: var(--accent-ink); background: var(--accent-soft); }
+.food-safe, .status-done { background: #dfe8e1; color: #4f6f5a; }
+.notice { background: var(--accent-soft); color: var(--accent-ink); }
+@media(max-width:760px){ .main-stage { padding-top: 18px; } .chat-board { border-radius: 0; } }

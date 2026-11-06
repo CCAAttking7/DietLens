@@ -1,0 +1,37 @@
+/* 全局交互节奏：让每个页面的输入、抽屉和状态都有一致反馈 */
+button, input, textarea { transition: border-color .18s ease, background-color .18s ease, color .18s ease, box-shadow .18s ease, transform .18s ease; }
+.side-nav button, .sidebar-bottom>button, .quiet-button, .drawer-close, .quick-prompts button, .side-link, .choice, .mode-tabs button { transition: all .18s ease; }
+.drawer-close:hover { border-color: var(--accent); color: var(--accent); transform: rotate(8deg); }
+.drawer-context { display:flex; align-items:center; gap:14px; min-height:58px; padding:0 58px; padding-right:76px; border-bottom:1px solid var(--line); background:rgba(243,239,230,.92); }
+.drawer-topbar { position:sticky; top:0; z-index:4; background:#f3efe6; }
+.drawer-tools { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:4px; padding:8px clamp(12px,4vw,58px); border-bottom:1px solid var(--line); background:var(--wash); }
+.drawer-tools button { min-width:0; min-height:44px; padding:10px 4px; border:0; border-radius:8px; background:transparent; color:var(--muted); font-size:12px; cursor:pointer; }
+@media (hover:hover) { .drawer-tools button:hover { color:var(--ink); background:rgba(253,251,247,.7); } }
+.drawer-tools button[aria-current='page'] { background:#fdfbf7; color:var(--accent-ink); box-shadow:inset 0 0 0 1px var(--line); font-weight:700; }
+.drawer-context button { border:0; padding:7px 0; background:transparent; color:var(--accent-ink); font-size:12px; font-weight:700; cursor:pointer; }
+.drawer-context span { color:var(--faint); font-size:11px; }
+.quick-prompts button:hover, .side-link:hover { border-color: rgba(176,71,43,.35); background: rgba(253,251,247,.86); color: var(--accent-ink); transform: translateY(-1px); }
+.plan-form > label, .search-form label, .inventory-form label { color: var(--muted); font-size: 12px; font-weight: 600; }
+.plan-form > input[type='date'] { max-width: 220px; }
+.meal-row { padding: 10px 0; border-bottom: 1px solid rgba(226,218,203,.7); }
+.meal-row:last-of-type { border-bottom: 0; }
+.meal-row strong { color: var(--accent-ink); font-size: 14px; }
+.food-card, .settings-card, .review-panel, .metric, .inventory-item { transition: transform .18s ease, box-shadow .18s ease; }
+.food-card:hover, .settings-card:hover, .review-panel:hover, .metric:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(46,37,24,.05), 0 18px 38px -20px rgba(46,37,24,.2); }
+.period-tabs { display: inline-flex; gap: 3px; margin: 28px 0 8px; padding: 4px; border: 1px solid var(--line); border-radius: 10px; background: var(--wash); }
+.period-tabs button { border: 0; border-radius: 7px; padding: 8px 14px; background: transparent; color: var(--muted); cursor: pointer; }
+.period-tabs button:hover { color: var(--ink); }
+.period-tabs button.nav-active { background: #fdfbf7; color: var(--accent-ink); box-shadow: 0 1px 2px rgba(46,37,24,.08); font-weight: 700; }
+.inventory-list { padding: 2px 20px; border: 1px solid var(--line); border-radius: 18px; background: rgba(253,251,247,.6); }
+.settings-card + .settings-card { margin-top: 14px; }
+.task-recovery { flex-wrap: wrap; }
+.task-recovery span { padding: 6px 9px; border-radius: 999px; background: var(--wash); font-size: 12px; }
+.status-card h2 { font-family: 'Songti SC', serif; letter-spacing: .02em; }
+@media(max-width:600px){
+  .period-tabs { width: 100%; }
+  .period-tabs button { flex: 1; }
+  .inventory-list { padding: 2px 14px; }
+  .meal-row { padding: 8px 0; }
+  .drawer-context { padding: 0 20px; }
+  .drawer-context span { display: none; }
+}

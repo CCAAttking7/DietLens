@@ -1,0 +1,67 @@
+// Run against `vite preview`: inspect real production chunks, never send an OTP.
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const {chromium} = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+(async () => {
+  const base = process.env.DIETLENS_PREVIEW_URL || 'http://127.0.0.1:5175/';
+  const dist = path.join(__dirname,'../web/dist');
+  const main = fs.readFileSync(path.join(dist,'index.html'),'utf8').match(/src="(\/assets\/[^\"]+\.js)"/)[1];
+  const sdk = fs.readdirSync(path.join(dist,'assets')).find(name => /^index-.*\.js$/.test(name) && '/assets/'+name !== main);
+  assert(sdk,'Separate authentication chunk missing');
+  const browser = await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_PATH,args:['--no-sandbox']});
+  try {
+    const page = await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+    const scripts = [], errors = [];
+    page.on('request',req => {if(req.resourceType()==='script')scripts.push(new URL(req.url()).pathname)});
+    page.on('pageerror',e => errors.push(e.message));
+    const profile = {user_id:'web-demo-user',version:1,goal:'合成加载测试',allergies:[],dislikes:[],hard_avoids:[],consents:{review_history:false}};
+    const fixtures = async target => {
+      await target.route('**/api/status',r => r.fulfill({json:{auth_mode:'demo'}}));
+      await target.route('**/api/profile/**',r => r.fulfill({json:profile}));
+      await target.route('**/api/inventory?**',r => r.fulfill({json:[]}));
+    };
+    await fixtures(page);
+    await page.goto(base);
+    await page.getByRole('textbox',{name:'描述这一餐'}).waitFor();
+    assert.deepEqual(scripts,[main],'Home eagerly downloaded auxiliary code');
+    await page.getByRole('textbox',{name:'描述这一餐'}).fill('加载失败前保留的描述');
+    await page.route('**/assets/FoodScreen-*.js',r => r.abort('failed'));
+    await page.locator('.side-nav button').filter({hasText:'食品资料'}).click();
+    await page.getByRole('heading',{name:'这个工具暂时未能打开'}).waitFor();
+    await page.screenshot({path:'/tmp/dietlens-tool-load-failure.png'});
+    const tools = page.getByRole('navigation',{name:'切换工具'});
+    let release;
+    const gate = new Promise(resolve => {release=resolve});
+    await page.route('**/assets/InventoryScreen-*.js',async r => {await gate;await r.continue()});
+    await tools.getByRole('button',{name:'食材库存',exact:true}).click();
+    await page.getByRole('status').filter({hasText:'正在打开工具'}).waitFor();
+    await page.getByRole('button',{name:'关闭面板',exact:true}).click();
+    await page.getByRole('textbox',{name:'描述这一餐'}).waitFor();
+    release();
+    await page.locator('.side-nav button').filter({hasText:'食材库存'}).click();
+    await page.getByRole('textbox',{name:'食材名称',exact:true}).fill('加载测试草稿');
+    await page.getByRole('textbox',{name:'库存数量',exact:true}).fill('250');
+    await tools.getByRole('button',{name:'食品资料',exact:true}).click();
+    await page.getByRole('heading',{name:'这个工具暂时未能打开'}).waitFor();
+    await page.unroute('**/assets/FoodScreen-*.js');
+    await page.getByRole('button',{name:'重新载入页面',exact:true}).click();
+    await page.getByRole('textbox',{name:'搜索食品'}).waitFor();
+    assert.equal(new URL(page.url()).hash,'#food');
+    await tools.getByRole('button',{name:'食材库存',exact:true}).click();
+    assert.equal(await page.getByRole('textbox',{name:'库存数量',exact:true}).inputValue(),'250');
+    await page.keyboard.press('Escape');
+    assert.equal(await page.getByRole('textbox',{name:'描述这一餐'}).inputValue(),'加载失败前保留的描述');
+    assert(!scripts.includes('/assets/'+sdk),'Demo loaded authentication SDK');
+    assert.deepEqual(errors,[]);
+    const auth = await browser.newPage();
+    await auth.route('**/api/status',r => r.fulfill({json:{auth_mode:'supabase'}}));
+    await auth.route('**/assets/'+sdk,r => r.abort('failed'));
+    await auth.goto(base);
+    await auth.getByRole('alert').filter({hasText:'登录服务暂时未能加载'}).waitFor();
+    await auth.unroute('**/assets/'+sdk);
+    await auth.getByRole('button',{name:'重新载入页面',exact:true}).click();
+    await auth.getByRole('button',{name:'发送登录链接',exact:true}).waitFor();
+    console.log(JSON.stringify({homeScriptCount:1,toolsLoadedOnDemand:'passed',demoSkipsAuthSdk:'passed',loadingCanClose:'passed',failedChunkSwitchAndReload:'passed',draftsPreserved:'passed',authChunkRecovery:'passed',pageErrors:errors}));
+  } finally {await browser.close()}
+})().catch(e => {console.error(e);process.exitCode=1});

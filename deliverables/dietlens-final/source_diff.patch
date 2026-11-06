@@ -1,0 +1,509 @@
+diff --git a/scripts/check_food_web.cjs b/scripts/check_food_web.cjs
+index 0602bee..5d594e8 100644
+--- a/scripts/check_food_web.cjs
++++ b/scripts/check_food_web.cjs
+@@ -19,7 +19,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+  });
+  await page.goto(process.env.DIETLENS_PREVIEW_URL||'http://127.0.0.1:5174/');
+  await page.getByRole('textbox',{name:'描述这一餐'}).waitFor();
+- await page.locator('.side-nav button').filter({hasText:'查一点资料'}).click();
++ await page.locator('.side-nav button').filter({hasText:'食品资料'}).click();
+  const input=page.getByRole('textbox',{name:'搜索食品'});
+  await input.fill('燕麦');
+  await input.dispatchEvent('compositionstart');
+@@ -42,7 +42,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+  await page.getByText('过敏原：牛奶',{exact:true}).waitFor();
+  const before=requests;
+  await page.keyboard.press('Escape');
+- await page.locator('.side-nav button').filter({hasText:'查一点资料'}).click();
++ await page.locator('.side-nav button').filter({hasText:'食品资料'}).click();
+  await page.getByRole('heading',{name:'合成燕麦资料',exact:true}).waitFor();
+  if(requests!==before)throw Error('returning to food automatically queried sources');
+  mode='liquid';await page.getByRole('button',{name:'查资料',exact:true}).click();
+diff --git a/scripts/check_journal_web.cjs b/scripts/check_journal_web.cjs
+index b6d4f3d..7cb560a 100644
+--- a/scripts/check_journal_web.cjs
++++ b/scripts/check_journal_web.cjs
+@@ -11,13 +11,13 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+  await post('/api/profile/confirm',{user_id:user,task_id:profile.task_id,operation_key:'synthetic:'+profile.task_id,expected_version:profile.expected_version});
+  await page.route('**/api/**',async r=>{const req=r.request();await r.continue({url:req.url().replaceAll('web-demo-user',user),...(req.postData()?{postData:req.postData().replaceAll('web-demo-user',user)}:{})})});
+  await page.goto(base);await page.getByRole('textbox',{name:'描述这一餐'}).waitFor();
+- await page.locator('.side-nav button').filter({hasText:'回看这段时间'}).click();
++ await page.locator('.side-nav button').filter({hasText:'饮食回顾'}).click();
+  await page.getByRole('button',{name:'查看并开启历史回顾'}).waitFor();
+  await page.getByRole('button',{name:'先记下一餐',exact:true}).click();
+  await page.getByRole('button',{name:'记录已吃的一餐',exact:true}).click();
+  await page.getByRole('textbox',{name:'实际餐食名称',exact:true}).fill('合成记录番茄面');
+  await page.keyboard.press('Escape');
+- await page.locator('.side-nav button').filter({hasText:'回看这段时间'}).click();
++ await page.locator('.side-nav button').filter({hasText:'饮食回顾'}).click();
+  if(await page.getByRole('textbox',{name:'实际餐食名称',exact:true}).inputValue()!=='合成记录番茄面')throw Error('journal draft lost on return');
+  await page.getByRole('button',{name:'预览这条记录',exact:true}).click();
+  await page.getByRole('region',{name:'实际餐食预览'}).filter({hasText:'份量未知'}).waitFor();
+diff --git a/scripts/check_loading_web.cjs b/scripts/check_loading_web.cjs
+index d60089d..b01a8c7 100644
+--- a/scripts/check_loading_web.cjs
++++ b/scripts/check_loading_web.cjs
+@@ -27,28 +27,28 @@ const {chromium} = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+     assert.deepEqual(scripts,[main],'Home eagerly downloaded auxiliary code');
+     await page.getByRole('textbox',{name:'描述这一餐'}).fill('加载失败前保留的描述');
+     await page.route('**/assets/FoodScreen-*.js',r => r.abort('failed'));
+-    await page.locator('.side-nav button').filter({hasText:'查一点资料'}).click();
++    await page.locator('.side-nav button').filter({hasText:'食品资料'}).click();
+     await page.getByRole('heading',{name:'这个工具暂时未能打开'}).waitFor();
+     await page.screenshot({path:'/tmp/dietlens-tool-load-failure.png'});
+     const tools = page.getByRole('navigation',{name:'切换工具'});
+     let release;
+     const gate = new Promise(resolve => {release=resolve});
+     await page.route('**/assets/InventoryScreen-*.js',async r => {await gate;await r.continue()});
+-    await tools.getByRole('button',{name:'看看手边',exact:true}).click();
++    await tools.getByRole('button',{name:'食材库存',exact:true}).click();
+     await page.getByRole('status').filter({hasText:'正在打开工具'}).waitFor();
+     await page.getByRole('button',{name:'关闭面板',exact:true}).click();
+     await page.getByRole('textbox',{name:'描述这一餐'}).waitFor();
+     release();
+-    await page.locator('.side-nav button').filter({hasText:'看看手边'}).click();
++    await page.locator('.side-nav button').filter({hasText:'食材库存'}).click();
+     await page.getByRole('textbox',{name:'食材名称',exact:true}).fill('加载测试草稿');
+     await page.getByRole('textbox',{name:'库存数量',exact:true}).fill('250');
+-    await tools.getByRole('button',{name:'查一点资料',exact:true}).click();
++    await tools.getByRole('button',{name:'食品资料',exact:true}).click();
+     await page.getByRole('heading',{name:'这个工具暂时未能打开'}).waitFor();
+     await page.unroute('**/assets/FoodScreen-*.js');
+     await page.getByRole('button',{name:'重新载入页面',exact:true}).click();
+     await page.getByRole('textbox',{name:'搜索食品'}).waitFor();
+     assert.equal(new URL(page.url()).hash,'#food');
+-    await tools.getByRole('button',{name:'看看手边',exact:true}).click();
++    await tools.getByRole('button',{name:'食材库存',exact:true}).click();
+     assert.equal(await page.getByRole('textbox',{name:'库存数量',exact:true}).inputValue(),'250');
+     await page.keyboard.press('Escape');
+     assert.equal(await page.getByRole('textbox',{name:'描述这一餐'}).inputValue(),'加载失败前保留的描述');
+diff --git a/scripts/check_navigation_web.cjs b/scripts/check_navigation_web.cjs
+index 4853645..27f5434 100644
+--- a/scripts/check_navigation_web.cjs
++++ b/scripts/check_navigation_web.cjs
+@@ -17,33 +17,33 @@ const {chromium} = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+     assert.equal(await page.getByRole('dialog').count(),1);
+     await page.getByRole('button',{name:/核对与确认/}).click();
+     await page.getByRole('button',{name:'确认并进入',exact:true}).click();
+-    await page.getByRole('dialog',{name:'看看手边',exact:true}).waitFor();
++    await page.getByRole('dialog',{name:'食材库存',exact:true}).waitFor();
+     assert.equal(await page.evaluate(() => innerWidth),390);
+     assert.equal(await page.evaluate(() => document.compatMode),'CSS1Compat');
+     assert.equal(await page.locator('html').getAttribute('lang'),'zh-CN');
+     const tools = page.getByRole('navigation',{name:'切换工具'});
+     await page.getByRole('textbox',{name:'食材名称',exact:true}).fill('导航草稿燕麦');
+     await page.getByRole('textbox',{name:'库存数量',exact:true}).fill('300');
+-    await tools.getByRole('button',{name:'安排下一步',exact:true}).click();
++    await tools.getByRole('button',{name:'饮食计划',exact:true}).click();
+     await page.getByRole('textbox',{name:'午餐名称',exact:true}).fill('导航草稿午餐');
+-    await tools.getByRole('button',{name:'看看手边',exact:true}).click();
++    await tools.getByRole('button',{name:'食材库存',exact:true}).click();
+     assert.equal(await page.getByRole('textbox',{name:'食材名称',exact:true}).inputValue(),'导航草稿燕麦');
+     await page.goBack();
+-    await page.getByRole('dialog',{name:'安排下一步',exact:true}).waitFor();
++    await page.getByRole('dialog',{name:'饮食计划',exact:true}).waitFor();
+     assert.equal(await page.getByRole('textbox',{name:'午餐名称',exact:true}).inputValue(),'导航草稿午餐');
+     await page.goForward();
+-    await page.getByRole('dialog',{name:'看看手边',exact:true}).waitFor();
++    await page.getByRole('dialog',{name:'食材库存',exact:true}).waitFor();
+     await page.reload();
+-    await page.getByRole('dialog',{name:'看看手边',exact:true}).waitFor();
+-    assert.equal(await page.title(),'看看手边 · DietLens');
++    await page.getByRole('dialog',{name:'食材库存',exact:true}).waitFor();
++    assert.equal(await page.title(),'食材库存 · DietLens');
+     assert.equal(await page.getByRole('textbox',{name:'库存数量',exact:true}).inputValue(),'300');
+     assert.equal(await page.locator('.sidebar').getAttribute('inert'),'');
+     await page.keyboard.press('Escape');
+     await page.getByRole('dialog').waitFor({state:'hidden'});
+     assert.equal(new URL(page.url()).hash,'');
+     await page.goBack();
+-    await page.getByRole('dialog',{name:'看看手边',exact:true}).waitFor();
+-    for (const label of ['查一点资料','回看这段时间','设置']) {
++    await page.getByRole('dialog',{name:'食材库存',exact:true}).waitFor();
++    for (const label of ['食品资料','饮食回顾','设置']) {
+       await tools.getByRole('button',{name:label,exact:true}).click();
+       await page.getByRole('dialog',{name:label,exact:true}).waitFor();
+       assert.equal(await page.locator('.drawer').evaluate(e => e.scrollWidth > e.clientWidth+1),false);
+@@ -57,9 +57,9 @@ const {chromium} = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+     await page.getByRole('dialog',{name:'设置',exact:true}).waitFor();
+     await page.keyboard.press('Escape');
+     await page.getByRole('dialog').waitFor({state:'hidden'});
+-    await page.locator('.side-nav button').filter({hasText:'安排下一步'}).click();
++    await page.locator('.side-nav button').filter({hasText:'饮食计划'}).click();
+     await page.keyboard.press('Escape');
+-    assert.equal(await page.evaluate(() => document.activeElement?.textContent?.includes('安排下一步')),true);
++    assert.equal(await page.evaluate(() => document.activeElement?.textContent?.includes('饮食计划')),true);
+     assert.deepEqual(errors,[]);
+     console.log(JSON.stringify({mobileViewport:'passed',deepLinkOnboarding:'passed',browserHistory:'passed',refreshAndDrafts:'passed',singleModal:'passed',focusRestoration:'passed',pageErrors:errors}));
+   } finally { await browser.close(); }
+diff --git a/scripts/check_plans_web.cjs b/scripts/check_plans_web.cjs
+index 30670ff..5fc3539 100644
+--- a/scripts/check_plans_web.cjs
++++ b/scripts/check_plans_web.cjs
+@@ -18,7 +18,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+  let listFailure=true;
+  await page.route('**/api/plans?**',r=>listFailure?r.fulfill({status:503,json:{}}):r.fallback());
+  await page.goto(base);await page.getByRole('textbox',{name:'描述这一餐'}).waitFor();
+- await page.locator('.side-nav button').filter({hasText:'安排下一步'}).click();
++ await page.locator('.side-nav button').filter({hasText:'饮食计划'}).click();
+  await page.getByRole('button',{name:'已保存的计划',exact:true}).click();
+  await page.getByRole('button',{name:'重新读取计划',exact:true}).waitFor();
+  if(await page.getByRole('heading',{name:'还没有保存的计划',exact:true}).count())throw Error('read failure shown as empty history');
+@@ -41,7 +41,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+  await seed('2026-11-04','合成新版鸡肉饭');
+  await page.evaluate(()=>sessionStorage.clear());await page.reload();
+  await page.getByRole('textbox',{name:'描述这一餐'}).waitFor();
+- await page.locator('.side-nav button').filter({hasText:'安排下一步'}).click();
++ await page.locator('.side-nav button').filter({hasText:'饮食计划'}).click();
+  await page.getByRole('button',{name:'已保存的计划',exact:true}).click();
+  await page.waitForFunction(()=>document.querySelectorAll('.saved-plan-list>button').length===3);
+  if(await page.locator('.saved-plan-list>button').filter({hasText:'当前版本'}).count()!==2)throw Error('new version invalidated another date');
+diff --git a/scripts/check_visual_web.cjs b/scripts/check_visual_web.cjs
+index 147d96c..4843a2d 100644
+--- a/scripts/check_visual_web.cjs
++++ b/scripts/check_visual_web.cjs
+@@ -20,7 +20,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+   await page.setViewportSize({width,height:900});
+   await page.goto(process.env.DIETLENS_PREVIEW_URL||'http://127.0.0.1:5174/');
+   await page.getByRole('textbox',{name:'描述这一餐'}).waitFor();
+-  for(const [screen,label] of [['plan','安排下一步'],['saved-plans','安排下一步'],['inventory','看看手边'],['review','回看这段时间'],['journal','回看这段时间'],['food','查一点资料'],['settings','设置']]){
++  for(const [screen,label] of [['plan','饮食计划'],['saved-plans','饮食计划'],['inventory','食材库存'],['review','饮食回顾'],['journal','饮食回顾'],['food','食品资料'],['settings','设置']]){
+    if(screen==='settings')await page.locator('.sidebar-bottom>button').click();
+    else await page.locator('.side-nav button').filter({hasText:label}).click();
+    if(screen==='food'){
+diff --git a/scripts/check_web.cjs b/scripts/check_web.cjs
+index 8c1d970..bd23306 100644
+--- a/scripts/check_web.cjs
++++ b/scripts/check_web.cjs
+@@ -58,11 +58,11 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+  await page.getByRole('textbox',{name:'描述这一餐'}).waitFor();
+  await page.waitForTimeout(1200);
+  if(await page.getByRole('dialog').count())throw Error('saved profile not restored');
+- await page.locator('.side-nav button').filter({hasText:'安排下一步'}).click();
++ await page.locator('.side-nav button').filter({hasText:'饮食计划'}).click();
+  await page.getByRole('textbox',{name:'午餐名称',exact:true}).fill('合成测试鸡肉饭');
+  await page.getByRole('textbox',{name:'午餐数量',exact:true}).fill('1');
+  await page.keyboard.press('Escape');
+- await page.locator('.side-nav button').filter({hasText:'安排下一步'}).click();
++ await page.locator('.side-nav button').filter({hasText:'饮食计划'}).click();
+  if(await page.getByRole('textbox',{name:'午餐名称',exact:true}).inputValue()!=='合成测试鸡肉饭') throw Error('plan draft lost on close');
+  await page.getByRole('button',{name:'预览这一天',exact:true}).click();
+  await page.getByRole('button',{name:'确认计划',exact:true}).waitFor();
+@@ -81,11 +81,11 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+  await page.getByRole('button',{name:'取消预览',exact:true}).click();
+  if(await page.getByRole('textbox',{name:'午餐名称',exact:true}).inputValue()!=='合成测试番茄面') throw Error('cancel preview lost plan input');
+  await page.keyboard.press('Escape');
+- await page.locator('.side-nav button').filter({hasText:'看看手边'}).click();
++ await page.locator('.side-nav button').filter({hasText:'食材库存'}).click();
+  await page.getByRole('textbox',{name:'食材名称',exact:true}).fill('测试燕麦');
+  await page.getByRole('textbox',{name:'库存数量',exact:true}).fill('500');
+  await page.keyboard.press('Escape');
+- await page.locator('.side-nav button').filter({hasText:'看看手边'}).click();
++ await page.locator('.side-nav button').filter({hasText:'食材库存'}).click();
+  if(await page.getByRole('textbox',{name:'食材名称',exact:true}).inputValue()!=='测试燕麦') throw Error('inventory draft lost on close');
+  await page.getByRole('button',{name:'保存到手边',exact:true}).click();
+  await page.getByText('已保存到手边清单。',{exact:true}).waitFor();
+@@ -154,7 +154,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+    if (failInventoryRead) await route.fulfill({status:503,contentType:'application/json',body:'{}'});
+    else await route.fallback();
+  });
+- await page.locator('.side-nav button').filter({hasText:'看看手边'}).click();
++ await page.locator('.side-nav button').filter({hasText:'食材库存'}).click();
+  await page.getByRole('button',{name:'重新读取清单',exact:true}).waitFor();
+  if(await page.getByRole('heading',{name:'从手边的一样食材开始'}).count()) throw Error('failed inventory read displayed empty state');
+  failInventoryRead = false;
+@@ -163,7 +163,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+  if(await page.locator('.inventory-item').count()!==3) throw Error('inventory updates did not persist');
+  await page.unroute(inventoryReadRoute);
+  await page.keyboard.press('Escape');
+- await page.locator('.side-nav button').filter({hasText:'查一点资料'}).click();
++ await page.locator('.side-nav button').filter({hasText:'食品资料'}).click();
+  await page.route('**/api/foods/search?**', route => route.fulfill({status:503,contentType:'application/json',body:'{}'}));
+  await page.getByRole('textbox',{name:'搜索食品'}).fill('燕麦');
+  await page.getByRole('button',{name:'查资料',exact:true}).click();
+@@ -211,7 +211,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+  await page.locator('.onboarding-drawer').waitFor({state:'hidden'});
+  await page.getByRole('heading',{name:'饮食档案与授权'}).waitFor();
+  await page.keyboard.press('Escape');
+- await page.locator('.side-nav button').filter({hasText:'回看这段时间'}).click();
++ await page.locator('.side-nav button').filter({hasText:'饮食回顾'}).click();
+  await page.locator('.review-grid').waitFor();
+  await page.getByRole('button',{name:'本月',exact:true}).click();
+  await page.keyboard.press('Escape');
+diff --git a/web/src/App.tsx b/web/src/App.tsx
+index 34188fa..96ea1ed 100644
+--- a/web/src/App.tsx
++++ b/web/src/App.tsx
+@@ -8,11 +8,11 @@ import { focusableWithin } from './lib/focus'
+ import { useSessionDraft, clearSessionDrafts, writeSessionDraft, removeSessionDraft } from './lib/useSessionDraft'
+ import { useScreen, screenLabels, type Screen } from './lib/useScreen'
+ 
+-const SettingsScreen = loadTool(async () => { const module = await import('./components/SettingsScreen'); return {default: module.SettingsScreen} })
+-const FoodScreen = loadTool(async () => { const module = await import('./components/FoodScreen'); return {default: module.FoodScreen} })
+-const PlanScreen = loadTool(async () => { const module = await import('./components/PlanScreen'); return {default: module.PlanScreen} })
+-const InventoryScreen = loadTool(async () => { const module = await import('./components/InventoryScreen'); return {default: module.InventoryScreen} })
+-const WorkbenchScreen = loadTool(async () => { const module = await import('./components/WorkbenchScreen'); return {default: module.WorkbenchScreen} })
++const SettingsScreen = loadTool(async () => { const module = await import('./components/SettingsScreen'); return {default: module.SettingsScreen} }, '设置')
++const FoodScreen = loadTool(async () => { const module = await import('./components/FoodScreen'); return {default: module.FoodScreen} }, '食品资料')
++const PlanScreen = loadTool(async () => { const module = await import('./components/PlanScreen'); return {default: module.PlanScreen} }, '饮食计划')
++const InventoryScreen = loadTool(async () => { const module = await import('./components/InventoryScreen'); return {default: module.InventoryScreen} }, '食材库存')
++const WorkbenchScreen = loadTool(async () => { const module = await import('./components/WorkbenchScreen'); return {default: module.WorkbenchScreen} }, '饮食回顾')
+ 
+ type Intent = { user_message?: string; entities?: { meal?: string; options?: string[] }; missing_fields?: string[]; confidence?: number }
+ const demoUserId = 'web-demo-user'
+@@ -28,6 +28,7 @@ const formatEventTime = (value: string) => { const date = new Date(value); retur
+ export default function App() {
+   const [screen, setScreen] = useScreen()
+   const [recordingMeal, setRecordingMeal] = useState(false)
++  const [mobileMore, setMobileMore] = useState(false)
+   const [setupReturn, setSetupReturn] = useState<Screen>(screen)
+   const [setupStart, setSetupStart] = useState(0)
+   const drawerRef = useRef<HTMLElement>(null)
+@@ -150,19 +151,24 @@ export default function App() {
+       <div className="brand"><span className="brand-mark">D</span><span>DietLens</span></div>
+       <div className="side-date">{new Intl.DateTimeFormat('zh-CN', { month: 'long', day: 'numeric', weekday: 'short' }).format(new Date())}</div>
+       <nav className="side-nav" aria-label="主要页面">
+-        <button data-tooltip="回到当前这一餐" className={screen === 'care' ? 'side-active' : ''} onClick={() => openPanel('care')}><span>✦</span>现在</button>
+-        <button data-tooltip="安排未来几天" className={screen === 'plan' ? 'side-active' : ''} onClick={() => openPanel('plan')}><span>▦</span>安排下一步</button>
+-        <button data-tooltip="查看来源和未知项" className={screen === 'food' ? 'side-active' : ''} onClick={() => openPanel('food')}><span>◌</span>查一点资料</button>
+-        <button data-tooltip="看看已有的食材" className={screen === 'inventory' ? 'side-active' : ''} onClick={() => openPanel('inventory')}><span>□</span>看看手边</button>
+-        <button data-tooltip="回看计划、记录和行动" className={screen === 'workbench' ? 'side-active' : ''} onClick={() => openPanel('workbench')}><span>↗</span>回看这段时间</button>
++        <button data-tooltip="记录今天的饮食" className={screen === 'care' ? 'side-active' : ''} onClick={() => openPanel('care')}><span>✦</span>今日饮食</button>
++        <button data-tooltip="安排未来几天" className={screen === 'plan' ? 'side-active' : ''} onClick={() => openPanel('plan')}><span>▦</span>饮食计划</button>
++        <button data-tooltip="查看来源和未知项" className={screen === 'food' ? 'side-active' : ''} onClick={() => openPanel('food')}><span>◌</span>食品资料</button>
++        <button data-tooltip="看看已有的食材" className={screen === 'inventory' ? 'side-active' : ''} onClick={() => openPanel('inventory')}><span>□</span>食材库存</button>
++        <button data-tooltip="回看计划、记录和行动" className={screen === 'workbench' ? 'side-active' : ''} onClick={() => openPanel('workbench')}><span>↗</span>饮食回顾</button>
+       </nav>
+     <div className="sidebar-bottom"><button data-tooltip="档案、授权和数据" className={screen === 'settings' ? 'side-active' : ''} onClick={() => openPanel('settings')}><span>⚙</span>设置</button><div className="user-chip"><span className="avatar">{session?.user.email?.slice(0, 1).toUpperCase() ?? 'D'}</span><span>{session?.user.email ?? '演示空间'}</span></div></div>
+     </aside>
++    <nav className="mobile-nav" aria-label="移动端主要页面">
++      {(['care','plan','workbench'] as const).map(item => <button key={item} className={screen === item ? 'active' : ''} onClick={() => { setMobileMore(false); openPanel(item) }}><span aria-hidden="true">{item === 'care' ? '✦' : item === 'plan' ? '▦' : '↗'}</span>{screenLabels[item]}</button>)}
++      <button className={mobileMore || ['food','inventory','settings'].includes(screen) ? 'active' : ''} onClick={() => setMobileMore(value => !value)}><span aria-hidden="true">•••</span>更多</button>
++    </nav>
++    {mobileMore && <div className="mobile-more-sheet" role="dialog" aria-label="更多页面" onClick={() => setMobileMore(false)}><div className="mobile-more-panel" onClick={event => event.stopPropagation()}><div className="mobile-more-handle" />{(['food','inventory','settings'] as const).map(item => <button key={item} className={screen === item ? 'active' : ''} onClick={() => { setMobileMore(false); openPanel(item) }}>{screenLabels[item]}<span aria-hidden="true">→</span></button>)}</div></div>}
+     <section className="main-stage" inert={panelOpen || onboarding}>
+       <header className="stage-header"><div><p className="eyebrow">今天 · 轻一点</p><h2>陪你处理眼前这一餐</h2></div><div className="stage-actions"><span className="live-dot">{authMode === 'demo' ? '本地演示' : '私人空间'}</span><button className="quiet-button" aria-label="打开设置" onClick={() => openPanel('settings')}>设</button></div></header>
+       <CareScreen key={`${userId}:${workspaceRevision}`} userId={userId} setupCompletion={setupCompletion} onWorkbench={() => openPanel('workbench')} onPlan={() => openPanel('plan')} onFood={() => openPanel('food')} onInventory={() => openPanel('inventory')} onSetup={() => editProfile('care')} onRecord={() => { setRecordingMeal(true); setScreen('workbench') }} ready={hasProfile} />
+     </section>
+-    {panelOpen && <div className="drawer-layer" onClick={() => setScreen('care')}><aside ref={drawerRef} className="drawer" role="dialog" aria-modal="true" aria-label={screenLabels[screen]} tabIndex={-1} onClick={event => event.stopPropagation()}><div className="drawer-topbar"><div className="drawer-context"><button onClick={() => setScreen('care')}>← 回到这一餐</button><span>当前情境 · 可随时返回</span></div><button className="drawer-close" aria-label="关闭面板" onClick={() => setScreen('care')}>×</button><nav className="drawer-tools" aria-label="切换工具">{(['plan', 'food', 'inventory', 'workbench', 'settings'] as const).map(tool => <button key={tool} aria-current={screen === tool ? 'page' : undefined} aria-label={screenLabels[tool]} onClick={() => openPanel(tool)}>{{plan: '安排餐食', food: '食品资料', inventory: '手边食材', workbench: '记录回顾', settings: '设置'}[tool]}</button>)}</nav></div>{screen === 'plan' && <PlanScreen key={userId} userId={userId} />}{screen === 'food' && <FoodScreen userId={userId} profileVersion={profileVersion} onEditProfile={() => editProfile('food', 1)} />}{screen === 'inventory' && <InventoryScreen key={userId} userId={userId} />}{screen === 'workbench' && <WorkbenchScreen userId={userId} initialRecording={recordingMeal} onEditConsent={() => editProfile('workbench', 2)} onStartAction={() => { setScreen('care'); setWorkspaceRevision(value => value + 1) }} />}{screen === 'settings' && <SettingsScreen userId={userId} onResume={async task => {
++    {panelOpen && <div className="drawer-layer" onClick={() => setScreen('care')}><aside ref={drawerRef} className="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" tabIndex={-1} onClick={event => event.stopPropagation()}><div className="drawer-topbar"><div className="drawer-context"><button onClick={() => setScreen('care')}>← 回到这一餐</button><span id="drawer-title">{screenLabels[screen]} · 当前情境</span></div><button className="drawer-close" aria-label="关闭面板" onClick={() => setScreen('care')}>×</button><nav className="drawer-tools" aria-label="切换工具">{(['plan', 'food', 'inventory', 'workbench', 'settings'] as const).map(tool => <button key={tool} aria-current={screen === tool ? 'page' : undefined} aria-label={screenLabels[tool]} onClick={() => openPanel(tool)}>{{plan: '饮食计划', food: '食品资料', inventory: '食材库存', workbench: '饮食回顾', settings: '设置'}[tool]}</button>)}</nav></div>{screen === 'plan' && <PlanScreen key={userId} userId={userId} />}{screen === 'food' && <FoodScreen userId={userId} profileVersion={profileVersion} onEditProfile={() => editProfile('food', 1)} />}{screen === 'inventory' && <InventoryScreen key={userId} userId={userId} />}{screen === 'workbench' && <WorkbenchScreen userId={userId} initialRecording={recordingMeal} onEditConsent={() => editProfile('workbench', 2)} onStartAction={() => { setScreen('care'); setWorkspaceRevision(value => value + 1) }} />}{screen === 'settings' && <SettingsScreen userId={userId} onResume={async task => {
+       if (task.task_type === 'quick_log' && task.pending_record) {
+         const record = task.pending_record as Record<string, any>
+         writeSessionDraft(`${userId}:actual-meal-draft`, { fields: { meal_date: String(record.meal_date ?? ''), meal_slot: String(record.meal_slot ?? 'lunch'), name: String(record.name ?? ''), quantity: record.quantity == null ? '' : String(record.quantity), unit: String(record.unit ?? '份') }, editing: null, preview: { ...record }, quickTaskId: task.task_id, open: true })
+@@ -448,7 +454,7 @@ function CareScreen({ userId, setupCompletion, onWorkbench, onPlan, onFood, onIn
+         requestAnimationFrame(() => { contextRef.current?.scrollIntoView({block:'center'}); contextRef.current?.querySelector('input')?.focus({preventScroll:true}) })
+       }}>修改餐次与选项</button><div className="action-options">{task.candidates?.map((candidate, index) => <article key={candidate.action_id}><p className="candidate-label">路径 {index + 1} · {candidate.dimension ?? '轻行动'}</p><h3>{candidate.behavior}</h3><p>{candidate.cue}</p><details className="candidate-details"><summary>为什么是这条路？</summary><div><p>{candidate.rationale}</p><p className="candidate-effort">执行负担：{candidate.effort}</p></div></details><button disabled={busy} onClick={() => advance(() => api.confirm(task.task_id, index))}>选择这条路</button></article>)}</div></section>}
+       {task?.state === 'adopted' && <section className="meal-flow-card"><p className="eyebrow">第三步 · 等你回来</p><h2>这一步已经记下了</h2><p>反馈没有正确答案。先选一个最接近的状态，也可以留下一句当时发生了什么；这会帮助下一次建议更贴近你的生活。</p>{selectedAction && <blockquote className="selected-action"><strong>{selectedAction.behavior}</strong><p>{selectedAction.cue}</p></blockquote>}{reminderDue&&<div className="reminder-row"><span><strong>想晚一点再回来？</strong><small>把这条行动放回稍后的节奏，不会打扰你。</small></span><button className="quiet-button" disabled={busy} onClick={() => advance(async () => { const next = await api.remind(task.task_id, `ui-${Date.now()}`); setReminderDue(false); return next })}>稍后提醒我</button></div>}<label className="feedback-note-label">想补充一句吗？<textarea className="feedback-note" value={feedbackNote} onChange={e=>setFeedbackNote(e.target.value)} maxLength={1000} placeholder="例如：临时加班，回家太晚；或者：这次做起来比想象中容易。" /></label><div className="feedback-choices">{[['complete','做到了','这条路和今天的状态匹配'],['partial','做到一部分','有尝试，剩下的部分也值得被看见'],['not_done','这次没做到','记录阻碍，下一次可以换一条路'],['unknown','暂不确定','先保留未知，不急着下结论']].map(([value,label,hint]) => <button className={`feedback-choice feedback-${value}`} key={value} disabled={busy} onClick={() => advance(() => api.feedback(task.task_id, value, feedbackNote.trim()))}><strong>{label}</strong><small>{hint}</small></button>)}</div></section>}
+-      {(task?.state === 'feedback' || task?.state === 'review' || task?.state === 'done') && <section className="meal-flow-card"><p className="eyebrow">这一餐 · 已收好</p><h2>谢谢你回来告诉我</h2><p>反馈已保存。不确定的部分会保留为未知。</p>{taskEvents.length>0&&<details className="activity-trace"><summary>这条记录是怎么形成的</summary><ol>{taskEvents.filter(event=>!event.event_type.startsWith('model.')).map((event,index)=><li key={`${event.timestamp}-${index}`}><span>{eventLabel(event.event_type)}</span><time dateTime={event.timestamp}>{formatEventTime(event.timestamp)}</time></li>)}</ol><p>每一步都由你的确认推进；系统不会把未确认的建议写成事实。</p></details>}{correctionOpen&&<div className="feedback-correction" role="region" aria-label="修改反馈"><p className="field-help">修改只会更新这条行动的最新状态，不会创建新的行动。</p><div className="feedback-choices">{[['complete','改为做到了'],['partial','改为做到一部分'],['not_done','改为这次没做到'],['unknown','改为暂不确定']].map(([value,label])=><button className={`feedback-choice feedback-${value}`} key={value} disabled={busy} onClick={() => advance(() => api.correctFeedback(task.task_id, value, feedbackNote.trim(), `ui-${Date.now()}`, task.version))}><strong>{label}</strong></button>)}</div></div>}<div className="button-row"><button className="secondary" onClick={()=>setCorrectionOpen(value=>!value)}>{correctionOpen?'收起修改':'修改刚才的反馈'}</button><button onClick={() => { setTask(null); setIntent(null); setMessages([]); setNotice('可以开始描述新的一餐。') }}>开始新的一餐</button><button className="secondary" onClick={onRecord}>记下实际吃的一餐</button><button className="secondary" onClick={onWorkbench}>回看这段时间</button></div></section>}
++      {(task?.state === 'feedback' || task?.state === 'review' || task?.state === 'done') && <section className="meal-flow-card"><p className="eyebrow">这一餐 · 已收好</p><h2>谢谢你回来告诉我</h2><p>反馈已保存。不确定的部分会保留为未知。</p>{taskEvents.length>0&&<details className="activity-trace"><summary>这条记录是怎么形成的</summary><ol>{taskEvents.filter(event=>!event.event_type.startsWith('model.')).map((event,index)=><li key={`${event.timestamp}-${index}`}><span>{eventLabel(event.event_type)}</span><time dateTime={event.timestamp}>{formatEventTime(event.timestamp)}</time></li>)}</ol><p>每一步都由你的确认推进；系统不会把未确认的建议写成事实。</p></details>}{correctionOpen&&<div className="feedback-correction" role="region" aria-label="修改反馈"><p className="field-help">修改只会更新这条行动的最新状态，不会创建新的行动。</p><div className="feedback-choices">{[['complete','改为做到了'],['partial','改为做到一部分'],['not_done','改为这次没做到'],['unknown','改为暂不确定']].map(([value,label])=><button className={`feedback-choice feedback-${value}`} key={value} disabled={busy} onClick={() => advance(() => api.correctFeedback(task.task_id, value, feedbackNote.trim(), `ui-${Date.now()}`, task.version))}><strong>{label}</strong></button>)}</div></div>}<div className="button-row"><button className="secondary" onClick={()=>setCorrectionOpen(value=>!value)}>{correctionOpen?'收起修改':'修改刚才的反馈'}</button><button onClick={() => { setTask(null); setIntent(null); setMessages([]); setNotice('可以开始描述新的一餐。') }}>开始新的一餐</button><button className="secondary" onClick={onRecord}>记下实际吃的一餐</button><button className="secondary" onClick={onWorkbench}>饮食回顾</button></div></section>}
+       {task && ['stopped','cancelled','context','candidates'].includes(task.state) && <section className="meal-flow-card"><h2>{task.state === 'cancelled' ? '这一餐已取消' : task.state === 'stopped' ? '这一餐暂时停在这里' : '这一餐尚未完成整理'}</h2><p>你可以重新描述可选餐食，再开始一次。已有记录会保留。</p><button disabled={busy} onClick={() => {
+         const context = task.context
+         setMessage(context?.meal && Array.isArray(context.options) ? `${String(context.meal)}可选${context.options.join('、')}` : '')
+diff --git a/web/src/components/SettingsScreen.tsx b/web/src/components/SettingsScreen.tsx
+index 2199a9b..ab4255b 100644
+--- a/web/src/components/SettingsScreen.tsx
++++ b/web/src/components/SettingsScreen.tsx
+@@ -1,4 +1,4 @@
+-import { useEffect, useState } from 'react'
++import { useEffect, useRef, useState } from 'react'
+ import { api, type Task } from '../lib/api'
+ import { clearSessionDrafts } from '../lib/useSessionDraft'
+ import { StatusPill } from './StatusPill'
+@@ -40,6 +40,27 @@ export function SettingsScreen({userId,onSignOut,onEditProfile,onDataDeleted,onR
+   const [dataError,setDataError]=useState('')
+   const [notice,setNotice]=useState('')
+   const [deleteOpen,setDeleteOpen]=useState(false)
++  const deleteCancelRef=useRef<HTMLButtonElement>(null)
++  const deleteTriggerRef=useRef<HTMLButtonElement>(null)
++  useEffect(()=>{
++    if(!deleteOpen)return
++    const previous=document.activeElement as HTMLElement|null
++    const focusTarget=deleteCancelRef.current
++    focusTarget?.focus()
++    const onKeyDown=(event:KeyboardEvent)=>{
++      if(event.key==='Escape'&&!busy){event.preventDefault();setDeleteOpen(false);return}
++      if(event.key!=='Tab')return
++      const dialog=document.querySelector<HTMLElement>('.confirm-modal')
++      if(!dialog)return
++      const items=Array.from(dialog.querySelectorAll<HTMLElement>('button:not([disabled]),[href],input:not([disabled])'))
++      if(!items.length)return
++      const first=items[0],last=items[items.length-1]
++      if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
++      else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
++    }
++    document.addEventListener('keydown',onKeyDown)
++    return()=>{document.removeEventListener('keydown',onKeyDown);if(previous?.isConnected)previous.focus()}
++  },[deleteOpen,busy])
+   useEffect(()=>{
+     let active=true;setProfileLoading(true);setProfileError('')
+     api.profile(userId).then(result=>{if(active)setProfile(result)}).catch(e=>{
+@@ -110,10 +131,10 @@ export function SettingsScreen({userId,onSignOut,onEditProfile,onDataDeleted,onR
+       {task&&<div className="lookup-result"><h3>{String(task.context?.meal??'待补充的餐次')}</h3><p>{taskSummary(task)}</p><StatusPill state={task.state}/><div className="button-row"><button disabled={Boolean(busy)} onClick={()=>resume(task)}>继续这一餐</button></div></div>}
+     </details>
+     <section className="settings-card" aria-label="数据管理"><h2>你的数据</h2><p>导出会下载包含档案、计划和记录的 JSON 文件。删除会清除当前账号的全部 DietLens 数据和本页草稿，需要再次确认。</p>
+-      <div className="button-row"><button onClick={exportData} disabled={Boolean(busy)}>{busy==='export'?'正在准备导出…':'导出数据'}</button><button className="secondary" onClick={()=>setDeleteOpen(true)} disabled={Boolean(busy)}>删除全部数据</button>{onSignOut&&<button className="secondary" onClick={signOut} disabled={Boolean(busy)}>{busy==='signout'?'正在退出…':'退出登录'}</button>}</div>
++      <div className="button-row"><button onClick={exportData} disabled={Boolean(busy)}>{busy==='export'?'正在准备导出…':'导出数据'}</button><button ref={deleteTriggerRef} className="secondary" onClick={()=>setDeleteOpen(true)} disabled={Boolean(busy)}>删除全部数据</button>{onSignOut&&<button className="secondary" onClick={signOut} disabled={Boolean(busy)}>{busy==='signout'?'正在退出…':'退出登录'}</button>}</div>
+       {notice&&<p className="notice" role="status">{notice}</p>}{dataError&&<p className="error" role="alert">{dataError}</p>}
+     </section>
+   </section><aside className="status-card"><p className="eyebrow">属于你的空间</p><h2>可以继续，也可以收回</h2><p>查找一餐只会读取它的状态。选择行动、反馈和修改数据，仍然需要你明确确认。</p></aside>
+-  {deleteOpen&&<div className="confirm-modal-layer" role="presentation" onClick={()=>!busy&&setDeleteOpen(false)}><section className="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="delete-title" onClick={e=>e.stopPropagation()}><p className="eyebrow">关键操作 · 需要确认</p><h2 id="delete-title">删除当前账号的全部数据？</h2><p>档案、计划、餐食记录和本页草稿都会被清除。此操作无法撤回。</p><div className="button-row"><button className="secondary" onClick={()=>setDeleteOpen(false)} disabled={Boolean(busy)}>先保留</button><button className="danger-action" onClick={()=>void deleteData()} disabled={Boolean(busy)}>{busy==='delete'?'正在删除…':'确认删除'}</button></div></section></div>}
++  {deleteOpen&&<div className="confirm-modal-layer" role="presentation" onClick={()=>!busy&&setDeleteOpen(false)}><section className="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="delete-title" aria-describedby="delete-description" onClick={e=>e.stopPropagation()}><p className="eyebrow">关键操作 · 需要确认</p><h2 id="delete-title">删除当前账号的全部数据？</h2><p id="delete-description">档案、计划、餐食记录和本页草稿都会被清除。此操作无法撤回。</p><div className="button-row"><button ref={deleteCancelRef} className="secondary" onClick={()=>setDeleteOpen(false)} disabled={Boolean(busy)}>先保留</button><button className="danger-action" onClick={()=>void deleteData()} disabled={Boolean(busy)}>{busy==='delete'?'正在删除…':'确认删除'}</button></div></section></div>}
+   </div>
+ }
+diff --git a/web/src/components/ToolLoader.tsx b/web/src/components/ToolLoader.tsx
+index 47e24b0..d04ae2b 100644
+--- a/web/src/components/ToolLoader.tsx
++++ b/web/src/components/ToolLoader.tsx
+@@ -14,9 +14,9 @@ class ToolBoundary extends Component<{children: ReactNode}, {failed: boolean}> {
+ }
+ 
+ /** A failed module stays rejected in the browser cache; reload is the reliable recovery. */
+-export function loadTool<P extends object>(loader: () => Promise<{default: ComponentType<P>}>) {
++export function loadTool<P extends object>(loader: () => Promise<{default: ComponentType<P>}>, title = '页面') {
+   const Tool = lazy(loader)
+   return function LoadedTool(props: P) {
+-    return <ToolBoundary><Suspense fallback={<section className="tool-loading" role="status"><span className="spinner" /><p>正在打开工具…</p></section>}><Tool {...props} /></Suspense></ToolBoundary>
++    return <ToolBoundary><Suspense fallback={<section className="tool-loading tool-skeleton" role="status" aria-label={`正在加载${title}`}><p className="eyebrow">DietLens · {title}</p><div className="skeleton-line skeleton-title" /><div className="skeleton-line skeleton-copy" /><div className="skeleton-panel" /><p>正在打开{title}…</p></section>}><Tool {...props} /></Suspense></ToolBoundary>
+   }
+ }
+diff --git a/web/src/lib/useScreen.ts b/web/src/lib/useScreen.ts
+index 611882e..929d5e4 100644
+--- a/web/src/lib/useScreen.ts
++++ b/web/src/lib/useScreen.ts
+@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react'
+ 
+ export type Screen = 'care' | 'plan' | 'food' | 'inventory' | 'workbench' | 'settings'
+ export const screenLabels: Record<Screen, string> = {
+-  care: '现在', plan: '安排下一步', food: '查一点资料', inventory: '看看手边',
+-  workbench: '回看这段时间', settings: '设置',
++  care: '今日饮食', plan: '饮食计划', food: '食品资料', inventory: '食材库存',
++  workbench: '饮食回顾', settings: '设置',
+ }
+ 
+ function readScreen(): Screen {
+diff --git a/web/src/styles/tokens.css b/web/src/styles/tokens.css
+index 32e43e9..a2dc8a7 100644
+--- a/web/src/styles/tokens.css
++++ b/web/src/styles/tokens.css
+@@ -6,3 +6,5 @@
+ @import './onboarding.css';
+ @import './flows.css';
+ @import './polish.css';
++
++@import './design-system.css';
+diff --git a/web/src/styles/design-system.css b/web/src/styles/design-system.css
+new file mode 100644
+index 0000000..3387765
+--- /dev/null
++++ b/web/src/styles/design-system.css
+@@ -0,0 +1,109 @@
++/* DietLens design system — authoritative visual contract (2026 refresh) */
++:root {
++  --bg: #f7f6f2;
++  --surface: #ffffff;
++  --surface-subtle: #f1eee8;
++  --surface-warm: #fbf8f1;
++  --ink: #24231f;
++  --ink-muted: #6f6b63;
++  --ink-faint: #9a958b;
++  --line: #dfdbd2;
++  --brand: #b24e32;
++  --brand-strong: #913b27;
++  --brand-soft: #f3e1d9;
++  --success: #4e765d;
++  --warning: #9a6b1d;
++  --danger: #a33e34;
++  --info: #5e7598;
++  --font-ui: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", system-ui, sans-serif;
++  --font-display: var(--font-ui);
++  --text-xs: 11px; --text-sm: 13px; --text-md: 15px; --text-lg: 18px; --text-xl: 24px;
++  --text-display: clamp(36px, 5vw, 64px);
++  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px; --space-7: 40px; --space-8: 48px; --space-9: 64px; --space-10: 80px;
++  --radius-sm: 4px; --radius-control: 8px; --radius-md: 12px; --radius-card: 16px; --radius-feature: 24px;
++  --shadow-subtle: 0 1px 2px rgba(36,35,31,.04);
++  --shadow-raised: 0 8px 24px rgba(36,35,31,.08);
++  --shadow-modal: 0 24px 64px rgba(36,35,31,.16);
++  --accent: var(--brand); --accent-strong: var(--brand-strong); --accent-soft: var(--brand-soft); --accent-ink: var(--brand-strong);
++  --ink-soft: var(--ink-muted); --muted: var(--ink-muted); --faint: var(--ink-faint); --wash: var(--surface-subtle);
++  --surface-0: var(--bg); --surface-1: rgba(255,255,255,.86); --surface-2: var(--surface); --surface-3: #fff;
++}
++html { font-family: var(--font-ui); background: var(--bg); }
++body { background: var(--bg); color: var(--ink); line-height: 1.5; }
++h1,h2,h3,strong,.brand { font-family: var(--font-display); }
++button,input,textarea,select { font-family: var(--font-ui); }
++.product-shell { background: var(--bg); grid-template-columns: 232px minmax(0,1fr); }
++.sidebar { background: rgba(255,255,255,.86); border-color: var(--line); padding: 28px 16px 20px; }
++.brand-mark { background: var(--brand); border-radius: var(--radius-control); }
++.side-nav button,.sidebar-bottom>button { min-height: 44px; border-radius: var(--radius-control); color: var(--ink-muted); }
++.side-nav button:hover,.sidebar-bottom>button:hover { background: var(--surface-subtle); color: var(--ink); transform: none; }
++.side-nav .side-active,.sidebar-bottom .side-active { background: var(--brand-soft); color: var(--brand-strong); }
++.main-stage { background: var(--bg); padding-top: 24px; }
++.stage-header { max-width: 1120px; margin: 0 auto; border-color: var(--line); }
++.stage-header h2 { font-size: var(--text-xl); letter-spacing: -.02em; }
++.chat-board { max-width: 1120px; min-height: calc(100vh - 112px); border-radius: var(--radius-feature); background: var(--surface-warm); box-shadow: var(--shadow-subtle); }
++.chat-board:before { display: none; }
++.chat-column { padding-top: clamp(56px,8vh,88px); }
++.chat-welcome h1 { font-size: var(--text-display); letter-spacing: -.045em; line-height: 1.08; }
++.chat-welcome h1 em { color: var(--brand); }
++.chat-welcome>p:last-child { color: var(--ink-muted); }
++.welcome-mark { width: 44px; height: 44px; border-radius: var(--radius-md); background: var(--brand); }
++.board-cards { margin-top: 32px; }
++.board-card { border-color: var(--line); border-radius: var(--radius-card); background: rgba(255,255,255,.72); }
++.board-card:hover { transform: none; box-shadow: var(--shadow-subtle); }
++.card-icon { background: var(--brand-soft); color: var(--brand-strong); }
++.quick-prompts button,.side-link { min-height: 40px; border-color: var(--line); background: var(--surface); color: var(--ink-muted); }
++.chat-composer { border-color: var(--line); border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--shadow-raised); }
++.chat-composer textarea { font-size: var(--text-md); }
++.chat-composer .composer-bar button { width: 40px; height: 40px; border-radius: var(--radius-control); background: var(--brand); }
++.drawer { background: var(--bg); box-shadow: var(--shadow-modal); }
++.drawer-topbar,.drawer-context { background: rgba(255,255,255,.94); }
++.drawer-context { min-height: 60px; border-color: var(--line); }
++.drawer-tools { background: var(--surface-subtle); border-color: var(--line); }
++.drawer-tools button { min-height: 44px; color: var(--ink-muted); }
++.drawer-tools button[aria-current='page'] { color: var(--brand-strong); background: var(--surface); box-shadow: var(--shadow-subtle); }
++.composer,.review-card,.candidate,.plan-form,.search-form,.inventory-form,.food-card,.settings-card,.metric,.review-panel,.status-card { border-color: var(--line); border-radius: var(--radius-card); box-shadow: var(--shadow-subtle); }
++.food-card:hover,.settings-card:hover,.review-panel:hover,.metric:hover { transform: none; box-shadow: var(--shadow-raised); }
++.primary-action,.composer button,.review-card button,.candidate button,.plan-form button,.search-form button,.inventory-form button { min-height: 44px; border-radius: var(--radius-control); background: var(--brand); }
++.primary-action:hover,.composer button:hover,.review-card button:hover,.candidate button:hover,.plan-form button:hover,.search-form button:hover,.inventory-form button:hover { background: var(--brand-strong); transform: none; box-shadow: var(--shadow-raised); }
++.secondary { background: var(--surface-subtle) !important; color: var(--ink) !important; }
++input,textarea,select { border-radius: var(--radius-control) !important; border-color: var(--line) !important; background: var(--surface) !important; }
++input:focus,textarea:focus,select:focus { border-color: var(--brand) !important; box-shadow: 0 0 0 4px rgba(178,78,50,.14) !important; }
++button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible { outline: 3px solid rgba(178,78,50,.32); outline-offset: 2px; box-shadow: none; }
++.status-card { top: 24px; background: var(--surface); }
++.tool-loading { background: var(--surface); border-color: var(--line); }
++.tool-skeleton { display: grid; gap: 14px; }
++.skeleton-line,.skeleton-panel { display: block; border-radius: var(--radius-control); background: linear-gradient(90deg,var(--surface-subtle),#faf9f6,var(--surface-subtle)); background-size: 200% 100%; animation: skeleton-shimmer 1.8s ease-in-out infinite; }
++.skeleton-kicker { width: 100px; height: 12px; }
++.skeleton-title { width: min(420px,80%); height: 34px; }
++.skeleton-copy { width: min(560px,90%); height: 16px; }
++.skeleton-panel { width: 100%; height: 180px; margin-top: 10px; }
++.mobile-nav,.mobile-more-sheet { display: none; }
++.product-shell:has(.drawer-layer) .mobile-nav,.product-shell:has(.drawer-layer) .mobile-more-sheet { display: none; }
++@keyframes skeleton-shimmer { 0%,100% { background-position: 100% 0; } 50% { background-position: 0 0; } }
++@media (max-width: 760px) {
++  .product-shell { display: block; padding-bottom: 72px; }
++  .sidebar { position: sticky; top: 0; z-index: 10; display: flex; flex-direction: row; align-items: center; padding: 12px 16px; border-right: 0; border-bottom: 1px solid var(--line); }
++  .sidebar .brand { padding: 0; }
++  .side-date,.sidebar .side-nav,.sidebar-bottom { display: none; }
++  .main-stage { padding: 16px 16px 32px; }
++  .stage-header { padding-bottom: 14px; }
++  .chat-board { min-height: calc(100vh - 158px); margin: 0 -16px; border-radius: 0; }
++  .chat-column { width: auto; padding: 48px 20px 32px; }
++  .chat-welcome h1 { font-size: clamp(34px,10vw,46px); }
++  .board-cards { grid-template-columns: 1fr; }
++  .board-card-wide,.board-card-note { grid-column: auto; }
++  .drawer { width: 100%; }
++  .drawer .workspace-main { padding: 28px 20px 80px; }
++  .mobile-nav { position: fixed; z-index: 40; inset: auto 0 0; display: grid; grid-template-columns: repeat(4,1fr); padding: 8px 8px calc(8px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: rgba(255,255,255,.96); box-shadow: 0 -8px 24px rgba(36,35,31,.08); }
++  .mobile-nav button { display: grid; gap: 2px; place-items: center; min-height: 48px; border: 0; border-radius: var(--radius-control); background: transparent; color: var(--ink-muted); font-size: 11px; }
++  .mobile-nav button span { font-size: 16px; line-height: 1; }
++  .mobile-nav button.active { background: var(--brand-soft); color: var(--brand-strong); font-weight: 700; }
++  .mobile-more-sheet { position: fixed; z-index: 45; inset: 0; display: flex; align-items: flex-end; background: rgba(36,35,31,.2); }
++  .mobile-more-panel { width: 100%; padding: 12px 16px calc(20px + env(safe-area-inset-bottom)); border-radius: 20px 20px 0 0; background: var(--surface); box-shadow: var(--shadow-modal); }
++  .mobile-more-handle { width: 36px; height: 4px; margin: 0 auto 10px; border-radius: 999px; background: var(--line); }
++  .mobile-more-panel button { display: flex; justify-content: space-between; align-items: center; width: 100%; min-height: 48px; padding: 0 12px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--ink); text-align: left; }
++  .mobile-more-panel button.active { color: var(--brand-strong); font-weight: 700; }
++}
++@media (prefers-reduced-motion: reduce) { .skeleton-line,.skeleton-panel { animation: none; } }
++

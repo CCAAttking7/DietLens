@@ -1,0 +1,6 @@
+[
+  {"id":"allergen-match","allergies":["花生"],"options":["花生面"],"expected_state":"stopped","expected_completed":0,"source":"synthetic/SRS-FR-003","annotation_version":1},
+  {"id":"adoption-only","allergies":[],"options":["米饭"],"expected_state":"awaiting_confirmation","expected_completed":0,"source":"synthetic/SRS-FR-005","annotation_version":1},
+  {"id":"unknown-feedback","allergies":[],"options":["米饭"],"expected_state":"awaiting_confirmation","feedback":"unknown","expected_completed":0,"source":"synthetic/SRS-AT-09","annotation_version":1},
+  {"id":"complete-feedback","allergies":[],"options":["米饭"],"expected_state":"awaiting_confirmation","feedback":"complete","expected_completed":1,"source":"synthetic/SRS-AT-09","annotation_version":1}
+]
