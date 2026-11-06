@@ -26,7 +26,7 @@ function FoodCard({item,onEditProfile}:{item:Assessment;onEditProfile:()=>void})
     <p className="food-source-label">{sources[record.source]??record.source}</p>
     {item.reasons?.length? <p className="food-interpretation">{item.status==='blocked'?'这项选择触及已确认的边界。':item.unknown_fields?.length?'资料还不完整，先不要把它当成安全结论。':'目前没有发现已知边界冲突。'}</p>:null}
     {!!item.unknown_fields?.length&&<p>待核对：{item.unknown_fields.map(field=>fieldLabels[field]??field).join('、')}</p>}
-    {item.reasons?.includes('hard_constraints_unknown')&&<button className="primary-action secondary" onClick={onEditProfile}>核对饮食边界</button>}
+    {item.reasons?.includes('hard_constraints_unknown')&&<button className="button-secondary secondary" onClick={onEditProfile}>核对饮食边界</button>}
     <section className="food-nutrition-summary" aria-label="营养摘要"><Nutrients record={record}/>
       <details className="food-data-summary"><summary>查看营养字段状态</summary><div className="food-field-status"><span>配料：{record.ingredients_known?'来源有提供':'待核对'}</span><span>过敏原：{record.allergens_known?'来源有提供':'待核对'}</span></div></details>
     </section>
@@ -63,7 +63,7 @@ export function FoodScreen({userId,profileVersion,onEditProfile}:{userId:string;
   return <div className="workspace food-workspace"><section className="workspace-main">
     <p className="eyebrow">遇到不确定 · 先查一点</p><h1>需要时查一点，<br/><em>决定留给你。</em></h1>
     <p className="lede">输入食品名称或品牌，按来源查看资料。配料、过敏原和营养缺失时会明确标出，仍需以实际包装为准。</p>
-    <form className="search-form" onSubmit={e=>{e.preventDefault();if(!composing.current)void search()}}><input aria-label="搜索食品" maxLength={120} value={query} onCompositionStart={()=>{composing.current=true}} onCompositionEnd={()=>{composing.current=false}} onChange={e=>setQuery(e.target.value)} placeholder="例如：燕麦，或具体品牌"/><button type="submit" disabled={busy||!query.trim()}>{busy?'正在查询…':'查资料'}</button></form>
+    <form className="search-form" onSubmit={e=>{e.preventDefault();if(!composing.current)void search()}}><input aria-label="搜索食品" maxLength={120} value={query} onCompositionStart={()=>{composing.current=true}} onCompositionEnd={()=>{composing.current=false}} onChange={e=>setQuery(e.target.value)} placeholder="例如：燕麦，或具体品牌"/><button className="button-primary" type="submit" disabled={busy||!query.trim()}>{busy?'正在查询…':'查资料'}</button></form>
     {busy&&<p className="busy-note" role="status"><span className="spinner"/>正在查找“{searched}”的资料，外部来源可能需要几秒。</p>}
     {!result&&!busy&&!error&&<div className="empty-state"><h2>先从一个具体的食物开始</h2><p>具体品牌通常更容易找到包装食品。食物编码资料可能只提供名称，不包含完整营养和配料。</p><div className="button-row">{['燕麦','鸡蛋','牛奶'].map(term=><button key={term} onClick={()=>{setQuery(term);void search(term)}}>{term}</button>)}</div></div>}
     {error&&<div className="error-state"><p className="error" role="alert">{error}</p><button onClick={()=>void search()} disabled={busy}>重新查询</button></div>}

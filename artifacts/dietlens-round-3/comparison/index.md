@@ -1,0 +1,56 @@
+# Round 3 Before / After comparison
+
+Captured 50 matching screenshot pairs using the same fixture and viewport matrix. Before was rendered from `b5dd6e2`; After was rendered from the Round 3 working tree.
+
+| Screen / viewport | Before | After |
+|---|---|---|
+| `dietlens-food-1280.png` | [before](../before/dietlens-food-1280.png) | [after](../after/dietlens-food-1280.png) |
+| `dietlens-food-1440.png` | [before](../before/dietlens-food-1440.png) | [after](../after/dietlens-food-1440.png) |
+| `dietlens-food-375.png` | [before](../before/dietlens-food-375.png) | [after](../after/dietlens-food-375.png) |
+| `dietlens-food-390.png` | [before](../before/dietlens-food-390.png) | [after](../after/dietlens-food-390.png) |
+| `dietlens-food-768.png` | [before](../before/dietlens-food-768.png) | [after](../after/dietlens-food-768.png) |
+| `dietlens-inventory-1280.png` | [before](../before/dietlens-inventory-1280.png) | [after](../after/dietlens-inventory-1280.png) |
+| `dietlens-inventory-1440.png` | [before](../before/dietlens-inventory-1440.png) | [after](../after/dietlens-inventory-1440.png) |
+| `dietlens-inventory-375.png` | [before](../before/dietlens-inventory-375.png) | [after](../after/dietlens-inventory-375.png) |
+| `dietlens-inventory-390.png` | [before](../before/dietlens-inventory-390.png) | [after](../after/dietlens-inventory-390.png) |
+| `dietlens-inventory-768.png` | [before](../before/dietlens-inventory-768.png) | [after](../after/dietlens-inventory-768.png) |
+| `dietlens-journal-1280.png` | [before](../before/dietlens-journal-1280.png) | [after](../after/dietlens-journal-1280.png) |
+| `dietlens-journal-1440.png` | [before](../before/dietlens-journal-1440.png) | [after](../after/dietlens-journal-1440.png) |
+| `dietlens-journal-375.png` | [before](../before/dietlens-journal-375.png) | [after](../after/dietlens-journal-375.png) |
+| `dietlens-journal-390.png` | [before](../before/dietlens-journal-390.png) | [after](../after/dietlens-journal-390.png) |
+| `dietlens-journal-768.png` | [before](../before/dietlens-journal-768.png) | [after](../after/dietlens-journal-768.png) |
+| `dietlens-journal-form-1280.png` | [before](../before/dietlens-journal-form-1280.png) | [after](../after/dietlens-journal-form-1280.png) |
+| `dietlens-journal-form-1440.png` | [before](../before/dietlens-journal-form-1440.png) | [after](../after/dietlens-journal-form-1440.png) |
+| `dietlens-journal-form-375.png` | [before](../before/dietlens-journal-form-375.png) | [after](../after/dietlens-journal-form-375.png) |
+| `dietlens-journal-form-390.png` | [before](../before/dietlens-journal-form-390.png) | [after](../after/dietlens-journal-form-390.png) |
+| `dietlens-journal-form-768.png` | [before](../before/dietlens-journal-form-768.png) | [after](../after/dietlens-journal-form-768.png) |
+| `dietlens-plan-1280.png` | [before](../before/dietlens-plan-1280.png) | [after](../after/dietlens-plan-1280.png) |
+| `dietlens-plan-1440.png` | [before](../before/dietlens-plan-1440.png) | [after](../after/dietlens-plan-1440.png) |
+| `dietlens-plan-375.png` | [before](../before/dietlens-plan-375.png) | [after](../after/dietlens-plan-375.png) |
+| `dietlens-plan-390.png` | [before](../before/dietlens-plan-390.png) | [after](../after/dietlens-plan-390.png) |
+| `dietlens-plan-768.png` | [before](../before/dietlens-plan-768.png) | [after](../after/dietlens-plan-768.png) |
+| `dietlens-review-1280.png` | [before](../before/dietlens-review-1280.png) | [after](../after/dietlens-review-1280.png) |
+| `dietlens-review-1440.png` | [before](../before/dietlens-review-1440.png) | [after](../after/dietlens-review-1440.png) |
+| `dietlens-review-375.png` | [before](../before/dietlens-review-375.png) | [after](../after/dietlens-review-375.png) |
+| `dietlens-review-390.png` | [before](../before/dietlens-review-390.png) | [after](../after/dietlens-review-390.png) |
+| `dietlens-review-768.png` | [before](../before/dietlens-review-768.png) | [after](../after/dietlens-review-768.png) |
+| `dietlens-saved-plan-detail-1280.png` | [before](../before/dietlens-saved-plan-detail-1280.png) | [after](../after/dietlens-saved-plan-detail-1280.png) |
+| `dietlens-saved-plan-detail-1440.png` | [before](../before/dietlens-saved-plan-detail-1440.png) | [after](../after/dietlens-saved-plan-detail-1440.png) |
+| `dietlens-saved-plan-detail-375.png` | [before](../before/dietlens-saved-plan-detail-375.png) | [after](../after/dietlens-saved-plan-detail-375.png) |
+| `dietlens-saved-plan-detail-390.png` | [before](../before/dietlens-saved-plan-detail-390.png) | [after](../after/dietlens-saved-plan-detail-390.png) |
+| `dietlens-saved-plan-detail-768.png` | [before](../before/dietlens-saved-plan-detail-768.png) | [after](../after/dietlens-saved-plan-detail-768.png) |
+| `dietlens-saved-plans-1280.png` | [before](../before/dietlens-saved-plans-1280.png) | [after](../after/dietlens-saved-plans-1280.png) |
+| `dietlens-saved-plans-1440.png` | [before](../before/dietlens-saved-plans-1440.png) | [after](../after/dietlens-saved-plans-1440.png) |
+| `dietlens-saved-plans-375.png` | [before](../before/dietlens-saved-plans-375.png) | [after](../after/dietlens-saved-plans-375.png) |
+| `dietlens-saved-plans-390.png` | [before](../before/dietlens-saved-plans-390.png) | [after](../after/dietlens-saved-plans-390.png) |
+| `dietlens-saved-plans-768.png` | [before](../before/dietlens-saved-plans-768.png) | [after](../after/dietlens-saved-plans-768.png) |
+| `dietlens-settings-1280.png` | [before](../before/dietlens-settings-1280.png) | [after](../after/dietlens-settings-1280.png) |
+| `dietlens-settings-1440.png` | [before](../before/dietlens-settings-1440.png) | [after](../after/dietlens-settings-1440.png) |
+| `dietlens-settings-375.png` | [before](../before/dietlens-settings-375.png) | [after](../after/dietlens-settings-375.png) |
+| `dietlens-settings-390.png` | [before](../before/dietlens-settings-390.png) | [after](../after/dietlens-settings-390.png) |
+| `dietlens-settings-768.png` | [before](../before/dietlens-settings-768.png) | [after](../after/dietlens-settings-768.png) |
+| `dietlens-settings-recent-1280.png` | [before](../before/dietlens-settings-recent-1280.png) | [after](../after/dietlens-settings-recent-1280.png) |
+| `dietlens-settings-recent-1440.png` | [before](../before/dietlens-settings-recent-1440.png) | [after](../after/dietlens-settings-recent-1440.png) |
+| `dietlens-settings-recent-375.png` | [before](../before/dietlens-settings-recent-375.png) | [after](../after/dietlens-settings-recent-375.png) |
+| `dietlens-settings-recent-390.png` | [before](../before/dietlens-settings-recent-390.png) | [after](../after/dietlens-settings-recent-390.png) |
+| `dietlens-settings-recent-768.png` | [before](../before/dietlens-settings-recent-768.png) | [after](../after/dietlens-settings-recent-768.png) |

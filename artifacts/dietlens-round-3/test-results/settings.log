@@ -1,0 +1,5 @@
+
+> dietlens-qa@0.1.0 qa:settings
+> node scripts/check_settings_web.cjs
+
+{"independentReadFailures":"passed","profileAndRecentRetries":"passed","resumeFailureRetry":"passed","resumeWithBlockedStorage":"passed","lookupClearsOldResult":"passed","lookupContinuesMeal":"passed","closedDetailsKeyboardFocus":"passed","cancelledMealRestart":"passed","pageErrors":[]}

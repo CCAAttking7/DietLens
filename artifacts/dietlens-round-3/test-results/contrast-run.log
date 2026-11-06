@@ -1,0 +1,125 @@
+
+> dietlens-qa@0.1.0 qa:contrast
+> node scripts/check_contrast.cjs
+
+{
+  "standard": "WCAG AA normal text",
+  "pairs": [
+    {
+      "foreground": "ink",
+      "background": "bg",
+      "ratio": 14.54
+    },
+    {
+      "foreground": "ink",
+      "background": "surface",
+      "ratio": 15.73
+    },
+    {
+      "foreground": "muted",
+      "background": "bg",
+      "ratio": 6.1
+    },
+    {
+      "foreground": "muted",
+      "background": "surface",
+      "ratio": 6.59
+    },
+    {
+      "foreground": "muted",
+      "background": "subtle",
+      "ratio": 5.69
+    },
+    {
+      "foreground": "muted",
+      "background": "brandSoft",
+      "ratio": 5.21
+    },
+    {
+      "foreground": "faint",
+      "background": "bg",
+      "ratio": 5.83
+    },
+    {
+      "foreground": "faint",
+      "background": "surface",
+      "ratio": 6.3
+    },
+    {
+      "foreground": "faint",
+      "background": "subtle",
+      "ratio": 5.44
+    },
+    {
+      "foreground": "faint",
+      "background": "brandSoft",
+      "ratio": 4.98
+    },
+    {
+      "foreground": "brandStrong",
+      "background": "bg",
+      "ratio": 6.79
+    },
+    {
+      "foreground": "brandStrong",
+      "background": "surface",
+      "ratio": 7.35
+    },
+    {
+      "foreground": "success",
+      "background": "bg",
+      "ratio": 6.11
+    },
+    {
+      "foreground": "success",
+      "background": "surface",
+      "ratio": 6.6
+    },
+    {
+      "foreground": "success",
+      "background": "subtle",
+      "ratio": 5.7
+    },
+    {
+      "foreground": "warning",
+      "background": "bg",
+      "ratio": 5.77
+    },
+    {
+      "foreground": "warning",
+      "background": "surface",
+      "ratio": 6.24
+    },
+    {
+      "foreground": "warning",
+      "background": "subtle",
+      "ratio": 5.39
+    },
+    {
+      "foreground": "info",
+      "background": "bg",
+      "ratio": 6.25
+    },
+    {
+      "foreground": "info",
+      "background": "surface",
+      "ratio": 6.76
+    },
+    {
+      "foreground": "info",
+      "background": "subtle",
+      "ratio": 5.84
+    },
+    {
+      "foreground": "danger",
+      "background": "bg",
+      "ratio": 5.89
+    },
+    {
+      "foreground": "danger",
+      "background": "surface",
+      "ratio": 6.37
+    }
+  ],
+  "pass": true
+}

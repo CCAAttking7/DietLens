@@ -23,7 +23,11 @@ fs.mkdirSync(path.join(artifactRoot,'before'),{recursive:true});
  const reports=[];
  const mobile = width => width <= 760;
  const openTool = async (label, width) => {
-   if (!mobile(width)) { await page.locator('.side-nav button').filter({hasText:label}).click(); return; }
+   if (!mobile(width)) {
+     const navigation = label === '设置' ? page.locator('.sidebar-bottom > button') : page.locator('.side-nav button');
+     await navigation.filter({hasText:label}).click();
+     return;
+   }
    if (['今日饮食','饮食计划','饮食回顾'].includes(label)) { await page.locator('.mobile-nav button').filter({hasText:label}).click(); return; }
    await page.locator('#mobile-more-trigger').click();
    await page.locator('#mobile-more-sheet').getByRole('button',{name:label,exact:true}).click();

@@ -22,7 +22,7 @@ class ToolBoundary extends Component<{children: ReactNode}, {failed: boolean}> {
     if (this.state.failed) return <section className="tool-loading" role="alert">
       <h2>这个工具暂时未能打开</h2>
       <p>请检查网络后重新载入，也可以使用上方导航切换工具。已保留的草稿会随页面恢复。</p>
-      <button className="primary-action" onClick={() => window.location.reload()}>重新载入页面</button>
+      <button className="button-primary primary-action" onClick={() => window.location.reload()}>重新载入页面</button>
     </section>
     return this.props.children
   }

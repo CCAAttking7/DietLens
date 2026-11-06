@@ -73,7 +73,7 @@ export function PlanScreen({ userId }: { userId: string }) {
     <p className="eyebrow">从现在往后 · 留一点余地</p>{view==='saved'?<h1>已保存的计划</h1>:<h1>把下一步安排好，<br/><em>也可以随时改变。</em></h1>}
     <p className="lede">{view==='saved'?'查看已确认的安排，或以它为起点准备下一餐。':'先安排一餐就好。其他餐次可以留空，计划也不会自动变成实际饮食记录。'}</p>
     <div className="review-view-switch" role="group" aria-label="计划内容"><button aria-pressed={view==='editor'} disabled={busy || checkingDraft} onClick={()=>setView('editor')}>编辑安排</button><button aria-pressed={view==='saved'} disabled={busy || checkingDraft} onClick={()=>setView('saved')}>已保存的计划</button></div>
-    {copyCandidate&&<section ref={copyPromptRef} tabIndex={-1} className="review-card"><h2>用这份安排替换当前草稿？</h2><p>当前填写内容将被带入的计划替换。已保存的计划保持不变。</p><div className="button-row"><button onClick={()=>copy(copyCandidate)}>使用这份计划</button><button className="secondary" onClick={()=>setCopyCandidate(null)}>保留当前草稿</button></div></section>}
+    {copyCandidate&&<section ref={copyPromptRef} tabIndex={-1} className="review-card"><h2>用这份安排替换当前草稿？</h2><p>当前填写内容将被带入的计划替换。已保存的计划保持不变。</p><div className="button-row"><button onClick={()=>copy(copyCandidate)}>使用这份计划</button><button className="button-secondary secondary" onClick={()=>setCopyCandidate(null)}>保留当前草稿</button></div></section>}
     {view==='saved'?<SavedPlans userId={userId} onCopy={plan=>{if(meals.some(meal=>meal.name.trim()))setCopyCandidate(plan);else copy(plan)}}/>:<>
     <div className="plan-form">
       <label htmlFor="plan-date">计划日期</label><input id="plan-date" type="date" disabled={busy || checkingDraft || Boolean(draftError)} value={startDate} onChange={e => { invalidate(); setStartDate(e.target.value) }} />
@@ -88,7 +88,7 @@ export function PlanScreen({ userId }: { userId: string }) {
           <label>单位<select aria-label={`${meal.label}单位`} value={meal.unit} onChange={e => update(i, 'unit', e.target.value)}>{['份', '个', 'g', 'kg', 'ml', 'l', '件', '包', '瓶'].map(unit => <option key={unit}>{unit}</option>)}</select></label>
         </fieldset>
       </section>)}</div>
-      <button onClick={preview} disabled={busy || checkingDraft || Boolean(draftError)}>{busy ? '正在处理…' : '预览这一天'}</button>
+      <button className="button-primary" onClick={preview} disabled={busy || checkingDraft || Boolean(draftError)}>{busy ? '正在处理…' : '预览这一天'}</button>
     </div>
     {notice && <p className="notice" role="status">{notice}</p>}
     {error && <p className="error" role="alert">{error}</p>}
@@ -99,7 +99,7 @@ export function PlanScreen({ userId }: { userId: string }) {
       <p>{draft.start_date} · {draft.items.length} 个餐次</p>
       <ul className="plan-summary">{draft.items.map(item => <li key={String(item.item_id)}><span>{slots.find(slot => slot.key === item.meal_slot)?.label ?? String(item.meal_slot)} · {String(item.name)}</span><strong>{String(item.quantity)}{String(item.unit)}</strong></li>)}</ul>
       {draft.status === 'draft' && <p>确认后会替代相同日期范围的旧计划；其他日期的安排会保留。</p>}
-      {draft.status === 'draft' ? <div className="button-row"><button disabled={busy || checkingDraft || Boolean(draftError)} onClick={confirm}>确认计划</button><button className="secondary" disabled={busy || checkingDraft || Boolean(draftError)} onClick={cancel}>取消预览</button></div> : draft.status === 'confirmed' && draft.start_date === startDate ? <ShoppingPanel key={`${draft.plan_id}:${startDate}`} planId={draft.plan_id}/> : draft.status === 'confirmed' ? <p>日期已经改变。请重新预览后确认新的安排，采购清单不会沿用旧日期。</p> : <p>这份计划已被替代或取消。请在“已保存的计划”中选择当前版本。</p>}
+      {draft.status === 'draft' ? <div className="button-row"><button className="button-primary" disabled={busy || checkingDraft || Boolean(draftError)} onClick={confirm}>确认计划</button><button className="button-secondary secondary" disabled={busy || checkingDraft || Boolean(draftError)} onClick={cancel}>取消预览</button></div> : draft.status === 'confirmed' && draft.start_date === startDate ? <ShoppingPanel key={`${draft.plan_id}:${startDate}`} planId={draft.plan_id}/> : draft.status === 'confirmed' ? <p>日期已经改变。请重新预览后确认新的安排，采购清单不会沿用旧日期。</p> : <p>这份计划已被替代或取消。请在“已保存的计划”中选择当前版本。</p>}
     </section>}
     </>}
   </section><aside className="status-card"><p className="eyebrow">这一天的安排</p><h2>给未来留一点余地</h2><div className="state-track"><span className={draft ? 'on' : ''}>预览</span><span className={draft?.status === 'confirmed' ? 'on' : ''}>确认</span><span>采购</span></div><p>修改后需要重新预览和确认。旧版本可在“已保存的计划”中查看，实际吃了什么由你另行记录。</p></aside></div>

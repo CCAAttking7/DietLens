@@ -15,7 +15,7 @@ const {chromium} = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
     const sheet=page.getByRole('dialog',{name:'更多页面'});
     await sheet.waitFor();
     assert.equal(await sheet.getAttribute('aria-modal'),'true');
-    assert.equal(await page.getByRole('button',{name:'关闭更多页面'}).evaluate(el=>el===document.activeElement),false);
+    assert.equal(await page.getByRole('button',{name:'关闭更多页面'}).evaluate(el=>el===document.activeElement),true);
     await page.keyboard.press('Tab');
     await page.keyboard.press('Tab');
     await page.keyboard.press('Tab');

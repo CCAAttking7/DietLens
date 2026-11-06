@@ -89,7 +89,7 @@ export function WorkbenchScreen({userId,onEditConsent,onStartAction,initialRecor
           <Metric title="已反馈的行动" value={ratio(data.actions?.feedback_coverage)} caption={data.actions?.feedback_coverage?.denominator?`${data.actions.feedback_coverage.numerator} / ${data.actions.feedback_coverage.denominator} 个已选择的行动`:'有行动和反馈后再计算'}/>
           <Metric title="反馈中已完成" value={ratio(data.actions?.completion_among_feedback)} caption={data.actions?.completion_among_feedback?.denominator?`${data.actions.completion_among_feedback.numerator} / ${data.actions.completion_among_feedback.denominator} 次明确反馈`:'未知和未反馈不按失败计算'}/>
           <div className="review-panel"><h2>暂时不知道的部分</h2>{data.unknowns?.length?data.unknowns.map((item:any)=><p key={item.kind}>{item.message}</p>):<p>目前没有额外未知项。</p>}</div>
-          <div className="review-panel next-route"><p className="eyebrow">下一条可走的路</p><h2>接下来，可以轻一点</h2>{data.next_steps?.map((item:string)=><p key={item}>{item}</p>)}<button className="primary-action" onClick={()=>setView('journal')}>查看或补充用餐记录</button></div>
+          <div className="review-panel next-route"><p className="eyebrow">下一条可走的路</p><h2>接下来，可以轻一点</h2>{data.next_steps?.map((item:string)=><p key={item}>{item}</p>)}<button className="button-primary primary-action" onClick={()=>setView('journal')}>查看或补充用餐记录</button></div>
         </div>
       </>}
     </>}
