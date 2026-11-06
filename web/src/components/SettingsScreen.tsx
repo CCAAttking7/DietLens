@@ -52,7 +52,12 @@ export function SettingsScreen({userId,onSignOut,onEditProfile,onDataDeleted,onR
     if (focusTarget && !focusTarget.disabled) focusTarget.focus()
     else deleteDialogRef.current?.focus()
     const onKeyDown=(event:KeyboardEvent)=>{
-      if(event.key==='Escape'&&!busyRef.current){event.preventDefault();event.stopPropagation();setDeleteOpen(false);return}
+      if(event.key==='Escape'){
+        event.preventDefault()
+        event.stopPropagation()
+        if(!busyRef.current)setDeleteOpen(false)
+        return
+      }
       if(event.key!=='Tab')return
       event.stopPropagation()
       event.preventDefault()
