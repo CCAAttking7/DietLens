@@ -8,7 +8,10 @@ fs.mkdirSync(path.join(artifactRoot,'after'),{recursive:true});
 fs.mkdirSync(path.join(artifactRoot,'before'),{recursive:true});
 (async()=>{
  const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{}),args:['--no-sandbox']});
- const page=await browser.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ const context=await browser.newContext({timezoneId:'UTC'});
+ const page=await context.newPage();
+ await page.clock.setFixedTime(new Date('2026-11-07T12:00:00Z'));
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.route('**/api/status',r=>r.fulfill({json:{auth_mode:'demo'}}));
  await page.route('**/api/profile/**',r=>r.fulfill({json:{user_id:'web-demo-user',goal:'合成视觉测试',version:1,consents:{review_history:true},allergies:[],hard_avoids:[],dislikes:[]}}));
  await page.route('**/api/tasks?**',r=>r.fulfill({json:Array.from({length:8},(_,i)=>({task_id:'fixture-task-'+i,state:['adopted','awaiting_confirmation','feedback','cancelled'][i%4],version:1,context:{meal:'午餐',options:['合成测试长名称鸡肉饭配时蔬和一份番茄鸡蛋面']},updated_at:'2026-11-04T06:00:00+00:00'}))}));
@@ -21,7 +24,7 @@ fs.mkdirSync(path.join(artifactRoot,'before'),{recursive:true});
  await page.route('**/api/plans/visual-plan-*',r=>r.fulfill({json:savedPlans.find(plan=>r.request().url().endsWith(plan.plan_id))}));
  await page.route('**/api/plans/visual-plan-*/shopping-list',r=>r.fulfill({json:{list_id:'visual-shopping',status:'active',items:[]}}));
  await page.route('**/api/shopping-lists/*/inventory-diff',r=>r.fulfill({json:[{item_id:'visual-chicken',name:'合成测试鸡肉配料长规格名称',quantity:200,unit:'g',needed:50}]}));
- const reports=[];
+ const reports=[]; const planDates=[];
  const mobile = width => width <= 760;
  const openTool = async (label, width) => {
    if (!mobile(width)) {
@@ -45,6 +48,7 @@ fs.mkdirSync(path.join(artifactRoot,'before'),{recursive:true});
     await page.locator('.plan-form').waitFor({state:'visible'});
     await page.locator('.workspace-main h1').waitFor({state:'visible'});
     await page.locator('.plan-form input[type=date]').waitFor({state:'visible'});
+    planDates.push({width,value:await page.locator('.plan-form input[type=date]').inputValue()});
    }
    if(screen==='food'){
     await page.getByRole('textbox',{name:'搜索食品'}).fill('测试燕麦');
@@ -81,6 +85,6 @@ fs.mkdirSync(path.join(artifactRoot,'before'),{recursive:true});
   }
  }
  if(errors.length)throw Error(errors.join(';'));
- console.log(JSON.stringify({screens:reports,pageErrors:errors}));
+ console.log(JSON.stringify({screens:reports,planDates,pageErrors:errors}));
  await browser.close();
 })().catch(e=>{console.error(e);process.exit(1)});

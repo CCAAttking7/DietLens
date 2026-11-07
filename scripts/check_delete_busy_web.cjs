@@ -16,7 +16,11 @@ async function setup(page){
   try {
     const success=await browser.newPage({viewport:{width:1440,height:900}}); let releaseSuccess; const successGate=new Promise(resolve=>releaseSuccess=resolve);
     await setup(success);
+    const dialog=success.getByRole('dialog',{name:'删除当前账号的全部数据？',exact:true});
     const cancel=success.getByRole('button',{name:'先保留',exact:true}); const confirm=success.getByRole('button',{name:'确认删除',exact:true});
+    await dialog.focus(); await success.keyboard.press('Tab'); assert.equal(await cancel.evaluate(el=>el===document.activeElement),true);
+    await dialog.focus(); await success.keyboard.press('Shift+Tab'); assert.equal(await confirm.evaluate(el=>el===document.activeElement),true);
+    await success.locator('.drawer-context button').focus(); await success.keyboard.press('Tab'); assert.equal(await cancel.evaluate(el=>el===document.activeElement),true);
     assert.equal(await cancel.evaluate(el=>el===document.activeElement),true);
     await success.keyboard.press('Tab'); assert.equal(await confirm.evaluate(el=>el===document.activeElement),true);
     await success.keyboard.press('Tab'); assert.equal(await cancel.evaluate(el=>el===document.activeElement),true);

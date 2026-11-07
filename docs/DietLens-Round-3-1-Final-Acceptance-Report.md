@@ -4,6 +4,20 @@
 
 This targeted patch starts from `6939ab0399ccdfd50cbf7bfc14c53e7313332f97` on `codex/dietlens-round-3-quality-gate` and is delivered on `codex/dietlens-round-3-1-final-acceptance`. It corrects verified acceptance defects without changing backend APIs, schemas, authentication, or meal business rules.
 
+## P2 Closure
+
+### P2-1 — Settings dialog fallback focus
+
+Manual focus redirects now call `preventDefault()` in every fallback branch: no controls, focus outside the dialog, focus on the dialog container, and an unexpected focusable index. The existing busy-state capture handler remains unchanged in behavior. `check_delete_busy_web.cjs` now asserts direct dialog Tab and Shift+Tab, forced outside focus recovery, normal forward/reverse cycling, busy focus ownership, Escape consumption, and both successful and failed deletion flows.
+
+### P2-2 — Deterministic visual evidence
+
+`check_visual_web.cjs` creates a UTC browser context and calls `page.clock.setFixedTime(new Date('2026-11-07T12:00:00Z'))` before navigation. The baseline was regenerated from isolated commit `6939ab0`, and After was regenerated from this branch with the same harness, fixtures, browser, timezone, five viewports and screenshot directory configuration. Both logs report the Plan input as `2026-11-07` at every viewport. There are 55 symmetric Before/After PNG pairs with matching dimensions.
+
+### P2-3 — CSS-sourced button contrast coverage
+
+`check_contrast.cjs` continues to parse tokens from `web/src/styles/design-system.css` and now also parses the actual `.button-primary`, `.button-secondary`, and `.button-destructive` declarations. It resolves `var(--token)` references and validates white/brand, white/danger, and normal-text/secondary-surface combinations alongside the existing matrix. Missing selectors, declarations, or tokens fail the check.
+
 ## Corrections
 
 | Original defect | Root cause | Exact fix | Regression evidence |
@@ -34,7 +48,7 @@ The More Sheet remains mounted while hidden so `aria-controls` always references
 | Home CTA browser test | PASS | Five required viewports |
 | Settings browser test | PASS | Existing recovery and nested dialog coverage |
 | Async deletion browser test | PASS | Idle/busy focus, Escape, success and failure |
-| Responsive visual matrix | PASS | Five widths, no page errors or overflow |
+| Responsive visual matrix | PASS | Five widths, fixed UTC time, synchronized Plan dates, no page errors or overflow |
 | Authenticated Supabase workflows | BLOCKED | No safe authenticated fixture/session is available |
 | GitHub Actions result | NOT VERIFIED | Workflow is preserved/configured; unauthenticated API/CLI access prevented verification |
 
@@ -52,7 +66,7 @@ npm run qa:browser
 
 ## Before/After evidence
 
-The comparison index is [artifacts/dietlens-round-3/comparison/index.md](../artifacts/dietlens-round-3/comparison/index.md). It links 55 matching browser-rendered pairs, including Home, Food, Plan, Inventory, Review, Settings, Journal, Saved Plans and detail states at 375, 390, 768, 1280 and 1440px. Before uses isolated commit `b5dd6e2`; After uses this acceptance branch. The Plan pairs were regenerated only after the real `.plan-form` editor became visible.
+The comparison index is [artifacts/dietlens-round-3/comparison/index.md](../artifacts/dietlens-round-3/comparison/index.md). It links 55 matching browser-rendered pairs, including Home, Food, Plan, Inventory, Review, Settings, Journal, Saved Plans and detail states at 375, 390, 768, 1280 and 1440px. Before uses isolated commit `6939ab0`; After uses this acceptance branch. Both runs use fixed UTC time `2026-11-07T12:00:00Z`; all Plan date assertions are `2026-11-07`, all image dimensions match, and the Plan pairs were captured only after the real `.plan-form` editor became visible.
 
 ## Remaining limitations
 

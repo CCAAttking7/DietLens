@@ -1,6 +1,6 @@
 # Round 3.1 Before / After comparison
 
-Captured 55 matching browser-rendered screenshot pairs. Before uses isolated commit `b5dd6e2`; After uses Round 3.1 with identical fixtures, browser version, and viewport matrix.
+Captured 55 matching browser-rendered screenshot pairs. Before uses isolated commit `6939ab0`; After uses the Round 3.1 final acceptance implementation. Both runs use Playwright fixed time `2026-11-07T12:00:00Z`, UTC timezone, identical fixtures, browser version, and viewport matrix. Plan date assertions report `2026-11-07` at every viewport.
 
 | Screen / viewport | Before | After |
 |---|---|---|

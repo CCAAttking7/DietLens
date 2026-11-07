@@ -13,11 +13,11 @@ rendering chunks...
 computing gzip size...
 dist/index.html                            0.58 kB │ gzip:  0.41 kB
 dist/assets/index-C7hvctac.css            74.57 kB │ gzip: 15.34 kB
-dist/assets/InventoryScreen-DydTfFM_.js    6.33 kB │ gzip:  2.72 kB
-dist/assets/FoodScreen-BNO4Ke9P.js         7.83 kB │ gzip:  3.56 kB
-dist/assets/SettingsScreen-DwUPIdfE.js    11.42 kB │ gzip:  4.51 kB
-dist/assets/PlanScreen-BzwbNqFA.js        13.37 kB │ gzip:  4.76 kB
-dist/assets/WorkbenchScreen-DM53kpwX.js   21.44 kB │ gzip:  7.52 kB
+dist/assets/InventoryScreen-BgCdiylA.js    6.33 kB │ gzip:  2.73 kB
+dist/assets/FoodScreen-Dq6Tc0O0.js         7.83 kB │ gzip:  3.57 kB
+dist/assets/SettingsScreen-G_GA9X5B.js    11.50 kB │ gzip:  4.51 kB
+dist/assets/PlanScreen-DwGQJiet.js        13.37 kB │ gzip:  4.76 kB
+dist/assets/WorkbenchScreen-BvsJUpv1.js   21.44 kB │ gzip:  7.52 kB
 dist/assets/index-DGhDXxpu.js            228.20 kB │ gzip: 59.40 kB
-dist/assets/index-Cf-UR0Dn.js            279.97 kB │ gzip: 86.80 kB
-✓ built in 1.82s
+dist/assets/index-BGqlLBKN.js            279.97 kB │ gzip: 86.80 kB
+✓ built in 1.89s

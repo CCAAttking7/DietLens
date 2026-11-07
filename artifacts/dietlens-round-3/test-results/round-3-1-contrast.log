@@ -3,7 +3,7 @@
 > node scripts/check_contrast.cjs
 
 {
-  "source": "web/src/styles/design-system.css :root",
+  "source": "web/src/styles/design-system.css :root and semantic button selectors",
   "standard": "WCAG AA normal text",
   "pairs": [
     {
@@ -130,6 +130,29 @@
       "foreground": "danger",
       "background": "surface-subtle",
       "ratio": 5.5
+    }
+  ],
+  "buttonPairs": [
+    {
+      "name": "white / primary button",
+      "selector": ".button-primary",
+      "foreground": "#fff",
+      "background": "#b24e32",
+      "ratio": 5.21
+    },
+    {
+      "name": "white / destructive button",
+      "selector": ".button-destructive",
+      "foreground": "#fff",
+      "background": "#a33e34",
+      "ratio": 6.37
+    },
+    {
+      "name": "normal text / secondary surface",
+      "selector": ".button-secondary",
+      "foreground": "#24231f",
+      "background": "#f1eee8",
+      "ratio": 13.58
     }
   ],
   "pass": true

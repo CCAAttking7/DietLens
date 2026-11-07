@@ -25,4 +25,39 @@ const pairs = [
 const results = pairs.map(([foreground,background]) => ({foreground,background,ratio:Number(contrast(tokens[foreground],tokens[background]).toFixed(2))}))
 const failures = results.filter(item => item.ratio < 4.5)
 if (failures.length) { console.error(JSON.stringify({failures}, null, 2)); process.exit(1) }
-console.log(JSON.stringify({source:'web/src/styles/design-system.css :root', standard:'WCAG AA normal text', pairs:results, pass:true}, null, 2))
+const resolveColor = value => {
+  let resolved = value.trim()
+  const seen = new Set()
+  while (resolved.startsWith('var(')) {
+    const name = resolved.match(/^var\((--[\w-]+)\)$/)?.[1]
+    assert(name && !seen.has(name), `Unable to resolve CSS color ${value}`)
+    seen.add(name)
+    resolved = tokens[name.slice(2)]
+    assert(resolved, `Missing CSS source token ${name}`)
+  }
+  return resolved
+}
+const selectorBlock = selector => {
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const match = css.match(new RegExp(`${escaped}[^{}]*\\{([^{}]*)\\}`))
+  assert(match, `Missing required CSS selector ${selector}`)
+  return match[1]
+}
+const declaration = (block, property, selector) => {
+  const match = block.match(new RegExp(`${property}\\s*:\\s*([^;]+)`))
+  assert(match, `Missing ${property} declaration for ${selector}`)
+  return resolveColor(match[1])
+}
+const buttonPairs = [
+  ['white / primary button', '.button-primary', '#fff', 'background'],
+  ['white / destructive button', '.button-destructive', '#fff', 'background'],
+  ['normal text / secondary surface', '.button-secondary', 'color', 'background'],
+].map(([name, selector, foreground, background]) => {
+  const block = selectorBlock(selector)
+  const foregroundColor = foreground.startsWith('#') ? foreground : declaration(block, foreground, selector)
+  const backgroundColor = declaration(block, background, selector)
+  return {name, selector, foreground:foregroundColor, background:backgroundColor, ratio:Number(contrast(foregroundColor, backgroundColor).toFixed(2))}
+})
+const buttonFailures = buttonPairs.filter(item => item.ratio < 4.5)
+if (buttonFailures.length) { console.error(JSON.stringify({buttonFailures}, null, 2)); process.exit(1) }
+console.log(JSON.stringify({source:'web/src/styles/design-system.css :root and semantic button selectors', standard:'WCAG AA normal text', pairs:results, buttonPairs, pass:true}, null, 2))

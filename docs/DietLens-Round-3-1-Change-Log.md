@@ -15,3 +15,8 @@
 | `package.json` | Added `qa:home`; included it in `qa:browser` | Make the new regression gate explicit |
 | `artifacts/dietlens-round-3/` | Regenerated 55 before/after pairs and test logs | Provide real acceptance evidence |
 | `docs/DietLens-Round-3-1-Final-Acceptance-Report.md` | Final acceptance report | Record root causes, fixes, evidence and limitations |
+| `web/src/components/SettingsScreen.tsx` | Added `preventDefault()` to every manual focus fallback | Prevent native Tab from running after scripted fallback focus redirects |
+| `scripts/check_delete_busy_web.cjs` | Added direct-dialog and outside-focus active-element assertions | Protect P2 fallback focus behavior without weakening normal cycling |
+| `scripts/check_visual_web.cjs` | Added UTC context and Playwright fixed time; reported Plan dates | Make Before/After dates deterministic and independently verifiable |
+| `scripts/check_contrast.cjs` | Parsed semantic button selectors and resolved CSS variables | Cover actual primary, secondary and destructive button combinations |
+| `artifacts/dietlens-round-3/` | Regenerated Before from `6939ab0` and After from this branch; added fixed-time logs | Correct the baseline and prove 55 synchronized pairs |

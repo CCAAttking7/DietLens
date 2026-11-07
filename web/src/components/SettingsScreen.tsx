@@ -67,13 +67,13 @@ export function SettingsScreen({userId,onSignOut,onEditProfile,onDataDeleted,onR
         const style=window.getComputedStyle(item)
         return style.display!=='none'&&style.visibility!=='hidden'&&item.getClientRects().length>0
       })
-      if(!items.length){dialog.focus();return}
+      if(!items.length){event.preventDefault();dialog.focus();return}
       const first=items[0],last=items[items.length-1]
       const current=document.activeElement as HTMLElement|null
-      if(!dialog.contains(current)){first.focus();return}
-      if(current===dialog){(event.shiftKey?last:first).focus();return}
+      if(!dialog.contains(current)){event.preventDefault();first.focus();return}
+      if(current===dialog){event.preventDefault();(event.shiftKey?last:first).focus();return}
       const index=current ? items.indexOf(current) : -1
-      if(index<0){(event.shiftKey?last:first).focus();return}
+      if(index<0){event.preventDefault();(event.shiftKey?last:first).focus();return}
       if(event.shiftKey&&index===0){event.preventDefault();last.focus()}
       else if(!event.shiftKey&&index===items.length-1){event.preventDefault();first.focus()}
     }
