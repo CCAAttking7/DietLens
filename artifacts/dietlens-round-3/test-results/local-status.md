@@ -10,4 +10,4 @@
 - Async deletion browser: PASS
 - Responsive visual matrix: PASS (55 Before/After pairs including Home; 375/390/768/1280/1440)
 - Authenticated Supabase browser flows: BLOCKED (no authenticated fixture/session)
-- Remote GitHub Actions: NOT RUN / pending repository workflow pickup
+- Remote GitHub Actions: previous run FAILED at Chromium installation; latest `63ac4f3` run is pending/unavailable to unauthenticated API inspection

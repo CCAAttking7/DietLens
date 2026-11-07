@@ -71,7 +71,7 @@ The comparison index is [artifacts/dietlens-round-3/comparison/index.md](../arti
 ## Remaining limitations
 
 - Authenticated Supabase flows remain BLOCKED because no safe test session is committed or available.
-- GitHub Actions is configured in `.github/workflows/dietlens-quality-gate.yml`, but its remote result is NOT VERIFIED from this unauthenticated environment.
+- GitHub Actions is configured in `.github/workflows/dietlens-quality-gate.yml`. The prior run for `3ed6447` visibly failed at `npx playwright install --with-deps chromium`; the workflow now uses the portable `npx playwright install chromium` step. The new `63ac4f3` run had not exposed a check result through unauthenticated inspection at handoff, so remote CI remains UNVERIFIED.
 - Contrast validation covers the declared semantic token matrix and does not claim to prove every arbitrary legacy literal in historical CSS.
 - No pixel-diff heatmap is generated; the comparison index provides same-name, same-viewport evidence for human review.
 
