@@ -4,13 +4,15 @@ type SkeletonKind = 'food' | 'inventory' | 'plan' | 'review' | 'settings' | 'def
 const skeletonKind = (title: string): SkeletonKind => title.includes('食品') ? 'food' : title.includes('库存') ? 'inventory' : title.includes('计划') ? 'plan' : title.includes('回顾') ? 'review' : title.includes('设置') ? 'settings' : 'default'
 function RouteSkeleton({title}:{title:string}) {
   const kind = skeletonKind(title)
-  const rows = kind === 'food' ? 3 : kind === 'inventory' ? 5 : kind === 'plan' ? 4 : kind === 'review' ? 3 : kind === 'settings' ? 4 : 2
+  const rows = kind === 'food' ? 3 : kind === 'inventory' ? 5 : kind === 'plan' ? 4 : kind === 'review' ? 3 : 2
+  const inventory = kind === 'inventory' && <><div className="skeleton-summary"><div className="skeleton-line" /><div className="skeleton-line skeleton-short" /></div><div className="skeleton-list skeleton-inventory-list">{Array.from({length: rows}, (_, index) => <div className="skeleton-card skeleton-inventory-item" key={index}><div><div className="skeleton-line" /><div className="skeleton-line skeleton-short" /></div><div className="skeleton-line skeleton-quantity" /><div className="skeleton-button" /></div>)}</div></>
+  const settings = kind === 'settings' && <><div className="skeleton-profile"><div className="skeleton-avatar" /><div><div className="skeleton-line" /><div className="skeleton-line skeleton-short" /></div></div><div className="skeleton-settings-groups">{[1,2,3].map(item => <div className="skeleton-settings-group" key={item}><div className="skeleton-line skeleton-group-title" /><div className="skeleton-line" /><div className="skeleton-line skeleton-short" /></div>)}</div><div className="skeleton-data-management"><div className="skeleton-line" /><div className="skeleton-button" /></div></>
   return <section className={`tool-loading tool-skeleton skeleton-${kind}`} role="status" aria-label={`正在加载${title}`} aria-busy="true">
     <p className="eyebrow">DietLens · {title}</p><div className="skeleton-line skeleton-title" /><div className="skeleton-line skeleton-copy" />
     {kind === 'food' && <div className="skeleton-search"><div className="skeleton-line" /><div className="skeleton-button" /></div>}
     {kind === 'plan' && <div className="skeleton-date"><div className="skeleton-line" /><div className="skeleton-line" /></div>}
     {kind === 'review' && <div className="skeleton-metrics">{[1,2,3].map(item => <div className="skeleton-card" key={item} />)}</div>}
-    <div className="skeleton-list">{Array.from({length: rows}, (_, index) => <div className="skeleton-card" key={index}><div className="skeleton-line" /><div className="skeleton-line" /><div className="skeleton-line skeleton-short" /></div>)}</div>
+    {inventory}{settings}{kind !== 'inventory' && kind !== 'settings' && <div className="skeleton-list">{Array.from({length: rows}, (_, index) => <div className="skeleton-card" key={index}><div className="skeleton-line" /><div className="skeleton-line" /><div className="skeleton-line skeleton-short" /></div>)}</div>}
     <p>正在打开{title}…</p>
   </section>
 }

@@ -122,6 +122,19 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .skeleton-card .skeleton-line:first-child { width:54%; }
 .skeleton-card .skeleton-line:nth-child(2) { width:82%; }
 .skeleton-card .skeleton-short { width:34%; }
+.skeleton-summary,.skeleton-profile,.skeleton-inventory-item,.skeleton-data-management { display:flex; align-items:center; gap:16px; padding:16px; border:1px solid var(--line); border-radius:var(--radius-card); background:var(--surface-subtle); }
+.skeleton-summary { justify-content:space-between; min-height:72px; }
+.skeleton-inventory-item { justify-content:space-between; min-height:84px; }
+.skeleton-inventory-item>div:first-child { flex:1; display:grid; gap:10px; }
+.skeleton-quantity { width:64px; }
+.skeleton-button { width:76px; height:36px; border-radius:var(--radius-control); background:var(--line); }
+.skeleton-profile { min-height:96px; }
+.skeleton-avatar { width:48px; height:48px; flex:none; border-radius:50%; background:var(--line); }
+.skeleton-profile>div:last-child { flex:1; display:grid; gap:10px; }
+.skeleton-settings-groups { display:grid; gap:12px; }
+.skeleton-settings-group { display:grid; gap:10px; padding:18px; border:1px solid var(--line); border-radius:var(--radius-card); background:var(--surface-subtle); }
+.skeleton-group-title { width:36%; height:14px; }
+.skeleton-data-management { justify-content:space-between; margin-top:4px; }
 .food-nutrition-summary { margin-top:14px; padding-top:4px; border-top:1px solid var(--line); }
 .food-nutrition-summary .nutrient-basis { margin-top:10px; color:var(--ink-muted); font-weight:600; }
 .food-nutrition-summary .food-nutrients { margin-bottom:10px; }
@@ -130,7 +143,8 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .mobile-more-close { width:40px; height:40px; border:1px solid var(--line); border-radius:var(--radius-control); background:var(--surface); color:var(--ink-muted); font-size:22px; }
 @media (max-width:600px) { .skeleton-metrics { grid-template-columns:1fr; } .skeleton-card { min-height:68px; } }
 
-.button-quiet, button.quiet-button { min-height:44px; border-radius:var(--radius-control); background:transparent; color:var(--ink-muted); }
+.button-quiet { min-height:44px; min-width:44px; padding:0 14px; border-radius:var(--radius-control); background:transparent; color:var(--ink-muted); white-space:nowrap; }
+.icon-button-quiet { min-width:44px; padding:0; }
 .button-destructive, .danger-action { min-height:44px; border-radius:var(--radius-control); background:var(--danger); color:#fff; }
 .button-destructive:hover, .danger-action:hover { background:var(--brand-strong); }
 button:disabled { cursor:not-allowed; opacity:.52; transform:none; box-shadow:none; }

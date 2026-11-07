@@ -1,6 +1,6 @@
-# Round 3 Before / After comparison
+# Round 3.1 Before / After comparison
 
-Captured 55 matching screenshot pairs using the same fixture and viewport matrix. Before was rendered from `b5dd6e2`; After was rendered from the Round 3 working tree.
+Captured 55 matching browser-rendered screenshot pairs. Before uses isolated commit `b5dd6e2`; After uses Round 3.1 with identical fixtures, browser version, and viewport matrix.
 
 | Screen / viewport | Before | After |
 |---|---|---|

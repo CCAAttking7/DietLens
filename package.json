@@ -7,9 +7,10 @@
     "qa:contrast": "node scripts/check_contrast.cjs",
     "qa:syntax": "for f in scripts/check_*.cjs; do node --check \"$f\"; done",
     "qa:mobile": "node scripts/check_mobile_navigation_web.cjs",
+    "qa:home": "node scripts/check_home_cta_web.cjs",
     "qa:settings": "node scripts/check_settings_web.cjs",
     "qa:visual": "node scripts/check_visual_web.cjs",
-    "qa:browser": "npm run qa:mobile && npm run qa:settings && npm run qa:delete && npm run qa:visual",
+    "qa:browser": "npm run qa:mobile && npm run qa:home && npm run qa:settings && npm run qa:delete && npm run qa:visual",
     "qa:delete": "node scripts/check_delete_busy_web.cjs"
   },
   "devDependencies": {

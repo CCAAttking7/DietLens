@@ -1,0 +1,136 @@
+
+> dietlens-qa@0.1.0 qa:contrast
+> node scripts/check_contrast.cjs
+
+{
+  "source": "web/src/styles/design-system.css :root",
+  "standard": "WCAG AA normal text",
+  "pairs": [
+    {
+      "foreground": "ink",
+      "background": "bg",
+      "ratio": 14.54
+    },
+    {
+      "foreground": "ink",
+      "background": "surface",
+      "ratio": 15.73
+    },
+    {
+      "foreground": "ink-muted",
+      "background": "bg",
+      "ratio": 6.1
+    },
+    {
+      "foreground": "ink-muted",
+      "background": "surface",
+      "ratio": 6.59
+    },
+    {
+      "foreground": "ink-muted",
+      "background": "surface-subtle",
+      "ratio": 5.69
+    },
+    {
+      "foreground": "ink-muted",
+      "background": "brand-soft",
+      "ratio": 5.21
+    },
+    {
+      "foreground": "ink-faint",
+      "background": "bg",
+      "ratio": 5.83
+    },
+    {
+      "foreground": "ink-faint",
+      "background": "surface",
+      "ratio": 6.3
+    },
+    {
+      "foreground": "ink-faint",
+      "background": "surface-subtle",
+      "ratio": 5.44
+    },
+    {
+      "foreground": "ink-faint",
+      "background": "brand-soft",
+      "ratio": 4.98
+    },
+    {
+      "foreground": "brand-strong",
+      "background": "bg",
+      "ratio": 6.79
+    },
+    {
+      "foreground": "brand-strong",
+      "background": "surface",
+      "ratio": 7.35
+    },
+    {
+      "foreground": "brand",
+      "background": "surface",
+      "ratio": 5.21
+    },
+    {
+      "foreground": "success",
+      "background": "bg",
+      "ratio": 6.11
+    },
+    {
+      "foreground": "success",
+      "background": "surface",
+      "ratio": 6.6
+    },
+    {
+      "foreground": "success",
+      "background": "surface-subtle",
+      "ratio": 5.7
+    },
+    {
+      "foreground": "warning",
+      "background": "bg",
+      "ratio": 5.77
+    },
+    {
+      "foreground": "warning",
+      "background": "surface",
+      "ratio": 6.24
+    },
+    {
+      "foreground": "warning",
+      "background": "surface-subtle",
+      "ratio": 5.39
+    },
+    {
+      "foreground": "info",
+      "background": "bg",
+      "ratio": 6.25
+    },
+    {
+      "foreground": "info",
+      "background": "surface",
+      "ratio": 6.76
+    },
+    {
+      "foreground": "info",
+      "background": "surface-subtle",
+      "ratio": 5.84
+    },
+    {
+      "foreground": "danger",
+      "background": "bg",
+      "ratio": 5.89
+    },
+    {
+      "foreground": "danger",
+      "background": "surface",
+      "ratio": 6.37
+    },
+    {
+      "foreground": "danger",
+      "background": "surface-subtle",
+      "ratio": 5.5
+    }
+  ],
+  "pass": true
+}

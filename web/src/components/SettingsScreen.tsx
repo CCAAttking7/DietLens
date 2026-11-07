@@ -60,19 +60,33 @@ export function SettingsScreen({userId,onSignOut,onEditProfile,onDataDeleted,onR
       }
       if(event.key!=='Tab')return
       event.stopPropagation()
-      event.preventDefault()
       const dialog=deleteDialogRef.current
       if(!dialog)return
-      const items=Array.from(dialog.querySelectorAll<HTMLElement>('button:not([disabled]),[href],input:not([disabled])'))
+      if(busyRef.current){event.preventDefault();dialog.focus();return}
+      const items=Array.from(dialog.querySelectorAll<HTMLElement>('button:not([disabled]),[href]:not([aria-disabled="true"]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')).filter(item=>{
+        const style=window.getComputedStyle(item)
+        return style.display!=='none'&&style.visibility!=='hidden'&&item.getClientRects().length>0
+      })
       if(!items.length){dialog.focus();return}
       const first=items[0],last=items[items.length-1]
-      if(event.shiftKey&&(document.activeElement===first||document.activeElement===dialog)){last.focus()}
-      else if(!event.shiftKey&&(document.activeElement===last||document.activeElement===dialog)){first.focus()}
-      else if(!dialog.contains(document.activeElement)){first.focus()}
+      const current=document.activeElement as HTMLElement|null
+      if(!dialog.contains(current)){first.focus();return}
+      if(current===dialog){(event.shiftKey?last:first).focus();return}
+      const index=current ? items.indexOf(current) : -1
+      if(index<0){(event.shiftKey?last:first).focus();return}
+      if(event.shiftKey&&index===0){event.preventDefault();last.focus()}
+      else if(!event.shiftKey&&index===items.length-1){event.preventDefault();first.focus()}
     }
-    document.addEventListener('keydown',onKeyDown)
-    return()=>{document.removeEventListener('keydown',onKeyDown);if(previous?.isConnected)previous.focus()}
+    window.addEventListener('keydown',onKeyDown,true)
+    return()=>{window.removeEventListener('keydown',onKeyDown,true);if(previous?.isConnected)previous.focus()}
   },[deleteOpen])
+  useEffect(()=>{
+    if(!deleteOpen||busy!=='delete')return
+    const keepFocus=()=>{if(deleteDialogRef.current&&!deleteDialogRef.current.contains(document.activeElement))deleteDialogRef.current.focus()}
+    keepFocus()
+    document.addEventListener('focusin',keepFocus,true)
+    return()=>document.removeEventListener('focusin',keepFocus,true)
+  },[busy,deleteOpen])
   useEffect(()=>{
     let active=true;setProfileLoading(true);setProfileError('')
     api.profile(userId).then(result=>{if(active)setProfile(result)}).catch(e=>{
@@ -147,6 +161,6 @@ export function SettingsScreen({userId,onSignOut,onEditProfile,onDataDeleted,onR
       {notice&&<p className="notice" role="status">{notice}</p>}{dataError&&<p className="error" role="alert">{dataError}</p>}
     </section>
   </section><aside className="status-card"><p className="eyebrow">属于你的空间</p><h2>可以继续，也可以收回</h2><p>查找一餐只会读取它的状态。选择行动、反馈和修改数据，仍然需要你明确确认。</p></aside>
-  {deleteOpen&&<div className="confirm-modal-layer" role="presentation" onClick={()=>!busy&&setDeleteOpen(false)}><section ref={deleteDialogRef} className="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="delete-title" aria-describedby="delete-description" tabIndex={-1} onClick={e=>e.stopPropagation()}><p className="eyebrow">关键操作 · 需要确认</p><h2 id="delete-title">删除当前账号的全部数据？</h2><p id="delete-description">档案、计划、餐食记录和本页草稿都会被清除。此操作无法撤回。</p><div className="button-row"><button ref={deleteCancelRef} className="button-secondary secondary" onClick={()=>setDeleteOpen(false)} disabled={Boolean(busy)}>先保留</button><button className="button-destructive danger-action" onClick={()=>void deleteData()} disabled={Boolean(busy)}>{busy==='delete'?'正在删除…':'确认删除'}</button></div></section></div>}
+  {deleteOpen&&<div className="confirm-modal-layer" role="presentation" onClick={()=>!busy&&setDeleteOpen(false)}><section ref={deleteDialogRef} className="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="delete-title" aria-describedby="delete-description" tabIndex={-1} onClick={e=>e.stopPropagation()} onKeyDownCapture={event=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();if(!busyRef.current)setDeleteOpen(false)}else if(event.key==='Tab'&&busyRef.current){event.preventDefault();event.stopPropagation();deleteDialogRef.current?.focus()}}}><p className="eyebrow">关键操作 · 需要确认</p><h2 id="delete-title">删除当前账号的全部数据？</h2><p id="delete-description">档案、计划、餐食记录和本页草稿都会被清除。此操作无法撤回。</p><div className="button-row"><button ref={deleteCancelRef} className="button-secondary secondary" onClick={()=>setDeleteOpen(false)} disabled={Boolean(busy)}>先保留</button><button className="button-destructive danger-action" onClick={()=>void deleteData()} disabled={Boolean(busy)}>{busy==='delete'?'正在删除…':'确认删除'}</button></div></section></div>}
   </div>
 }

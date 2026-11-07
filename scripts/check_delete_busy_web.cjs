@@ -16,10 +16,18 @@ async function setup(page){
   try {
     const success=await browser.newPage({viewport:{width:1440,height:900}}); let releaseSuccess; const successGate=new Promise(resolve=>releaseSuccess=resolve);
     await setup(success);
+    const cancel=success.getByRole('button',{name:'先保留',exact:true}); const confirm=success.getByRole('button',{name:'确认删除',exact:true});
+    assert.equal(await cancel.evaluate(el=>el===document.activeElement),true);
+    await success.keyboard.press('Tab'); assert.equal(await confirm.evaluate(el=>el===document.activeElement),true);
+    await success.keyboard.press('Tab'); assert.equal(await cancel.evaluate(el=>el===document.activeElement),true);
+    await success.keyboard.press('Shift+Tab'); assert.equal(await confirm.evaluate(el=>el===document.activeElement),true);
+    await success.keyboard.press('Shift+Tab'); assert.equal(await cancel.evaluate(el=>el===document.activeElement),true);
     await success.route('**/api/delete',async route=>{await successGate;await route.fulfill({json:{deleted:true}})});
-    await success.getByRole('button',{name:'确认删除',exact:true}).click();
+    await confirm.click();
     await success.getByRole('button',{name:'正在删除…',exact:true}).waitFor();
-    await success.keyboard.press('Tab'); await success.keyboard.press('Shift+Tab'); await success.keyboard.press('Escape');
+    await success.keyboard.press('Tab'); assert.equal(await success.getByRole('dialog',{name:'删除当前账号的全部数据？',exact:true}).evaluate(el=>el===document.activeElement),true);
+    await success.keyboard.press('Shift+Tab'); assert.equal(await success.getByRole('dialog',{name:'删除当前账号的全部数据？',exact:true}).evaluate(el=>el===document.activeElement),true);
+    await success.keyboard.press('Escape'); assert.equal(await success.getByRole('dialog',{name:'删除当前账号的全部数据？',exact:true}).evaluate(el=>el===document.activeElement),true);
     assert.equal(await success.getByRole('dialog',{name:'删除当前账号的全部数据？',exact:true}).count(),1);
     assert.equal(await success.getByRole('dialog',{name:'设置 · 当前情境',exact:true}).count(),1);
     releaseSuccess();
@@ -29,7 +37,9 @@ async function setup(page){
     await failure.route('**/api/delete',async route=>{await failureGate;await route.fulfill({status:503,json:{detail:'temporary failure'}})});
     await failure.getByRole('button',{name:'确认删除',exact:true}).click();
     await failure.getByRole('button',{name:'正在删除…',exact:true}).waitFor();
-    await failure.keyboard.press('Tab'); await failure.keyboard.press('Shift+Tab'); await failure.keyboard.press('Escape'); releaseFailure();
+    await failure.keyboard.press('Tab'); assert.equal(await failure.getByRole('dialog',{name:'删除当前账号的全部数据？',exact:true}).evaluate(el=>el===document.activeElement),true);
+    await failure.keyboard.press('Shift+Tab'); assert.equal(await failure.getByRole('dialog',{name:'删除当前账号的全部数据？',exact:true}).evaluate(el=>el===document.activeElement),true);
+    await failure.keyboard.press('Escape'); releaseFailure();
     await failure.getByRole('alert').waitFor();
     assert.equal(await failure.getByRole('dialog',{name:'删除当前账号的全部数据？',exact:true}).count(),1);
     assert.equal(await failure.getByRole('dialog',{name:'设置 · 当前情境',exact:true}).count(),1);

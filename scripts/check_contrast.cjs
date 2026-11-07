@@ -1,25 +1,28 @@
-// Token-pair WCAG contrast gate. This checks actual foreground/background combinations used by DietLens states.
-const assert = require('node:assert/strict');
-const tokens = {
-  ink: '#24231f', muted: '#625c56', faint: '#655f58', brand: '#b24e32', brandStrong: '#913b27',
-  success: '#3f654d', warning: '#85570f', danger: '#a33e34', info: '#425c86',
-  bg: '#f7f6f2', surface: '#ffffff', subtle: '#f1eee8', brandSoft: '#f3e1d9'
-};
-function luminance(hex) {
-  const rgb = [1,3,5].map(index => parseInt(hex.slice(index,index+2),16)/255).map(value => value <= .04045 ? value/12.92 : ((value+.055)/1.055)**2.4);
-  return .2126*rgb[0] + .7152*rgb[1] + .0722*rgb[2];
+// WCAG contrast gate sourced from the authoritative CSS custom properties.
+const fs = require('node:fs')
+const assert = require('node:assert/strict')
+const css = fs.readFileSync('web/src/styles/design-system.css', 'utf8')
+const root = css.match(/:root\s*\{([\s\S]*?)\}/)?.[1] ?? ''
+const tokens = Object.fromEntries([...root.matchAll(/--([\w-]+)\s*:\s*(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3})\s*;/g)].map(match => [match[1], match[2]]))
+const required = ['ink','ink-muted','ink-faint','brand','brand-strong','success','warning','danger','info','bg','surface','surface-subtle','brand-soft']
+for (const name of required) assert(tokens[name], `Missing CSS source token --${name}`)
+const luminance = hex => {
+  const value = hex.length === 4 ? hex.slice(1).split('').map(char => char + char).join('') : hex.slice(1)
+  const rgb = [0,2,4].map(index => parseInt(value.slice(index,index+2),16)/255).map(channel => channel <= .04045 ? channel/12.92 : ((channel+.055)/1.055)**2.4)
+  return .2126*rgb[0] + .7152*rgb[1] + .0722*rgb[2]
 }
-function contrast(foreground, background) {
-  const a=luminance(foreground), b=luminance(background);
-  return (Math.max(a,b)+.05)/(Math.min(a,b)+.05);
+const contrast = (foreground, background) => {
+  const a=luminance(foreground), b=luminance(background)
+  return (Math.max(a,b)+.05)/(Math.min(a,b)+.05)
 }
-const matrix = [
-  ['ink','bg'],['ink','surface'],['muted','bg'],['muted','surface'],['muted','subtle'],['muted','brandSoft'],
-  ['faint','bg'],['faint','surface'],['faint','subtle'],['faint','brandSoft'],['brandStrong','bg'],['brandStrong','surface'],
-  ['success','bg'],['success','surface'],['success','subtle'],['warning','bg'],['warning','surface'],['warning','subtle'],
-  ['info','bg'],['info','surface'],['info','subtle'],['danger','bg'],['danger','surface']
-];
-const results=matrix.map(([foreground,background])=>({foreground,background,ratio:Number(contrast(tokens[foreground],tokens[background]).toFixed(2))}));
-const failures=results.filter(item=>item.ratio<4.5);
-if(failures.length){console.error(JSON.stringify({failures},null,2));process.exit(1)}
-console.log(JSON.stringify({standard:'WCAG AA normal text',pairs:results,pass:true},null,2));
+const pairs = [
+  ['ink','bg'],['ink','surface'],['ink-muted','bg'],['ink-muted','surface'],['ink-muted','surface-subtle'],['ink-muted','brand-soft'],
+  ['ink-faint','bg'],['ink-faint','surface'],['ink-faint','surface-subtle'],['ink-faint','brand-soft'],
+  ['brand-strong','bg'],['brand-strong','surface'],['brand','surface'],['success','bg'],['success','surface'],['success','surface-subtle'],
+  ['warning','bg'],['warning','surface'],['warning','surface-subtle'],['info','bg'],['info','surface'],['info','surface-subtle'],
+  ['danger','bg'],['danger','surface'],['danger','surface-subtle'],
+]
+const results = pairs.map(([foreground,background]) => ({foreground,background,ratio:Number(contrast(tokens[foreground],tokens[background]).toFixed(2))}))
+const failures = results.filter(item => item.ratio < 4.5)
+if (failures.length) { console.error(JSON.stringify({failures}, null, 2)); process.exit(1) }
+console.log(JSON.stringify({source:'web/src/styles/design-system.css :root', standard:'WCAG AA normal text', pairs:results, pass:true}, null, 2))

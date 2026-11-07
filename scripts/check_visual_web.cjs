@@ -41,6 +41,11 @@ fs.mkdirSync(path.join(artifactRoot,'before'),{recursive:true});
   for(const [screen,label] of [['plan','饮食计划'],['saved-plans','饮食计划'],['inventory','食材库存'],['review','饮食回顾'],['journal','饮食回顾'],['food','食品资料'],['settings','设置']]){
    if(screen==='settings')await openTool('设置',width);
    else await openTool(label,width);
+   if(screen==='plan'){
+    await page.locator('.plan-form').waitFor({state:'visible'});
+    await page.locator('.workspace-main h1').waitFor({state:'visible'});
+    await page.locator('.plan-form input[type=date]').waitFor({state:'visible'});
+   }
    if(screen==='food'){
     await page.getByRole('textbox',{name:'搜索食品'}).fill('测试燕麦');
     await page.getByRole('button',{name:'查资料',exact:true}).click();
@@ -55,21 +60,21 @@ fs.mkdirSync(path.join(artifactRoot,'before'),{recursive:true});
    const pageOverflow=await page.evaluate(() => ({clientWidth:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth,clientHeight:document.documentElement.clientHeight}));
    if(pageOverflow.scrollWidth>pageOverflow.clientWidth+1)throw Error(`${screen} page overflow at ${width}px: ${JSON.stringify(pageOverflow)}`);
    if(overflow)throw Error(`${screen} overflow at ${width}px`);
-   await page.screenshot({animations:'disabled',path:path.join(artifactRoot,'after',`dietlens-${screen}-${width}.png`)});
+   await page.screenshot({animations:'disabled',path:path.join(artifactRoot,screenshotDir,`dietlens-${screen}-${width}.png`)});
    reports.push({screen,width,overflow});
    if(screen==='saved-plans'){
     await page.locator('.saved-plan-list>button').filter({hasText:'当前版本'}).first().click();
     await page.getByRole('button',{name:'生成采购清单',exact:true}).click();
     await page.locator('.shopping-row').waitFor();
     if(await page.locator('.drawer').evaluate(e=>e.scrollWidth>e.clientWidth+1))throw Error('saved plan details overflow');
-    await page.screenshot({animations:'disabled',path:path.join(artifactRoot,'after',`dietlens-saved-plan-detail-${width}.png`)});
+    await page.screenshot({animations:'disabled',path:path.join(artifactRoot,screenshotDir,`dietlens-saved-plan-detail-${width}.png`)});
    }
-   if(screen==='settings'){await page.locator('.recent-tasks').scrollIntoViewIfNeeded();await page.screenshot({animations:'disabled',path:path.join(artifactRoot,'after',`dietlens-settings-recent-${width}.png`)});}
+   if(screen==='settings'){await page.locator('.recent-tasks').scrollIntoViewIfNeeded();await page.screenshot({animations:'disabled',path:path.join(artifactRoot,screenshotDir,`dietlens-settings-recent-${width}.png`)});}
    if(screen==='journal'){
     await page.getByRole('button',{name:'记录已吃的一餐',exact:true}).click();
     await page.getByRole('textbox',{name:'实际餐食名称',exact:true}).fill('合成视觉测试晚餐');
     if(await page.locator('.drawer').evaluate(e=>e.scrollWidth>e.clientWidth+1))throw Error('journal form overflow');
-    await page.screenshot({animations:'disabled',path:path.join(artifactRoot,'after',`dietlens-journal-form-${width}.png`)});
+    await page.screenshot({animations:'disabled',path:path.join(artifactRoot,screenshotDir,`dietlens-journal-form-${width}.png`)});
     await page.getByRole('button',{name:'取消填写',exact:true}).click();
    }
    await page.keyboard.press('Escape');
