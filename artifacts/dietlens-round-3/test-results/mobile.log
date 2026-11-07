@@ -1,0 +1,5 @@
+
+> dietlens-qa@0.1.0 qa:mobile
+> node scripts/check_mobile_navigation_web.cjs
+
+{"moreSheetSemantics":"passed","focusTrap":"passed","escape":"passed","focusRestoration":"passed","drawerIsolation":"passed"}

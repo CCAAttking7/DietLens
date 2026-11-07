@@ -1,0 +1,29 @@
+
+> dietlens-qa@0.1.0 qa:browser
+> npm run qa:mobile && npm run qa:home && npm run qa:settings && npm run qa:delete && npm run qa:visual
+
+
+> dietlens-qa@0.1.0 qa:mobile
+> node scripts/check_mobile_navigation_web.cjs
+
+{"moreSheetSemantics":"passed","focusTrap":"passed","reverseFocusTrap":"passed","escape":"passed","focusRestoration":"passed","routeFocusRestoration":"passed","scrollLock":"passed","backdrop":"passed","drawerIsolation":"passed"}
+
+> dietlens-qa@0.1.0 qa:home
+> node scripts/check_home_cta_web.cjs
+
+{"manualEntryCta":"passed","viewports":[{"viewport":375,"width":123.015625,"height":44,"parentWidth":295,"whiteSpace":"nowrap","overflow":"visible"},{"viewport":390,"width":123.015625,"height":44,"parentWidth":310,"whiteSpace":"nowrap","overflow":"visible"},{"viewport":768,"width":123.015625,"height":44,"parentWidth":403.21875,"whiteSpace":"nowrap","overflow":"visible"},{"viewport":1280,"width":123.015625,"height":44,"parentWidth":529.625,"whiteSpace":"nowrap","overflow":"visible"},{"viewport":1440,"width":123.015625,"height":44,"parentWidth":609,"whiteSpace":"nowrap","overflow":"visible"}]}
+
+> dietlens-qa@0.1.0 qa:settings
+> node scripts/check_settings_web.cjs
+
+{"independentReadFailures":"passed","profileAndRecentRetries":"passed","resumeFailureRetry":"passed","resumeWithBlockedStorage":"passed","lookupClearsOldResult":"passed","lookupContinuesMeal":"passed","closedDetailsKeyboardFocus":"passed","cancelledMealRestart":"passed","pageErrors":[]}
+
+> dietlens-qa@0.1.0 qa:delete
+> node scripts/check_delete_busy_web.cjs
+
+{"busyTabWrap":"passed","busyShiftTabWrap":"passed","busyEscapeConsumed":"passed","successFlow":"passed","failurePreservesModal":"passed"}
+
+> dietlens-qa@0.1.0 qa:visual
+> node scripts/check_visual_web.cjs
+
+{"screens":[{"screen":"plan","width":1440,"overflow":false},{"screen":"saved-plans","width":1440,"overflow":false},{"screen":"inventory","width":1440,"overflow":false},{"screen":"review","width":1440,"overflow":false},{"screen":"journal","width":1440,"overflow":false},{"screen":"food","width":1440,"overflow":false},{"screen":"settings","width":1440,"overflow":false},{"screen":"plan","width":1280,"overflow":false},{"screen":"saved-plans","width":1280,"overflow":false},{"screen":"inventory","width":1280,"overflow":false},{"screen":"review","width":1280,"overflow":false},{"screen":"journal","width":1280,"overflow":false},{"screen":"food","width":1280,"overflow":false},{"screen":"settings","width":1280,"overflow":false},{"screen":"plan","width":768,"overflow":false},{"screen":"saved-plans","width":768,"overflow":false},{"screen":"inventory","width":768,"overflow":false},{"screen":"review","width":768,"overflow":false},{"screen":"journal","width":768,"overflow":false},{"screen":"food","width":768,"overflow":false},{"screen":"settings","width":768,"overflow":false},{"screen":"plan","width":390,"overflow":false},{"screen":"saved-plans","width":390,"overflow":false},{"screen":"inventory","width":390,"overflow":false},{"screen":"review","width":390,"overflow":false},{"screen":"journal","width":390,"overflow":false},{"screen":"food","width":390,"overflow":false},{"screen":"settings","width":390,"overflow":false},{"screen":"plan","width":375,"overflow":false},{"screen":"saved-plans","width":375,"overflow":false},{"screen":"inventory","width":375,"overflow":false},{"screen":"review","width":375,"overflow":false},{"screen":"journal","width":375,"overflow":false},{"screen":"food","width":375,"overflow":false},{"screen":"settings","width":375,"overflow":false}],"planDates":[{"width":1440,"value":"2026-11-07"},{"width":1280,"value":"2026-11-07"},{"width":768,"value":"2026-11-07"},{"width":390,"value":"2026-11-07"},{"width":375,"value":"2026-11-07"}],"pageErrors":[]}

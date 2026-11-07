@@ -47,7 +47,9 @@ class MealRecordService:
         if item is None:
             raise ToolError("plan_item_not_found")
         return MealRecord(str(uuid4()), user_id, item.meal_date, item.meal_slot, item.name,
-                          item.ingredient_id, item.quantity, item.unit, None, "plan_prefill",
+                          # Plan ingredient quantity is never an actual meal
+                          # portion. The user must confirm or enter it.
+                          "", None, None, None, "plan_prefill",
                           plan_id, item.item_id)
 
     def preview(self, user_id: str, *, meal_date: str, meal_slot: str, name: str,

@@ -53,8 +53,8 @@ export function PlanScreen({ userId }: { userId: string }) {
     const selected = meals.filter(meal => meal.name.trim())
     if (!startDate) throw new Error('请先选择计划日期')
     if (!selected.length) throw new Error('先填写一餐即可，其他餐次可以留空')
-    if (selected.some(meal => !meal.quantity.trim() || !Number.isFinite(Number(meal.quantity)) || Number(meal.quantity) <= 0)) throw new Error('请填写大于 0 的有效数量')
-    const items = selected.map(meal => ({ item_id: `web-${startDate}-${meal.key}`, meal_date: startDate, meal_slot: meal.key, name: meal.name.trim(), ingredient_id: meal.ingredient.trim() || meal.name.trim(), ingredient_name: meal.ingredient.trim() || meal.name.trim(), quantity: Number(meal.quantity), unit: meal.unit, servings: 1 }))
+    if (selected.some(meal => meal.ingredient.trim() && (!meal.quantity.trim() || !Number.isFinite(Number(meal.quantity)) || Number(meal.quantity) <= 0))) throw new Error('填写主要食材后，请提供大于 0 的食材数量')
+    const items = selected.map(meal => ({ item_id: `web-${startDate}-${meal.key}`, meal_date: startDate, meal_slot: meal.key, name: meal.name.trim(), ingredient_id: meal.ingredient.trim(), ingredient_name: meal.ingredient.trim(), quantity: meal.ingredient.trim() ? Number(meal.quantity) : null, unit: meal.unit, servings: 1 }))
     const next = await api.planPreview({ user_id: userId, start_date: startDate, days: 1, servings: 1, items })
     setDraft(next); setNotice('')
   })
@@ -73,7 +73,7 @@ export function PlanScreen({ userId }: { userId: string }) {
     <p className="eyebrow">从现在往后 · 留一点余地</p>{view==='saved'?<h1>已保存的计划</h1>:<h1>把下一步安排好，<br/><em>也可以随时改变。</em></h1>}
     <p className="lede">{view==='saved'?'查看已确认的安排，或以它为起点准备下一餐。':'先安排一餐就好。其他餐次可以留空，计划也不会自动变成实际饮食记录。'}</p>
     <div className="review-view-switch" role="group" aria-label="计划内容"><button aria-pressed={view==='editor'} disabled={busy || checkingDraft} onClick={()=>setView('editor')}>编辑安排</button><button aria-pressed={view==='saved'} disabled={busy || checkingDraft} onClick={()=>setView('saved')}>已保存的计划</button></div>
-    {copyCandidate&&<section ref={copyPromptRef} tabIndex={-1} className="review-card"><h2>用这份安排替换当前草稿？</h2><p>当前填写内容将被带入的计划替换。已保存的计划保持不变。</p><div className="button-row"><button onClick={()=>copy(copyCandidate)}>使用这份计划</button><button className="secondary" onClick={()=>setCopyCandidate(null)}>保留当前草稿</button></div></section>}
+    {copyCandidate&&<section ref={copyPromptRef} tabIndex={-1} className="review-card"><h2>用这份安排替换当前草稿？</h2><p>当前填写内容将被带入的计划替换。已保存的计划保持不变。</p><div className="button-row"><button onClick={()=>copy(copyCandidate)}>使用这份计划</button><button className="button-secondary secondary" onClick={()=>setCopyCandidate(null)}>保留当前草稿</button></div></section>}
     {view==='saved'?<SavedPlans userId={userId} onCopy={plan=>{if(meals.some(meal=>meal.name.trim()))setCopyCandidate(plan);else copy(plan)}}/>:<>
     <div className="plan-form">
       <label htmlFor="plan-date">计划日期</label><input id="plan-date" type="date" disabled={busy || checkingDraft || Boolean(draftError)} value={startDate} onChange={e => { invalidate(); setStartDate(e.target.value) }} />
@@ -83,13 +83,13 @@ export function PlanScreen({ userId }: { userId: string }) {
         </button>
         <fieldset className="meal-row" id={`plan-${meal.key}`} hidden={!expanded.includes(meal.key)} disabled={busy || checkingDraft || Boolean(draftError)}><legend className="sr-only">{meal.label}</legend>
           <label className="meal-name">餐食<input aria-label={`${meal.label}名称`} value={meal.name} onChange={e => update(i, 'name', e.target.value)} placeholder="例如：番茄鸡蛋面" /></label>
-          <label className="meal-ingredient">主要食材<input aria-label={`${meal.label}食材`} value={meal.ingredient} onChange={e => update(i, 'ingredient', e.target.value)} placeholder="可选，用于采购清单" /></label>
-          <label>数量<input aria-label={`${meal.label}数量`} inputMode="decimal" value={meal.quantity} onChange={e => update(i, 'quantity', e.target.value)} placeholder="例如：1" /></label>
+          <label className="meal-ingredient">主要食材<input aria-label={`${meal.label}食材`} value={meal.ingredient} onChange={e => update(i, 'ingredient', e.target.value)} placeholder="可选；留空不会生成食材清单" /></label>
+          <label>主要食材数量<input aria-label={`${meal.label}主要食材数量`} inputMode="decimal" value={meal.quantity} onChange={e => update(i, 'quantity', e.target.value)} placeholder={meal.ingredient.trim() ? '例如：500' : '有主要食材时填写'} /></label>
           <label>单位<select aria-label={`${meal.label}单位`} value={meal.unit} onChange={e => update(i, 'unit', e.target.value)}>{['份', '个', 'g', 'kg', 'ml', 'l', '件', '包', '瓶'].map(unit => <option key={unit}>{unit}</option>)}</select></label>
         </fieldset>
       </section>)}</div>
-      <button onClick={preview} disabled={busy || checkingDraft || Boolean(draftError)}>{busy ? '正在处理…' : '预览这一天'}</button>
-    </div>
+      <button className="button-primary" onClick={preview} disabled={busy || checkingDraft || Boolean(draftError)}>{busy ? '正在处理…' : '预览这一天'}</button>
+    </div><p className="field-help">这是单日计划。餐食本身可以没有主要食材；采购核对只覆盖你明确填写的主要食材，且不会自动换算单位。</p>
     {notice && <p className="notice" role="status">{notice}</p>}
     {error && <p className="error" role="alert">{error}</p>}
     {checkingDraft && <p className="busy-note" role="status">正在恢复计划…</p>}{draftError && <div className="error-state"><p className="error" role="alert">{draftError}</p><button onClick={()=>setDraftAttempt(value=>value+1)}>重新读取当前计划</button><button onClick={()=>{setDraft(null);setDraftError('');setNotice('已清除失效预览，填写内容保留，请重新预览。')}}>保留填写，重新预览</button></div>}
@@ -97,9 +97,9 @@ export function PlanScreen({ userId }: { userId: string }) {
       <p className="eyebrow">{draft.status === 'confirmed' ? '已保存' : '核对后再保存'}</p>
       <h2>{draft.status === 'confirmed' ? '这一天，已经安排好' : draft.status === 'draft' ? '这份计划还没有保存' : '这份计划已有更新'}</h2>
       <p>{draft.start_date} · {draft.items.length} 个餐次</p>
-      <ul className="plan-summary">{draft.items.map(item => <li key={String(item.item_id)}><span>{slots.find(slot => slot.key === item.meal_slot)?.label ?? String(item.meal_slot)} · {String(item.name)}</span><strong>{String(item.quantity)}{String(item.unit)}</strong></li>)}</ul>
+      <ul className="plan-summary">{draft.items.map(item => <li key={String(item.item_id)}><span>{slots.find(slot => slot.key === item.meal_slot)?.label ?? String(item.meal_slot)} · {String(item.name)} · {item.servings ?? 1} 份</span><strong>{item.ingredient_id ? `主要食材 ${String(item.quantity)}${String(item.unit)}` : '未填写主要食材'}</strong></li>)}</ul>
       {draft.status === 'draft' && <p>确认后会替代相同日期范围的旧计划；其他日期的安排会保留。</p>}
-      {draft.status === 'draft' ? <div className="button-row"><button disabled={busy || checkingDraft || Boolean(draftError)} onClick={confirm}>确认计划</button><button className="secondary" disabled={busy || checkingDraft || Boolean(draftError)} onClick={cancel}>取消预览</button></div> : draft.status === 'confirmed' && draft.start_date === startDate ? <ShoppingPanel key={`${draft.plan_id}:${startDate}`} planId={draft.plan_id}/> : draft.status === 'confirmed' ? <p>日期已经改变。请重新预览后确认新的安排，采购清单不会沿用旧日期。</p> : <p>这份计划已被替代或取消。请在“已保存的计划”中选择当前版本。</p>}
+      {draft.status === 'draft' ? <div className="button-row"><button className="button-primary" disabled={busy || checkingDraft || Boolean(draftError)} onClick={confirm}>确认计划</button><button className="button-secondary secondary" disabled={busy || checkingDraft || Boolean(draftError)} onClick={cancel}>取消预览</button></div> : draft.status === 'confirmed' && draft.start_date === startDate ? <ShoppingPanel key={`${draft.plan_id}:${startDate}`} planId={draft.plan_id}/> : draft.status === 'confirmed' ? <p>日期已经改变。请重新预览后确认新的安排，采购清单不会沿用旧日期。</p> : <p>这份计划已被替代或取消。请在“已保存的计划”中选择当前版本。</p>}
     </section>}
     </>}
   </section><aside className="status-card"><p className="eyebrow">这一天的安排</p><h2>给未来留一点余地</h2><div className="state-track"><span className={draft ? 'on' : ''}>预览</span><span className={draft?.status === 'confirmed' ? 'on' : ''}>确认</span><span>采购</span></div><p>修改后需要重新预览和确认。旧版本可在“已保存的计划”中查看，实际吃了什么由你另行记录。</p></aside></div>

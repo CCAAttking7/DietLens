@@ -62,23 +62,31 @@ def _contains_term(text: str, terms: list[str]) -> bool:
 def _record_has_field(record: FoodRecord, field: str) -> bool:
     raw = record.raw or {}
     if field == "ingredients":
-        return bool(record.ingredients) or "ingredients_text" in raw or "ingredients" in raw
+        if record.ingredients:
+            return True
+        value = raw.get("ingredients_text", raw.get("ingredients"))
+        return isinstance(value, str) and bool(value.strip())
     if field == "allergens":
-        return bool(record.allergens) or "allergens_tags" in raw or "allergens" in raw
+        if record.allergens:
+            return True
+        # An empty list is not proof of absence unless an adapter/source has
+        # supplied an explicit completeness assertion.  Do not infer the
+        # meaning of third-party fields merely from their presence.
+        declared_absent = raw.get("allergens_declared_absent") is True
+        value = raw.get("allergens_tags", raw.get("allergens"))
+        return declared_absent or (isinstance(value, str) and bool(value.strip()))
     return field in raw
 
 
 def assess_record(record: FoodRecord, hard_constraints: Iterable[str], *, require_ingredients: bool = True) -> FoodAssessment:
     constraints = _terms(hard_constraints)
-    if not constraints:
-        return FoodAssessment(record, "safe")
     unknown: list[str] = []
     if require_ingredients and not _record_has_field(record, "ingredients"):
         unknown.append("ingredients")
     if not _record_has_field(record, "allergens"):
         unknown.append("allergens")
     searchable = " ".join([record.name, *record.ingredients, *record.allergens])
-    if _contains_term(searchable, constraints):
+    if constraints and _contains_term(searchable, constraints):
         return FoodAssessment(record, "blocked", ("explicit_hard_constraint_match",), tuple(unknown))
     if unknown:
         return FoodAssessment(record, "needs_confirmation", ("key_ingredient_or_allergen_unknown",), tuple(sorted(set(unknown))))
