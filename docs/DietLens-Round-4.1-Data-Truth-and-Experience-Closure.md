@@ -44,3 +44,5 @@ Review coverage counts only records with an explicit `plan_item_id`. Same-slot r
 - Supabase authenticated flow: BLOCKED because no secure authenticated fixture is available.
 - Remote GitHub Actions: reported separately from local results; a hosted browser installation failure remains an environment limitation when present.
 
+Detailed local evidence is recorded in `artifacts/dietlens-round-3/test-results/round-4-1-local-status.md`.
+
