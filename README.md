@@ -33,6 +33,34 @@ DietLens 是一个由 Harness 编排的饮食陪伴工作台。它把长期目�
 
 ## 运行
 
+### 本地 Web 演示（Windows PowerShell）
+
+需要 Python 3.11+ 和 Node.js。首次运行时，在仓库根目录打开第一个 PowerShell 窗口，安装 API 依赖并启动本地服务：
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e ".[server]"
+
+$env:DIETLENS_STORAGE = "sqlite"
+$env:DIETLENS_AUTH_MODE = "demo"
+$env:DIETLENS_DB = "data\local_demo.db"
+.\.venv\Scripts\python.exe -m uvicorn api_server:app --host 127.0.0.1 --port 8000
+```
+
+保持 API 窗口运行，再打开第二个 PowerShell 窗口，启动 Web 前端：
+
+```powershell
+cd web
+npm ci
+npm run dev -- --host 127.0.0.1
+```
+
+浏览器打开 <http://127.0.0.1:5173/>。API 健康状态可在 <http://127.0.0.1:8000/health> 查看；正常时返回 SQLite 存储状态。结束演示时，在两个窗口分别按 `Ctrl+C`。
+
+后续启动时可跳过虚拟环境和依赖安装命令。演示数据保存在 `data/local_demo.db`，重新启动后仍会保留；清空演示数据时，可删除该数据库文件及对应的 `-wal`、`-shm` 文件。未配置模型密钥时，服务使用内置 Stub Provider；此模式可演示本地业务流程，不会调用真实模型。真实模型配置见 [docs/model-integration.md](docs/model-integration.md)。
+
+### CLI 演示
+
 ```bash
 python3 demo.py
 ```
@@ -63,3 +91,5 @@ python3 -m pytest -q
 模型只负责理解、整理和表达；安全判断、数值计算、任务状态、授权和业务写入由确定性服务与 Harness 控制。食品资料不完整时不会自动晋级为安全，份量未知不会按零计算，计划也不会自动变成实际餐食记录。
 
 完整的任务编排模型、恢复协议和用户体验原则见 [docs/product-logic.md](docs/product-logic.md)。开发阶段验收记录见 [docs/development.md](docs/development.md)。
+
+作业二当前/目标架构、作业一用例实现映射、状态归属、关键决策和待验证风险见 [docs/assignment-2-design-baseline.md](docs/assignment-2-design-baseline.md)。

@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from dataclasses import asdict
 import os
-from typing import Any
+from typing import Any, Literal
 
 try:
     from fastapi import FastAPI, HTTPException, Request
@@ -58,7 +58,7 @@ app.add_middleware(CORSMiddleware, allow_origins=[os.getenv("DIETLENS_WEB_ORIGIN
 
 class TaskCreate(BaseModel):
     user_id: str = Field(min_length=1, max_length=128)
-    task_type: str = Field(default="micro_action", pattern="^(micro_action|quick_log|plan|explore|reflect)$")
+    task_type: Literal["micro_action"] = "micro_action"
 
 
 class ProfilePreviewBody(BaseModel):

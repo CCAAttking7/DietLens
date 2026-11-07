@@ -6,6 +6,7 @@ import pytest
 
 pytest.importorskip('fastapi')
 from fastapi import HTTPException
+from pydantic import ValidationError
 from starlette.requests import Request
 from dietlens_mvp import DietLensAgent, Harness, InMemoryStore
 from dietlens_mvp.models import Task, Profile
@@ -43,6 +44,12 @@ def test_recent_tasks_requires_login_and_matching_owner(api_module):
     with pytest.raises(HTTPException) as other:
         api_module.recent_tasks(request(), 'someone-else')
     assert other.value.status_code == 403
+
+
+def test_generic_task_request_only_accepts_micro_action(api_module):
+    assert api_module.TaskCreate(user_id='owner').task_type == 'micro_action'
+    with pytest.raises(ValidationError):
+        api_module.TaskCreate(user_id='owner', task_type='explore')
 
 
 def test_recent_tasks_only_returns_own_meal_tasks(api_module):
