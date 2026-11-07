@@ -62,9 +62,19 @@ def _contains_term(text: str, terms: list[str]) -> bool:
 def _record_has_field(record: FoodRecord, field: str) -> bool:
     raw = record.raw or {}
     if field == "ingredients":
-        return bool(record.ingredients) or "ingredients_text" in raw or "ingredients" in raw
+        if record.ingredients:
+            return True
+        value = raw.get("ingredients_text", raw.get("ingredients"))
+        return isinstance(value, str) and bool(value.strip())
     if field == "allergens":
-        return bool(record.allergens) or "allergens_tags" in raw or "allergens" in raw
+        if record.allergens:
+            return True
+        # An empty list is not proof of absence unless an adapter/source has
+        # supplied an explicit completeness assertion.  Do not infer the
+        # meaning of third-party fields merely from their presence.
+        declared_absent = raw.get("allergens_declared_absent") is True
+        value = raw.get("allergens_tags", raw.get("allergens"))
+        return declared_absent or (isinstance(value, str) and bool(value.strip()))
     return field in raw
 
 

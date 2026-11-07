@@ -39,7 +39,12 @@ def validate_plan(start_date: str, days: int, servings: int, items: list[PlanIte
         seen.add((item.meal_date, item.meal_slot))
         if not item.name.strip() or item.unit not in UNITS:
             raise ToolError("invalid_plan_item")
-        _quantity(item.quantity)
+        if item.ingredient_id.strip():
+            if item.quantity is None:
+                raise ToolError("ingredient_quantity_required")
+            _quantity(item.quantity)
+        elif item.quantity is not None:
+            _quantity(item.quantity)
     # Unfilled slots remain unplanned; do not invent meals for completeness.
 
 
@@ -115,7 +120,7 @@ class PlanningService:
             if not item.ingredient_id.strip():
                 continue
             group = grouped.setdefault((item.ingredient_id, item.unit), {"name": item.ingredient_name or item.name, "quantity": 0.0})
-            group["quantity"] += item.quantity
+            group["quantity"] += item.quantity or 0
         items = [ShoppingListItem(str(uuid4()), ingredient, value["name"], value["quantity"], unit, value["quantity"]) for (ingredient, unit), value in sorted(grouped.items())]
         shopping = ShoppingList(str(uuid4()), plan.user_id, plan.plan_id, plan.version, "active", items)
         self.store.save_shopping_list(shopping)

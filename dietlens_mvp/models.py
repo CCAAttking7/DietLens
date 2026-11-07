@@ -93,7 +93,9 @@ class PlanItem:
     meal_slot: str
     name: str
     ingredient_id: str
-    quantity: float
+    # Quantity of the explicitly named main ingredient. It is independent
+    # from ``servings`` and is nullable when no ingredient was supplied.
+    quantity: float | None
     unit: str
     servings: int = 1
     source: str = "user_confirmed"
@@ -219,6 +221,7 @@ class Action:
     cooldown_until: datetime | None = None
     reminder_count: int = 0
     last_reminded_at: datetime | None = None
+    selected_option: str | None = None
 
 
 @dataclass

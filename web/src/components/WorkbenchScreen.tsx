@@ -48,7 +48,7 @@ export function WorkbenchScreen({userId,onEditConsent,onStartAction,initialRecor
   const empty=data&&(data.plan?.planned_meals??0)===0&&(data.actual?.recorded_meals??0)===0&&(data.actions?.adopted??0)===0
   function recordPlanned(item:any, timeline:any) {
     const slot = ({早餐:'breakfast',午餐:'lunch',晚餐:'dinner'} as Record<string,string>)[String(timeline.slot)] ?? String(timeline.slot)
-    writeSessionDraft(`${userId}:actual-meal-draft`, {fields:{meal_date:String(timeline.date),meal_slot:slot,name:String(item.name??''),quantity:item.quantity==null?'':String(item.quantity),unit:String(item.unit??'份'),plan_id:String(item.plan_id??''),plan_item_id:String(item.item_id??'')},editing:null,preview:null,open:true})
+    writeSessionDraft(`${userId}:actual-meal-draft`, {fields:{meal_date:String(timeline.date),meal_slot:slot,name:String(item.name??''),quantity:'',unit:'份',plan_id:String(item.plan_id??''),plan_item_id:String(item.item_id??'')},editing:null,preview:null,open:true})
     setView('journal')
   }
   async function copyReview() {

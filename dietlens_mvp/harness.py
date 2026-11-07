@@ -130,6 +130,9 @@ class Harness:
         if profile.allergy_status not in {"none", "specified"}:
             raise ToolError("allergies_unconfirmed")
         action = save_decision(self.store, task.candidates[index], Decision(decision), task.task_id)
+        if task.context and action.selected_option is None:
+            action.selected_option = task.context.options[index] if index < len(task.context.options) else None
+            action = self.store.save_action(action, f"{task.task_id}:decision:selected-option:{action.action_id}")
         return {"action_id": action.action_id}
 
     def _write_feedback(self, execution: str, note: str = "") -> dict:

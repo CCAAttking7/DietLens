@@ -106,7 +106,7 @@ class PlanItemBody(BaseModel):
     name: str
     ingredient_id: str
     ingredient_name: str = ""
-    quantity: float = Field(ge=0)
+    quantity: float | None = Field(default=None, ge=0)
     unit: str
     servings: int = Field(default=1, ge=1, le=20)
 

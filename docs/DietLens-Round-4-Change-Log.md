@@ -10,3 +10,11 @@
 | Documentation | `docs/DietLens-Round-4-Product-Truthfulness-Report.md`, `docs/DietLens-Product-Positioning-and-Roadmap.md`, `docs/profile-workflow.md` | Added claim-to-capability matrix, roadmap comparison and state semantics | Make current capability boundaries independently reviewable |
 
 No backend schema, authentication, or API contract outside the additive profile payload was changed.
+
+## Round 4.1 follow-up
+
+- Food adapters and assessment now distinguish populated, missing, null, empty and explicitly verified absence.
+- Plan ingredient quantity is nullable and never pre-fills actual meal quantity; serving and ingredient quantity are shown separately.
+- Stopped allergy-unknown tasks expose a direct profile action.
+- Actions persist the selected candidate option; Review no longer groups barriers from the first context option.
+- Review coverage counts explicit `plan_item_id` links and reports same-slot/unplanned records separately.

@@ -69,6 +69,7 @@ def generate_actions(context: Context, options: list[str], prior_actions: list[A
         effort=effort,
         rationale=rationale,
         dimension=dimension,
+        selected_option=chosen,
     )]
     if len(options) > 1:
         alt = options[1]
@@ -89,6 +90,7 @@ def generate_actions(context: Context, options: list[str], prior_actions: list[A
             effort=alt_effort,
             rationale=alt_rationale,
             dimension=alternative_dimension,
+            selected_option=alt,
         ))
     return actions
 

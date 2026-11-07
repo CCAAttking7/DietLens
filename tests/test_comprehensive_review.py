@@ -39,7 +39,7 @@ def test_review_keeps_plan_actual_and_unknown_separate():
     result = review.generate("u", period="day", anchor_date="2026-11-04")
     assert result["plan"]["planned_meals"] == 3
     assert result["actual"]["recorded_meals"] == 1
-    assert result["actual"]["coverage"]["numerator"] == 1
+    assert result["actual"]["coverage"]["numerator"] == 0
     assert result["actual"]["coverage"]["denominator"] == 3
     assert result["nutrition"]["coverage"]["value"] is None
     assert result["nutrition"]["coverage"]["status"] == "unknown"

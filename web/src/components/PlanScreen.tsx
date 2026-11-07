@@ -54,7 +54,7 @@ export function PlanScreen({ userId }: { userId: string }) {
     if (!startDate) throw new Error('请先选择计划日期')
     if (!selected.length) throw new Error('先填写一餐即可，其他餐次可以留空')
     if (selected.some(meal => meal.ingredient.trim() && (!meal.quantity.trim() || !Number.isFinite(Number(meal.quantity)) || Number(meal.quantity) <= 0))) throw new Error('填写主要食材后，请提供大于 0 的食材数量')
-    const items = selected.map(meal => ({ item_id: `web-${startDate}-${meal.key}`, meal_date: startDate, meal_slot: meal.key, name: meal.name.trim(), ingredient_id: meal.ingredient.trim(), ingredient_name: meal.ingredient.trim(), quantity: meal.ingredient.trim() ? Number(meal.quantity) : 0, unit: meal.unit, servings: 1 }))
+    const items = selected.map(meal => ({ item_id: `web-${startDate}-${meal.key}`, meal_date: startDate, meal_slot: meal.key, name: meal.name.trim(), ingredient_id: meal.ingredient.trim(), ingredient_name: meal.ingredient.trim(), quantity: meal.ingredient.trim() ? Number(meal.quantity) : null, unit: meal.unit, servings: 1 }))
     const next = await api.planPreview({ user_id: userId, start_date: startDate, days: 1, servings: 1, items })
     setDraft(next); setNotice('')
   })
@@ -97,7 +97,7 @@ export function PlanScreen({ userId }: { userId: string }) {
       <p className="eyebrow">{draft.status === 'confirmed' ? '已保存' : '核对后再保存'}</p>
       <h2>{draft.status === 'confirmed' ? '这一天，已经安排好' : draft.status === 'draft' ? '这份计划还没有保存' : '这份计划已有更新'}</h2>
       <p>{draft.start_date} · {draft.items.length} 个餐次</p>
-      <ul className="plan-summary">{draft.items.map(item => <li key={String(item.item_id)}><span>{slots.find(slot => slot.key === item.meal_slot)?.label ?? String(item.meal_slot)} · {String(item.name)}</span><strong>{String(item.quantity)}{String(item.unit)}</strong></li>)}</ul>
+      <ul className="plan-summary">{draft.items.map(item => <li key={String(item.item_id)}><span>{slots.find(slot => slot.key === item.meal_slot)?.label ?? String(item.meal_slot)} · {String(item.name)} · {item.servings ?? 1} 份</span><strong>{item.ingredient_id ? `主要食材 ${String(item.quantity)}${String(item.unit)}` : '未填写主要食材'}</strong></li>)}</ul>
       {draft.status === 'draft' && <p>确认后会替代相同日期范围的旧计划；其他日期的安排会保留。</p>}
       {draft.status === 'draft' ? <div className="button-row"><button className="button-primary" disabled={busy || checkingDraft || Boolean(draftError)} onClick={confirm}>确认计划</button><button className="button-secondary secondary" disabled={busy || checkingDraft || Boolean(draftError)} onClick={cancel}>取消预览</button></div> : draft.status === 'confirmed' && draft.start_date === startDate ? <ShoppingPanel key={`${draft.plan_id}:${startDate}`} planId={draft.plan_id}/> : draft.status === 'confirmed' ? <p>日期已经改变。请重新预览后确认新的安排，采购清单不会沿用旧日期。</p> : <p>这份计划已被替代或取消。请在“已保存的计划”中选择当前版本。</p>}
     </section>}
