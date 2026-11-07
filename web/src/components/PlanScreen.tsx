@@ -53,8 +53,8 @@ export function PlanScreen({ userId }: { userId: string }) {
     const selected = meals.filter(meal => meal.name.trim())
     if (!startDate) throw new Error('请先选择计划日期')
     if (!selected.length) throw new Error('先填写一餐即可，其他餐次可以留空')
-    if (selected.some(meal => !meal.quantity.trim() || !Number.isFinite(Number(meal.quantity)) || Number(meal.quantity) <= 0)) throw new Error('请填写大于 0 的有效数量')
-    const items = selected.map(meal => ({ item_id: `web-${startDate}-${meal.key}`, meal_date: startDate, meal_slot: meal.key, name: meal.name.trim(), ingredient_id: meal.ingredient.trim() || meal.name.trim(), ingredient_name: meal.ingredient.trim() || meal.name.trim(), quantity: Number(meal.quantity), unit: meal.unit, servings: 1 }))
+    if (selected.some(meal => meal.ingredient.trim() && (!meal.quantity.trim() || !Number.isFinite(Number(meal.quantity)) || Number(meal.quantity) <= 0))) throw new Error('填写主要食材后，请提供大于 0 的食材数量')
+    const items = selected.map(meal => ({ item_id: `web-${startDate}-${meal.key}`, meal_date: startDate, meal_slot: meal.key, name: meal.name.trim(), ingredient_id: meal.ingredient.trim(), ingredient_name: meal.ingredient.trim(), quantity: meal.ingredient.trim() ? Number(meal.quantity) : 0, unit: meal.unit, servings: 1 }))
     const next = await api.planPreview({ user_id: userId, start_date: startDate, days: 1, servings: 1, items })
     setDraft(next); setNotice('')
   })
@@ -83,13 +83,13 @@ export function PlanScreen({ userId }: { userId: string }) {
         </button>
         <fieldset className="meal-row" id={`plan-${meal.key}`} hidden={!expanded.includes(meal.key)} disabled={busy || checkingDraft || Boolean(draftError)}><legend className="sr-only">{meal.label}</legend>
           <label className="meal-name">餐食<input aria-label={`${meal.label}名称`} value={meal.name} onChange={e => update(i, 'name', e.target.value)} placeholder="例如：番茄鸡蛋面" /></label>
-          <label className="meal-ingredient">主要食材<input aria-label={`${meal.label}食材`} value={meal.ingredient} onChange={e => update(i, 'ingredient', e.target.value)} placeholder="可选，用于采购清单" /></label>
-          <label>数量<input aria-label={`${meal.label}数量`} inputMode="decimal" value={meal.quantity} onChange={e => update(i, 'quantity', e.target.value)} placeholder="例如：1" /></label>
+          <label className="meal-ingredient">主要食材<input aria-label={`${meal.label}食材`} value={meal.ingredient} onChange={e => update(i, 'ingredient', e.target.value)} placeholder="可选；留空不会生成食材清单" /></label>
+          <label>主要食材数量<input aria-label={`${meal.label}主要食材数量`} inputMode="decimal" value={meal.quantity} onChange={e => update(i, 'quantity', e.target.value)} placeholder={meal.ingredient.trim() ? '例如：500' : '有主要食材时填写'} /></label>
           <label>单位<select aria-label={`${meal.label}单位`} value={meal.unit} onChange={e => update(i, 'unit', e.target.value)}>{['份', '个', 'g', 'kg', 'ml', 'l', '件', '包', '瓶'].map(unit => <option key={unit}>{unit}</option>)}</select></label>
         </fieldset>
       </section>)}</div>
       <button className="button-primary" onClick={preview} disabled={busy || checkingDraft || Boolean(draftError)}>{busy ? '正在处理…' : '预览这一天'}</button>
-    </div>
+    </div><p className="field-help">这是单日计划。餐食本身可以没有主要食材；采购核对只覆盖你明确填写的主要食材，且不会自动换算单位。</p>
     {notice && <p className="notice" role="status">{notice}</p>}
     {error && <p className="error" role="alert">{error}</p>}
     {checkingDraft && <p className="busy-note" role="status">正在恢复计划…</p>}{draftError && <div className="error-state"><p className="error" role="alert">{draftError}</p><button onClick={()=>setDraftAttempt(value=>value+1)}>重新读取当前计划</button><button onClick={()=>{setDraft(null);setDraftError('');setNotice('已清除失效预览，填写内容保留，请重新预览。')}}>保留填写，重新预览</button></div>}

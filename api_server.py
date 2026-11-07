@@ -557,7 +557,7 @@ def foods_search(user_id: str, request: Request, q: str, limit: int = 5):
     budget = None
     if profile:
         constraints = [*profile.allergies, *profile.hard_avoids]
-        confirmed = "allergies" in profile.confirmed_fields
+        confirmed = profile.allergy_status in {"none", "specified"}
         budget = profile.budget
     result = search_result(food_registry, q, constraints, budget=budget, limit=limit, constraints_confirmed=confirmed)
     return {"query": result["query"],

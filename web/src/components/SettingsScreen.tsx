@@ -138,7 +138,7 @@ export function SettingsScreen({userId,onSignOut,onEditProfile,onDataDeleted,onR
     <section className="settings-card" aria-label="档案设置"><h2>饮食档案与授权</h2>
       {profileLoading?<p role="status">正在读取饮食档案…</p>:profileError?<div className="error-state"><p className="error" role="alert">{profileError}</p><button onClick={()=>setProfileAttempt(value=>value+1)}>重新读取档案</button></div>:profile?<>
         <p>{profile.goal||'还没有填写饮食目标'}</p>
-        <dl className="profile-facts"><div><dt>参考预算</dt><dd>{profile.budget==null?'未设置':`${profile.budget} 元 / 餐`}</dd></div><div><dt>过敏信息</dt><dd>{profile.allergies?.length?profile.allergies.join('、'):'未提供过敏信息'}</dd></div><div><dt>不能接受</dt><dd>{profile.hard_avoids?.length?profile.hard_avoids.join('、'):'未提供'}</dd></div></dl>
+        <dl className="profile-facts"><div><dt>参考预算</dt><dd>{profile.budget==null?'未设置':`${profile.budget} 元 / 餐`}</dd></div><div><dt>过敏信息</dt><dd>{profile.allergy_status==='none'?'已确认没有已知过敏':profile.allergy_status==='specified'&&profile.allergies?.length?profile.allergies.join('、'):'暂未提供过敏信息'}</dd></div><div><dt>不能接受</dt><dd>{profile.hard_avoids?.length?profile.hard_avoids.join('、'):'未提供'}</dd></div></dl>
         <div className="setting-row"><span>历史回顾</span><strong>{profile.consents?.review_history?'已开启':'未开启'}</strong></div>
         <p className="field-help">仅在开启后汇总历史记录。随时可以在档案中关闭。</p>
         <div className="button-row"><button disabled={Boolean(busy)} onClick={onEditProfile}>编辑档案与授权</button></div>

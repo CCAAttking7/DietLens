@@ -124,13 +124,19 @@ class ComprehensiveReviewService:
                              "evidence": f"{unknown_quantity} 条记录没有份量"})
         barrier_actions = [action for action in adopted if effective[action.action_id] in {Execution.PARTIAL.value, Execution.NOT_DONE.value}]
         completed_actions = [action for action in adopted if effective[action.action_id] == Execution.COMPLETE.value]
-        if len(barrier_actions) >= 2:
+        barrier_groups = {}
+        for action in barrier_actions:
+            option = action.context.options[0] if action.context and action.context.options else ""
+            key = (action.context.meal if action.context else "", option)
+            barrier_groups[key] = barrier_groups.get(key, 0) + 1
+        repeated_barriers = max(barrier_groups.values(), default=0)
+        if repeated_barriers >= 2:
             insights.append({"kind": "barrier", "tone": "warm", "title": "同一类小行动反复遇到阻碍",
                              "body": "下一步可以调整行动的大小、触发时机或环境，而不是把原因归结为自控力。",
-                             "evidence": f"{len(barrier_actions)} 次反馈显示部分完成或未完成"})
+                             "evidence": f"同一餐食情境有 {repeated_barriers} 次反馈显示部分完成或未完成"})
         if len(completed_actions) >= 2:
             insights.append({"kind": "preference", "tone": "green", "title": "有做法已经被生活验证过",
-                             "body": "这些行动可以成为你的默认选项，系统会在后续建议里优先保留它们的方向。",
+                             "body": "这些行动曾被你完成多次，可以考虑把它们列为愿意继续尝试的选项；系统不会自动把它们当成长期偏好。",
                              "evidence": f"{len(completed_actions)} 次反馈显示完成"})
 
         next_steps = []

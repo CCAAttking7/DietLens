@@ -52,7 +52,8 @@ class Harness:
                                   "dislikes": {"type": "array", "items": text},
                                   "source": text, "profile_version": {"type": "integer"},
                                   "allergies_confirmed": {"type": "boolean"},
-                                  "hard_avoids": {"type": "array", "items": text}},
+                                  "hard_avoids": {"type": "array", "items": text},
+                                  "allergy_status": text},
                 "save_profile": {"profile_version": {"type": "integer", "minimum": 1}},
                 "save_decision": {"action_id": text},
                 "save_feedback": {"action_id": text},
@@ -126,7 +127,7 @@ class Harness:
         profile = self.store.get_profile(task.user_id)
         if task.task_type != "micro_action" or task.context is None or profile is None or profile.version != task.context.profile_version:
             raise ToolError("profile_changed")
-        if "allergies" not in profile.confirmed_fields:
+        if profile.allergy_status not in {"none", "specified"}:
             raise ToolError("allergies_unconfirmed")
         action = save_decision(self.store, task.candidates[index], Decision(decision), task.task_id)
         return {"action_id": action.action_id}

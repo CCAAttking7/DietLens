@@ -58,6 +58,21 @@ class Profile:
     consents: dict[str, bool] = field(default_factory=dict)
     created_at: str | None = None
     updated_at: str | None = None
+    # Explicitly separates omitted allergy information from a confirmed
+    # absence of known allergies.  The field is appended for JSON/positional
+    # compatibility with profiles created before this state existed.
+    allergy_status: str = "unknown"  # unknown | none | specified
+
+    def __post_init__(self) -> None:
+        if self.allergy_status not in {"unknown", "none", "specified"}:
+            self.allergy_status = "unknown"
+        # Legacy non-empty confirmed lists can safely be preserved as
+        # specified.  An old empty list is ambiguous and stays unknown.
+        if self.allergy_status == "unknown" and self.allergies and "allergies" in self.confirmed_fields:
+            self.allergy_status = "specified"
+        if self.allergy_status == "unknown" and not self.allergies and "allergies" in self.confirmed_fields:
+            self.confirmed_fields = [field for field in self.confirmed_fields if field != "allergies"]
+            self.field_sources.pop("allergies", None)
 
 
 @dataclass
@@ -183,6 +198,7 @@ class Context:
     profile_version: int = 1
     allergies_confirmed: bool = False
     hard_avoids: list[str] = field(default_factory=list)
+    allergy_status: str = "unknown"
 
 
 @dataclass

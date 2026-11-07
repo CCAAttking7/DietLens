@@ -37,7 +37,7 @@ def validate_plan(start_date: str, days: int, servings: int, items: list[PlanIte
         if (item.meal_date, item.meal_slot) in seen:
             raise ToolError("duplicate_plan_meal")
         seen.add((item.meal_date, item.meal_slot))
-        if not item.name.strip() or not item.ingredient_id.strip() or item.unit not in UNITS:
+        if not item.name.strip() or item.unit not in UNITS:
             raise ToolError("invalid_plan_item")
         _quantity(item.quantity)
     # Unfilled slots remain unplanned; do not invent meals for completeness.
@@ -110,6 +110,10 @@ class PlanningService:
                 return existing
         grouped: dict[tuple[str, str], dict] = {}
         for item in plan.items:
+            # A meal without an explicit ingredient is still a valid plan;
+            # it simply cannot produce an ingredient-level shopping entry.
+            if not item.ingredient_id.strip():
+                continue
             group = grouped.setdefault((item.ingredient_id, item.unit), {"name": item.ingredient_name or item.name, "quantity": 0.0})
             group["quantity"] += item.quantity
         items = [ShoppingListItem(str(uuid4()), ingredient, value["name"], value["quantity"], unit, value["quantity"]) for (ingredient, unit), value in sorted(grouped.items())]

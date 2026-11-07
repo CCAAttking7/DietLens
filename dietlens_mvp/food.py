@@ -70,15 +70,13 @@ def _record_has_field(record: FoodRecord, field: str) -> bool:
 
 def assess_record(record: FoodRecord, hard_constraints: Iterable[str], *, require_ingredients: bool = True) -> FoodAssessment:
     constraints = _terms(hard_constraints)
-    if not constraints:
-        return FoodAssessment(record, "safe")
     unknown: list[str] = []
     if require_ingredients and not _record_has_field(record, "ingredients"):
         unknown.append("ingredients")
     if not _record_has_field(record, "allergens"):
         unknown.append("allergens")
     searchable = " ".join([record.name, *record.ingredients, *record.allergens])
-    if _contains_term(searchable, constraints):
+    if constraints and _contains_term(searchable, constraints):
         return FoodAssessment(record, "blocked", ("explicit_hard_constraint_match",), tuple(unknown))
     if unknown:
         return FoodAssessment(record, "needs_confirmation", ("key_ingredient_or_allergen_unknown",), tuple(sorted(set(unknown))))

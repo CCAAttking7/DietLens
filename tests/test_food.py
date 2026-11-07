@@ -24,12 +24,13 @@ def test_unknown_key_ingredients_stop_affected_recommendation():
 
 def test_no_constraints_does_not_turn_missing_fields_into_zero_or_block():
     result = assess_record(record(raw={}), [])
-    assert result.status == "safe"
+    assert result.status == "needs_confirmation"
     assert record(raw={}).nutrients.get("protein_100g") is None
 
 
 def test_budget_only_blocks_known_price_and_unknown_price_remains_unknown():
-    result = search_result(FoodSourceRegistry(off=type("S", (), {"search": lambda self, q, limit: [record(price=40), record(name="豆腐", source_id="2", price=None)]})(), china=None), "食物", [], budget=30)
+    known = {"ingredients_text": "食物", "allergens_tags": []}
+    result = search_result(FoodSourceRegistry(off=type("S", (), {"search": lambda self, q, limit: [record(price=40, raw=known), record(name="豆腐", source_id="2", price=None, raw=known)]})(), china=None), "食物", [], budget=30)
     assert [a.status for a in result["assessments"]] == ["blocked", "safe"]
     assert result["assessments"][0].reasons == ("price_over_budget",)
 
