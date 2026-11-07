@@ -20,7 +20,7 @@ Round 3 is a precision quality iteration based on the Round 2 commit `577bbfb4fc
 
 ### Delete dialog
 
-`SettingsScreen.tsx` now gives the dialog a stable `tabIndex=-1` target and a ref. The key handler always consumes Escape while active; it only closes when idle. Tab and Shift+Tab are prevented and cycled among enabled controls, or kept on the dialog fallback when all controls are disabled. The handler stops propagation so the Settings Drawer cannot close. Focus initialization depends only on opening, not `busy`, and focus restoration uses the original trigger.
+`SettingsScreen.tsx` now gives the dialog a stable `tabIndex=-1` target and a ref. The key handler always consumes Escape while active; it only closes when idle. Idle Tab and Shift+Tab use native movement between interior enabled controls and wrap only at the dialog boundaries. When all controls are disabled, busy-state Tab and Shift+Tab are prevented and kept on the dialog fallback. The handler stops propagation so the Settings Drawer cannot close. Focus initialization depends only on opening, not `busy`, and focus restoration uses the original trigger.
 
 The new `scripts/check_delete_busy_web.cjs` fixture delays `/api/delete` and asserts busy Tab, Shift+Tab, Escape, success, and failure behavior. It is executable when Chromium is installed.
 
@@ -28,7 +28,7 @@ The new `scripts/check_delete_busy_web.cjs` fixture delays `/api/delete` and ass
 
 The sheet remains mounted with `hidden` when closed, making `aria-controls="mobile-more-sheet"` valid. When open, the sidebar, main content, and bottom navigation receive `inert`; the dialog itself remains active. Body overflow and scroll position are restored on close. Focus starts on the close button, wraps, consumes Escape, and returns to the trigger. Route selection closes the sheet before the destination Drawer takes focus.
 
-`scripts/check_mobile_navigation_web.cjs` asserts the ARIA contract, initial focus containment, Tab wrapping, Escape, trigger restoration, and Drawer isolation.
+`scripts/check_mobile_navigation_web.cjs` asserts the ARIA contract, initial focus containment, forward and reverse Tab wrapping, Escape, trigger restoration after Food/Inventory/Settings route drawers, scroll lock, backdrop dismissal, and Drawer isolation.
 
 ### Visual selectors and viewport coverage
 
