@@ -1,0 +1,24 @@
+@startuml
+skinparam defaultFontName Noto Sans CJK SC
+skinparam defaultFontSize 22
+skinparam backgroundColor #FCFBF7
+skinparam shadowing false
+skinparam sequenceArrowFontSize 20
+skinparam sequenceParticipantFontSize 22
+skinparam maxMessageSize 270
+hide footbox
+title 系统上下文与外部信任边界
+actor "成年用户" as U
+rectangle "DietLens饮食工作台\n选择、准备、实际自述与微行动" as D
+rectangle "外部模型\n只返回理解、候选与表达" as L
+rectangle "食品参考来源\n资料有来源、规格与缺口" as F
+rectangle "托管身份服务\n验证访问令牌" as I
+U --> D : 描述、核对、明确确认
+D --> L : 最小必要输入
+D --> F : 受控只读查询
+D --> I : 核验身份
+note bottom of D
+当前用途许可及确定性规则控制写入。
+外部来源没有业务库写权限。
+end note
+@enduml

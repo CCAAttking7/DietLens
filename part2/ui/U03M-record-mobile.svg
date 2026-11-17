@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="820" viewBox="0 0 390 820">
+<rect x="0" y="0" width="390" height="820" rx="12" fill="#f7f6f2" stroke="#f7f6f2"/>
+<text x="20" y="20" font-family="Microsoft YaHei,sans-serif" font-size="18" font-weight="700" fill="#b24e32" dominant-baseline="text-before-edge">DietLens   /   餐食记录</text>
+<text x="20" y="65" font-family="Microsoft YaHei,sans-serif" font-size="25" font-weight="700" fill="#24231f" dominant-baseline="text-before-edge">记录这一餐</text>
+<text x="20" y="106" font-family="Microsoft YaHei,sans-serif" font-size="14" font-weight="400" fill="#6f6b63" dominant-baseline="text-before-edge">11-18 午餐 · 个人实际 · 尚未保存</text>
+<rect x="20" y="150" width="350" height="300" rx="12" fill="#ffffff" stroke="#dfdbd2"/>
+<text x="38" y="173" font-family="Microsoft YaHei,sans-serif" font-size="21" font-weight="400" fill="#24231f" dominant-baseline="text-before-edge">番茄鸡蛋面</text>
+<text x="38" y="211" font-family="Microsoft YaHei,sans-serif" font-size="16" font-weight="400" fill="#24231f" dominant-baseline="text-before-edge">我的份量：1 份</text>
+<text x="38" y="270" font-family="Microsoft YaHei,sans-serif" font-size="19" font-weight="400" fill="#24231f" dominant-baseline="text-before-edge">无糖茶：300 mL</text>
+<text x="38" y="330" font-family="Microsoft YaHei,sans-serif" font-size="19" font-weight="400" fill="#24231f" dominant-baseline="text-before-edge">苹果：份量未知</text>
+<text x="38" y="397" font-family="Microsoft YaHei,sans-serif" font-size="17" font-weight="400" fill="#24231f" dominant-baseline="text-before-edge">＋ 添加食物</text>
+<rect x="20" y="475" width="350" height="137" rx="12" fill="#ffffff" stroke="#dfdbd2"/>
+<text x="38" y="496" font-family="Microsoft YaHei,sans-serif" font-size="19" font-weight="700" fill="#24231f" dominant-baseline="text-before-edge">逐条核对，再保存这一餐</text>
+<text x="38" y="540" font-family="Microsoft YaHei,sans-serif" font-size="15" font-weight="400" fill="#6f6b63" dominant-baseline="text-before-edge">计划只作来源，不代表实际吃过。</text>
+<text x="38" y="576" font-family="Microsoft YaHei,sans-serif" font-size="15" font-weight="400" fill="#6f6b63" dominant-baseline="text-before-edge">行动执行情况另行反馈。</text>
+<rect x="20" y="661" width="350" height="46" rx="12" fill="#b24e32" stroke="#b24e32"/>
+<text x="38" y="674" font-family="Microsoft YaHei,sans-serif" font-size="16" font-weight="700" fill="#ffffff" dominant-baseline="text-before-edge">预览这一餐</text>
+<text x="20" y="744" font-family="Microsoft YaHei,sans-serif" font-size="14" font-weight="400" fill="#6f6b63" dominant-baseline="text-before-edge">取消不保存 · 示例设计稿</text>
+</svg>

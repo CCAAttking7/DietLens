@@ -1,0 +1,200 @@
+{
+  "日期": "2026-11-17",
+  "阶段": "P3候选，待确认",
+  "工具镜像": "structurizr/structurizr:latest",
+  "镜像标识": "sha256:8aebde645a7cc8d3b9e1e774cd6d75a84ce45d74ae70eb783876182fe7db31a2",
+  "模型源摘要": "250c5b8ebf17a5e0c383380034e680234710b6f916e2d89b8cfaa4d5073784d0",
+  "运行记录": [
+    {
+      "命令": [
+        "validate",
+        "-workspace",
+        "/workspace/workspace.dsl"
+      ],
+      "退出码": 0,
+      "工具输出": ""
+    },
+    {
+      "命令": [
+        "export",
+        "-workspace",
+        "/workspace/workspace.dsl",
+        "-format",
+        "plantuml",
+        "-output",
+        "/workspace/exported-puml"
+      ],
+      "退出码": 0,
+      "工具输出": "08:53:22.018 [main] INFO com.structurizr.command.ExportCommand -- Exporting workspace from /workspace/workspace.dsl\n08:53:22.157 [main] INFO com.structurizr.command.ExportCommand -- Exporting with StructurizrPlantUMLExporter\n08:53:22.216 [main] INFO com.structurizr.command.ExportCommand -- Writing /workspace/exported-puml/structurizr-A01-context.puml\n08:53:22.220 [main] INFO com.structurizr.command.ExportCommand -- Writing /workspace/exported-puml/structurizr-A01-context-key.puml\n08:53:22.223 [main] INFO com.structurizr.command.ExportCommand -- Writing /workspace/exported-puml/structurizr-A02-containers.puml\n08:53:22.226 [main] INFO com.structurizr.command.ExportCommand -- Writing /workspace/exported-puml/structurizr-A02-containers-key.puml\n08:53:22.230 [main] INFO com.structurizr.command.ExportCommand -- Writing /workspace/exported-puml/structurizr-A03-modules.puml\n08:53:22.234 [main] INFO com.structurizr.command.ExportCommand -- Writing /workspace/exported-puml/structurizr-A03-modules-key.puml\n08:53:22.237 [main] INFO com.structurizr.command.ExportCommand -- Writing /workspace/exported-puml/structurizr-A04-local.puml\n08:53:22.240 [main] INFO com.structurizr.command.ExportCommand -- Writing /workspace/exported-puml/structurizr-A04-local-key.puml\n08:53:22.244 [main] INFO com.structurizr.command.ExportCommand -- Writing /workspace/exported-puml/structurizr-A05-hosted.puml\n08:53:22.247 [main] INFO com.structurizr.command.ExportCommand -- Writing /workspace/exported-puml/structurizr-A05-hosted-key.puml\n08:53:22.249 [main] INFO com.structurizr.command.ExportCommand -- Finished"
+    },
+    {
+      "命令": [
+        "export",
+        "-workspace",
+        "/workspace/workspace.dsl",
+        "-format",
+        "mermaid",
+        "-output",
+        "/workspace/exported-mermaid"
+      ],
+      "退出码": 0,
+      "工具输出": "08:53:23.384 [main] INFO com.structurizr.command.ExportCommand -- Exporting workspace from /workspace/workspace.dsl\n08:53:23.527 [main] INFO com.structurizr.command.ExportCommand -- Exporting with MermaidDiagramExporter\n08:53:23.555 [main] INFO com.structurizr.command.ExportCommand -- Writing /workspace/exported-mermaid/structurizr-A01-context.mmd\n08:53:23.560 [main] INFO com.structurizr.command.ExportCommand -- Writing /workspace/exported-mermaid/structurizr-A02-containers.mmd\n08:53:23.564 [main] INFO com.structurizr.command.ExportCommand -- Writing /workspace/exported-mermaid/structurizr-A03-modules.mmd\n08:53:23.567 [main] INFO com.structurizr.command.ExportCommand -- Writing /workspace/exported-mermaid/structurizr-A04-local.mmd\n08:53:23.571 [main] INFO com.structurizr.command.ExportCommand -- Writing /workspace/exported-mermaid/structurizr-A05-hosted.mmd\n08:53:23.573 [main] INFO com.structurizr.command.ExportCommand -- Finished"
+    },
+    {
+      "命令": [
+        "export",
+        "-workspace",
+        "/workspace/workspace.dsl",
+        "-format",
+        "json",
+        "-output",
+        "/workspace/exported-json"
+      ],
+      "退出码": 0,
+      "工具输出": "08:53:24.731 [main] INFO com.structurizr.command.ExportCommand -- Exporting workspace from /workspace/workspace.dsl\n08:53:24.874 [main] INFO com.structurizr.command.ExportCommand -- Exporting with JsonWorkspaceExporter\n08:53:25.183 [main] INFO com.structurizr.command.ExportCommand -- Writing /workspace/exported-json/workspace.json\n08:53:25.189 [main] INFO com.structurizr.command.ExportCommand -- Finished"
+    }
+  ],
+  "检查视图数": 5,
+  "后端模块数": 11,
+  "时序图数": 3,
+  "共享模型摘要之前": {
+    "workspace.dsl": "041f9585e55f7c165f2e2614b52c4b6873d00305a1efbebdc8f3174caf2a7cd3",
+    "workspace.json": "29892a3b0fdc15b790eca3749e82956f280e3f01953ebb50bc40389b842ce23e"
+  },
+  "共享模型摘要之后": {
+    "workspace.dsl": "041f9585e55f7c165f2e2614b52c4b6873d00305a1efbebdc8f3174caf2a7cd3",
+    "workspace.json": "29892a3b0fdc15b790eca3749e82956f280e3f01953ebb50bc40389b842ce23e"
+  },
+  "共享模型未改变": true,
+  "范围": "设计模型校验与渲染，未验证产品性能或执行业务部署",
+  "渲染记录": [
+    {
+      "源文件": "docs/design/diagrams/architecture/chinese-puml/A01-context.puml",
+      "源摘要": "db3f4e4c0b035355b6e2a629ba1f76ea3d89c81ab8b330af60bce8dc9126b260",
+      "产物": "docs/design/diagrams/architecture/rendered/A01-context.svg",
+      "产物摘要": "7bb919ac1872fe451f8a2da0e06e2fe5832043d426f167807443a29ee8d880b4",
+      "响应状态": 200,
+      "字节数": 27772
+    },
+    {
+      "源文件": "docs/design/diagrams/architecture/chinese-puml/A01-context.puml",
+      "源摘要": "db3f4e4c0b035355b6e2a629ba1f76ea3d89c81ab8b330af60bce8dc9126b260",
+      "产物": "docs/design/diagrams/architecture/rendered/A01-context.png",
+      "产物摘要": "913e2d56c85213ffc23b72d9ec4e5b4cbf839867884c7dc90435bf6e44bae38d",
+      "响应状态": 200,
+      "字节数": 60544
+    },
+    {
+      "源文件": "docs/design/diagrams/architecture/chinese-puml/A02-containers.puml",
+      "源摘要": "5cb0508fe07dfeabd4bf2b6f5a096eef7905a7e60d914460adb0c945f171a26e",
+      "产物": "docs/design/diagrams/architecture/rendered/A02-containers.svg",
+      "产物摘要": "a18bcd682911418e525d84751e3db89de0a55e7ff5b03c8bc3a509851f8e4d6e",
+      "响应状态": 200,
+      "字节数": 43507
+    },
+    {
+      "源文件": "docs/design/diagrams/architecture/chinese-puml/A02-containers.puml",
+      "源摘要": "5cb0508fe07dfeabd4bf2b6f5a096eef7905a7e60d914460adb0c945f171a26e",
+      "产物": "docs/design/diagrams/architecture/rendered/A02-containers.png",
+      "产物摘要": "a053826f545f6ca420ddfab65708e49c8fe1c12124e06a38b9aae73e356ad307",
+      "响应状态": 200,
+      "字节数": 88097
+    },
+    {
+      "源文件": "docs/design/diagrams/architecture/chinese-puml/A03-modules.puml",
+      "源摘要": "32deabac1f5a1472776094e362cb41efeb0bc5afcce2e06bafbb9f2b325223ff",
+      "产物": "docs/design/diagrams/architecture/rendered/A03-modules.svg",
+      "产物摘要": "fae0fe8c4442029b514e263a6ba176849660e0c3649f550950869dde7fe811bb",
+      "响应状态": 200,
+      "字节数": 123531
+    },
+    {
+      "源文件": "docs/design/diagrams/architecture/chinese-puml/A03-modules.puml",
+      "源摘要": "32deabac1f5a1472776094e362cb41efeb0bc5afcce2e06bafbb9f2b325223ff",
+      "产物": "docs/design/diagrams/architecture/rendered/A03-modules.png",
+      "产物摘要": "2eb54c0c314992df2711b5f8fe3c42a96fe2fee53d8aee7ae6abe5b2fde25359",
+      "响应状态": 200,
+      "字节数": 226956
+    },
+    {
+      "源文件": "docs/design/diagrams/architecture/chinese-puml/A04-local.puml",
+      "源摘要": "71561e7c858fa9d0742f8793dbd64b54eb30638070fee1895cd7ba5a72279f33",
+      "产物": "docs/design/diagrams/architecture/rendered/A04-local.svg",
+      "产物摘要": "3cf61012114b89da529323f15e014a57980269406572fadff3355a6d027f7775",
+      "响应状态": 200,
+      "字节数": 23044
+    },
+    {
+      "源文件": "docs/design/diagrams/architecture/chinese-puml/A04-local.puml",
+      "源摘要": "71561e7c858fa9d0742f8793dbd64b54eb30638070fee1895cd7ba5a72279f33",
+      "产物": "docs/design/diagrams/architecture/rendered/A04-local.png",
+      "产物摘要": "b4d11cea7a23b98fd1ea2e89838a09023e4764951b396a72be0a78c14feeaa6e",
+      "响应状态": 200,
+      "字节数": 48469
+    },
+    {
+      "源文件": "docs/design/diagrams/architecture/chinese-puml/A05-hosted.puml",
+      "源摘要": "83fc5b618a9d41bee32deab24e3a4facc1ab0bc0d0c9a29ed0aa3f807e2c57ef",
+      "产物": "docs/design/diagrams/architecture/rendered/A05-hosted.svg",
+      "产物摘要": "95d3a77cc069d1c89566648666db72e931886f75100a6a2755f8c24ca8130618",
+      "响应状态": 200,
+      "字节数": 22845
+    },
+    {
+      "源文件": "docs/design/diagrams/architecture/chinese-puml/A05-hosted.puml",
+      "源摘要": "83fc5b618a9d41bee32deab24e3a4facc1ab0bc0d0c9a29ed0aa3f807e2c57ef",
+      "产物": "docs/design/diagrams/architecture/rendered/A05-hosted.png",
+      "产物摘要": "6fd5587693219aeede66b53a8fba3d84a9d993abe6f23a0b5e29d079abe78b3f",
+      "响应状态": 200,
+      "字节数": 48352
+    },
+    {
+      "源文件": "docs/design/diagrams/architecture/S01-action.puml",
+      "源摘要": "e164fdb3a71c18e77db921cb65e5c77f76f04b9e65a0f20f437d12fef0b7c66f",
+      "产物": "docs/design/diagrams/architecture/rendered/S01-action.svg",
+      "产物摘要": "ad4760591e1334fafb02cb713ed18840081bf56ac5f584572aaac862258df0c3",
+      "响应状态": 200,
+      "字节数": 49794
+    },
+    {
+      "源文件": "docs/design/diagrams/architecture/S01-action.puml",
+      "源摘要": "e164fdb3a71c18e77db921cb65e5c77f76f04b9e65a0f20f437d12fef0b7c66f",
+      "产物": "docs/design/diagrams/architecture/rendered/S01-action.png",
+      "产物摘要": "77d351c090dc0b955aef9bf2c2483edabfb87bebeb4e1a50287c268874b47d4b",
+      "响应状态": 200,
+      "字节数": 73574
+    },
+    {
+      "源文件": "docs/design/diagrams/architecture/S02-plan-meal.puml",
+      "源摘要": "aaebeeb7c6df8d270531e6b5ea8a8c89513ba7e2b567bada0cb1f547f72c3d60",
+      "产物": "docs/design/diagrams/architecture/rendered/S02-plan-meal.svg",
+      "产物摘要": "69336c09237e8af51b03b1f49f3a3568b23ab75b92cc1e37335ceea79b80067a",
+      "响应状态": 200,
+      "字节数": 55882
+    },
+    {
+      "源文件": "docs/design/diagrams/architecture/S02-plan-meal.puml",
+      "源摘要": "aaebeeb7c6df8d270531e6b5ea8a8c89513ba7e2b567bada0cb1f547f72c3d60",
+      "产物": "docs/design/diagrams/architecture/rendered/S02-plan-meal.png",
+      "产物摘要": "ab8f0b915df6042a20be5175f21ec418dbd2b3c4e83093b8a0d0a28ef055077b",
+      "响应状态": 200,
+      "字节数": 79868
+    },
+    {
+      "源文件": "docs/design/diagrams/architecture/S03-command-recovery.puml",
+      "源摘要": "dcf6e4d346ecac69d61ac62caae8d93d5abaafc9846e61058ac7344b2e258df0",
+      "产物": "docs/design/diagrams/architecture/rendered/S03-command-recovery.svg",
+      "产物摘要": "5d35a6bf3758d809dd919f29cc4b359cc6dcc21c35379c9b7d7e6e1490fc0fc7",
+      "响应状态": 200,
+      "字节数": 45769
+    },
+    {
+      "源文件": "docs/design/diagrams/architecture/S03-command-recovery.puml",
+      "源摘要": "dcf6e4d346ecac69d61ac62caae8d93d5abaafc9846e61058ac7344b2e258df0",
+      "产物": "docs/design/diagrams/architecture/rendered/S03-command-recovery.png",
+      "产物摘要": "a1ee77241690ecae7af41618401f5451710d7e9c29cd2871e0c8ecc8975bb46b",
+      "响应状态": 200,
+      "字节数": 71645
+    }
+  ]
+}

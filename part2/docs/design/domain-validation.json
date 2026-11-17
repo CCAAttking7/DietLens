@@ -1,0 +1,22 @@
+{
+  "phase": "R2-P2领域候选版，待阶段评审",
+  "date": "2026-11-17",
+  "scope": "领域材料静态检查，非业务实现或运行验收",
+  "confirmed": [
+    "Q2 多食物组成一次实际用餐",
+    "Q3 按行动确认结束窗口，可修改"
+  ],
+  "invariants": 16,
+  "scenario_walkthroughs": 24,
+  "fr_mapping_rows": 20,
+  "puml_sources": 4,
+  "svg_exports": 4,
+  "png_exports": 4,
+  "source_and_render_text_hashes_match": true,
+  "plantuml_http_status": 200,
+  "valid_local_links": 36,
+  "p1_fr_count": 20,
+  "p1_nfr_count": 26,
+  "stage_approval_pending": true,
+  "language": "中文；必要技术标识保留原样"
+}

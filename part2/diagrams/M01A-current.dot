@@ -1,0 +1,21 @@
+digraph G {
+graph [rankdir=TB, bgcolor="#fcfbf7", pad="0.3", nodesep="0.35", ranksep="0.55", fontname="Microsoft YaHei", fontsize=18, labelloc=t, label="M01A · 当前逻辑架构 / main 5ecd03f"];
+node [shape=box, style="rounded,filled", fillcolor="#edf3ed", color="#486958", fontname="Microsoft YaHei", fontsize=12, margin="0.18,0.12"];
+edge [color="#627468", fontname="Microsoft YaHei", fontsize=10, arrowsize=0.7];
+u [label="成年用户"];
+w [label="React + TypeScript\n对话与业务页面"];
+a [label="FastAPI\n认证 / 归属 / 输入校验"];
+h [label="智能体与编排控制\n完整微行动状态控制\n计划、快速记餐关联任务"];
+b [label="独立领域服务\n档案 / 计划 / 库存\n餐食 / 食品 / 回顾"];
+d [label="存储接口\nSQLite 本地演示"];
+m [label="可选模型\n结构化理解"];
+f [label="食品参考源\n外部查询 / 本地编码索引"];
+u -> w [label="输入 / 核对 / 确认"];
+w -> a [label="HTTP /api"];
+a -> h [label="微行动 / 关联任务"];
+a -> b [label="业务端点"];
+h -> d [label="状态 / 决策 / 反馈"];
+b -> d [label="业务对象"];
+h -> m [label="有界调用"];
+b -> f [label="只读资料检索"];
+}

@@ -1,0 +1,134 @@
+classDiagram
+  class ProfileVersion {
+    version
+    goals
+    hardConstraints
+    consentScopes
+    calibrationPreferences
+    reminderSubscription
+  }
+  class PreferenceRule {
+    ruleId
+    scope
+    status
+  }
+  class FoodRecord {
+    foodId
+    category
+    sourceId
+    fetchedAt
+  }
+  class FieldEvidence {
+    field
+    value
+    unit
+    status
+    sourceRef
+  }
+  class FoodEvidenceSummary {
+    summaryId
+    purpose
+    safetyAssessment
+    priceEvidence
+    nutritionCoverage
+    profileVersion
+  }
+  class PlanVersion {
+    planId
+    version
+    dateRange
+    status
+  }
+  class PlanItem {
+    itemId
+    date
+    mealSlot
+    foodRefs
+    quantities
+  }
+  class ActiveMealSlotRef {
+    userId
+    date
+    mealSlot
+    planItemRef
+    effectiveFrom
+    effectiveTo
+  }
+  class ShoppingList {
+    listId
+    planRef
+    coveredSlots
+    stockCheckedAt
+    manualAdjustments
+    status
+  }
+  class InventoryItem {
+    inventoryItemId
+    ingredientId
+    quantity
+    unit
+    expiresOn
+    updatedAt
+  }
+  class MealRecord {
+    recordId
+    occurredAt
+    mealSlot
+    sourcePlanRef
+    effectiveVersion
+    nutritionBasisAtRecord
+  }
+  class CandidateDecisionEvent {
+    eventId
+    userId
+    eventType
+    candidateKey
+    contextType
+    occurredAt
+    ruleVersion
+    operationKey
+  }
+  class ContextSnapshot {
+    snapshotId
+    mealSlot
+    obstacles
+    profileVersion
+  }
+  class Action {
+    actionId
+    decision
+    execution
+    performedAt
+  }
+  class Task {
+    taskId
+    taskType
+    resumePoint
+  }
+  class Review {
+    period
+    mealCoverage
+    nutritionCoverage
+    actionFeedback
+  }
+  ProfileVersion "1" o-- "*" PreferenceRule : confirmedRules
+  FoodRecord "1" *-- "*" FieldEvidence : sourceFields
+  FoodEvidenceSummary ..> FoodRecord : assessesEvidence
+  PlanVersion "1" *-- "*" PlanItem : contains
+  ActiveMealSlotRef ..> PlanItem : currentAndHistoricalAssignments
+  ShoppingList ..> ActiveMealSlotRef : coveredEffectiveSlots
+  ShoppingList ..> PlanVersion : versionRef
+  ShoppingList ..> InventoryItem : readsStock
+  MealRecord ..> PlanItem : optionalHistoricalRef
+  MealRecord ..> FieldEvidence : nutritionBasisAtRecord
+  ContextSnapshot ..> ProfileVersion : usesVersion
+  Action --> ContextSnapshot : usesContext
+  Action ..> FoodEvidenceSummary : candidateEvidence
+  Task ..> Action : optionalTaskRef
+  Review ..> MealRecord : readsReports
+  Review ..> Action : readsDecisionsAndFeedback
+  Review ..> CandidateDecisionEvent : readsExplicitCandidateChanges
+  Review ..> PlanVersion : readsPlans
+  Review ..> ActiveMealSlotRef : readsHistoricalAssignments
+  Review ..> ShoppingList : readsPreparation
+  Review ..> InventoryItem : readsStock

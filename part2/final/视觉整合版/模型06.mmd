@@ -1,0 +1,37 @@
+sequenceDiagram
+  actor U as 用户
+  participant UI as 首页对话界面
+  participant H as Harness
+  participant MR as 餐食记录服务
+  participant MA as 微行动服务
+  U->>UI: 午餐吃了牛肉面，今晚怎么调整
+  UI->>H: 创建复合任务并识别意图
+  H-->>UI: 餐食草稿 + 晚餐情境待核对
+  U->>UI: 分别决定是否保存午餐、是否获取晚餐建议
+  alt 用户确认午餐记录
+    UI->>H: 提交确认餐食与操作键
+    H->>MR: 在统一事务上下文中保存 MealRecord
+    MR-->>H: 餐食写入结果
+    H->>H: 同一事务更新 Task 进度与操作回执
+  else 用户取消午餐记录
+    UI->>H: 取消餐食草稿（不写业务记录）
+    H->>H: 标记记录子任务已取消
+  end
+  opt 用户仍请求晚餐建议
+    UI->>H: 确认晚餐情境并请求候选
+    H->>MA: 生成今晚候选（仅临时预览，未采纳）
+    alt 候选生成成功
+      MA-->>H: proposed 候选及资格结果
+      H-->>UI: 展示晚餐候选，并分别显示午餐子任务结果
+    else 候选生成失败或超时
+      MA-->>H: 失败或待核对状态
+      H-->>UI: 保留午餐子任务原结果，晚餐建议可稍后重试
+    end
+  end
+  opt 候选已成功生成且用户另行明确采纳
+    U->>UI: 采纳晚餐行动
+    UI->>H: 提交采纳确认和操作键
+    H->>MA: 转发到同一业务检查与写入入口
+    MA-->>H: 正式保存 adopted + pending_feedback 的回执
+    H-->>UI: 显示已采纳及反馈入口
+  end

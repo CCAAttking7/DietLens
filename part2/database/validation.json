@@ -1,0 +1,114 @@
+{
+  "日期": "2026-11-17",
+  "阶段": "P4数据库设计候选，待确认",
+  "设计表数": 45,
+  "字段数": 440,
+  "外键数": 99,
+  "外键目标与类型及索引静态检查": "通过",
+  "所有私有外键包含用户归属": true,
+  "工具导出表字段主键及复合关系与源模型一致": true,
+  "工具提示": "存在身份与当前版本指针引起的循环依赖；以显式延迟外键及同事务写入处理，不声称工具问题为零",
+  "解析记录": [
+    {
+      "文件": "schema.sql",
+      "解析器": "pglast v8.8",
+      "语句数": 127,
+      "建表声明数": 45,
+      "结论": "语法解析通过；未执行"
+    },
+    {
+      "文件": "schema.diagram.sql",
+      "解析器": "pglast v8.8",
+      "语句数": 144,
+      "建表声明数": 45,
+      "结论": "语法解析通过；未执行"
+    },
+    {
+      "文件": "drawdb-export-reference.sql",
+      "解析器": "pglast v8.8",
+      "语句数": 144,
+      "建表声明数": 45,
+      "结论": "语法解析通过；未执行"
+    },
+    {
+      "文件": "schema.sqlite.sql",
+      "解析器": "SQLGlot 30.32.0",
+      "语句数": 121,
+      "建表声明数": 45,
+      "结论": "静态语法解析通过；不是SQLite引擎验收"
+    }
+  ],
+  "中文分区ER图数": 5,
+  "渲染记录": [
+    {
+      "源文件": "docs/design/diagrams/database/E01.dot",
+      "源摘要": "48e754a193bac13b67b23913b840bbe90fbd12e9103d378d02f4029a91a2c1b5",
+      "产物": "docs/design/diagrams/database/rendered/E01.svg",
+      "产物摘要": "767f0f7737d3888fa415837bd7df76b1ef347a84e2f72292e98b052e6f1e1b91"
+    },
+    {
+      "源文件": "docs/design/diagrams/database/E01.dot",
+      "源摘要": "48e754a193bac13b67b23913b840bbe90fbd12e9103d378d02f4029a91a2c1b5",
+      "产物": "docs/design/diagrams/database/rendered/E01.png",
+      "产物摘要": "8607ee2ba580928df4b95630f966b40ec83793269df06871f534f31605578e9b"
+    },
+    {
+      "源文件": "docs/design/diagrams/database/E02.dot",
+      "源摘要": "420c91c5365d92b36024ba91e0bf15158806cb0645d3ad283cda30b23760d9ab",
+      "产物": "docs/design/diagrams/database/rendered/E02.svg",
+      "产物摘要": "d0f97f567860cb317aff3f31882b48ff3c3a0730d4d76ed0b0a0a9185ccb4887"
+    },
+    {
+      "源文件": "docs/design/diagrams/database/E02.dot",
+      "源摘要": "420c91c5365d92b36024ba91e0bf15158806cb0645d3ad283cda30b23760d9ab",
+      "产物": "docs/design/diagrams/database/rendered/E02.png",
+      "产物摘要": "0e1d0b274d3409573128c69ebd6353bf01ea520bc77ef27abaff621aa2184a14"
+    },
+    {
+      "源文件": "docs/design/diagrams/database/E03.dot",
+      "源摘要": "f51aba35d67b5e91c705136aa2a95e653c894c4e5536fad55b9b57bc8cf077a9",
+      "产物": "docs/design/diagrams/database/rendered/E03.svg",
+      "产物摘要": "fc40338f313034a06eeeb88157963b95379e3b1a7418babf0774c37c807b4982"
+    },
+    {
+      "源文件": "docs/design/diagrams/database/E03.dot",
+      "源摘要": "f51aba35d67b5e91c705136aa2a95e653c894c4e5536fad55b9b57bc8cf077a9",
+      "产物": "docs/design/diagrams/database/rendered/E03.png",
+      "产物摘要": "897bdf7db4f9f4553acf5a1f531be884e0d50fb533993a33a4ded3bdc8c76fd8"
+    },
+    {
+      "源文件": "docs/design/diagrams/database/E04.dot",
+      "源摘要": "ea47044dfadc275104058054feea1727cc70126d601fb1c3e5ed2b99a0a7ab87",
+      "产物": "docs/design/diagrams/database/rendered/E04.svg",
+      "产物摘要": "196331570c0d2f71ba8d3a2ebb4e0f74e61871fa35b1772b9657194e5494b61d"
+    },
+    {
+      "源文件": "docs/design/diagrams/database/E04.dot",
+      "源摘要": "ea47044dfadc275104058054feea1727cc70126d601fb1c3e5ed2b99a0a7ab87",
+      "产物": "docs/design/diagrams/database/rendered/E04.png",
+      "产物摘要": "e176c5f084374b3d53720968f2499c72686b3f0cca2a133841569a8d23ce8be4"
+    },
+    {
+      "源文件": "docs/design/diagrams/database/E05.dot",
+      "源摘要": "18baf2c7ec5e1cff78b7c5ec1b13554d697e4183a60d4bd44c6d8b7991e49f64",
+      "产物": "docs/design/diagrams/database/rendered/E05.svg",
+      "产物摘要": "751f289905f617e0b7fb8bbe4ddd71668c06e7b142572652e3cb8f4e922f530c"
+    },
+    {
+      "源文件": "docs/design/diagrams/database/E05.dot",
+      "源摘要": "18baf2c7ec5e1cff78b7c5ec1b13554d697e4183a60d4bd44c6d8b7991e49f64",
+      "产物": "docs/design/diagrams/database/rendered/E05.png",
+      "产物摘要": "051a3f251bd4e7ab15d8178080bafead8f34c5352ec292d79be8101630fba61d"
+    }
+  ],
+  "文件摘要": {
+    "drawdb-export-reference.sql": "ffbc1512c77457bb09be816edcb64d8fe31084209c7d31ea43f29f5709e1946a",
+    "drawdb-model.json": "c7643611bff8fdb5309e04185b233b6ce02f818bfa2497465e2809a203f6df97",
+    "model.json": "61b4247cae2926d546e410d6d17a948cb9c84d1ff8c40a5df88434b74b795231",
+    "schema.diagram.sql": "00ff871f33984c8f81c18b59b7424eac924aeb699cb282ed02e65c295d5d4a19",
+    "schema.sql": "948feaaa63bb1d3eae267c3689d8b1c9ccf91d64f1464183cde01acda92b14a4",
+    "schema.sqlite.sql": "656c059a0e81f6ccc5b6c2c6344b04388e7b2e668fddb7672f9645f5edcd1e54",
+    "tool-record.json": "1738055f0cdd1740e958adb962ddae7b753d8e491cde0c79a27603add80d63dd"
+  },
+  "未执行内容": "未连接或创建业务数据库，未执行SQL、迁移、产品验收或容量测量"
+}

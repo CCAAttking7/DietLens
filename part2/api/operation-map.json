@@ -1,0 +1,1075 @@
+{
+  "阶段": "R2-P5候选",
+  "operations": [
+    {
+      "operationId": "createTask",
+      "path": "/tasks",
+      "method": "POST",
+      "label": "创建临时任务",
+      "requirements": [
+        "FR-002",
+        "FR-010"
+      ],
+      "module": "命令与任务",
+      "tables": [
+        "task_sessions"
+      ]
+    },
+    {
+      "operationId": "listTasks",
+      "path": "/tasks",
+      "method": "GET",
+      "label": "列出可恢复任务",
+      "requirements": [
+        "FR-010"
+      ],
+      "module": "命令与任务",
+      "tables": [
+        "task_sessions"
+      ]
+    },
+    {
+      "operationId": "getTask",
+      "path": "/tasks/{task_id}",
+      "method": "GET",
+      "label": "读取或恢复任务",
+      "requirements": [
+        "FR-010",
+        "FR-013"
+      ],
+      "module": "命令与任务",
+      "tables": [
+        "task_sessions"
+      ]
+    },
+    {
+      "operationId": "changeTaskState",
+      "path": "/tasks/{task_id}",
+      "method": "PATCH",
+      "label": "暂停恢复或取消临时任务",
+      "requirements": [
+        "FR-010",
+        "FR-013"
+      ],
+      "module": "命令与任务",
+      "tables": [
+        "task_sessions"
+      ]
+    },
+    {
+      "operationId": "continueTask",
+      "path": "/tasks/{task_id}/messages",
+      "method": "POST",
+      "label": "提交对话并获取下一步",
+      "requirements": [
+        "FR-001",
+        "FR-002",
+        "FR-010",
+        "FR-013"
+      ],
+      "module": "命令与任务",
+      "tables": [
+        "task_sessions"
+      ]
+    },
+    {
+      "operationId": "getProfile",
+      "path": "/profile",
+      "method": "GET",
+      "label": "读取本人确认档案",
+      "requirements": [
+        "FR-001"
+      ],
+      "module": "档案与授权",
+      "tables": [
+        "user_control",
+        "profile_revisions"
+      ]
+    },
+    {
+      "operationId": "getConsents",
+      "path": "/consents",
+      "method": "GET",
+      "label": "读取当前用途授权",
+      "requirements": [
+        "FR-011"
+      ],
+      "module": "档案与授权",
+      "tables": [
+        "consent_revisions"
+      ]
+    },
+    {
+      "operationId": "getCalibration",
+      "path": "/calibration",
+      "method": "GET",
+      "label": "读取校准题库和回答",
+      "requirements": [
+        "FR-001",
+        "FR-011"
+      ],
+      "module": "档案与授权",
+      "tables": [
+        "calibration_revisions",
+        "interaction_settings"
+      ]
+    },
+    {
+      "operationId": "getSettings",
+      "path": "/interaction-settings",
+      "method": "GET",
+      "label": "读取可选交互与退避状态",
+      "requirements": [
+        "FR-008",
+        "FR-011"
+      ],
+      "module": "微行动",
+      "tables": [
+        "interaction_settings"
+      ]
+    },
+    {
+      "operationId": "getContext",
+      "path": "/contexts/{context_id}",
+      "method": "GET",
+      "label": "读取已确认情境",
+      "requirements": [
+        "FR-003",
+        "FR-020"
+      ],
+      "module": "档案与授权",
+      "tables": [
+        "context_snapshots"
+      ]
+    },
+    {
+      "operationId": "uploadMedia",
+      "path": "/media",
+      "method": "POST",
+      "label": "上传本地核对图片",
+      "requirements": [
+        "FR-002",
+        "FR-012"
+      ],
+      "module": "食品证据",
+      "tables": [
+        "media_assets",
+        "task_sessions"
+      ]
+    },
+    {
+      "operationId": "getMediaStatus",
+      "path": "/media/{asset_id}",
+      "method": "GET",
+      "label": "读取图片有效性",
+      "requirements": [
+        "FR-011",
+        "FR-012"
+      ],
+      "module": "食品证据",
+      "tables": [
+        "media_assets"
+      ]
+    },
+    {
+      "operationId": "readMediaContent",
+      "path": "/media/{asset_id}/content",
+      "method": "GET",
+      "label": "在有效期内核对本人原图",
+      "requirements": [
+        "FR-010",
+        "FR-011",
+        "FR-012"
+      ],
+      "module": "食品证据",
+      "tables": [
+        "media_assets",
+        "user_control"
+      ]
+    },
+    {
+      "operationId": "searchFoodFacts",
+      "path": "/foods",
+      "method": "GET",
+      "label": "检索已核对食品证据",
+      "requirements": [
+        "FR-002",
+        "FR-015"
+      ],
+      "module": "食品证据",
+      "tables": [
+        "food_observations",
+        "food_fields",
+        "source_references"
+      ]
+    },
+    {
+      "operationId": "getFoodFact",
+      "path": "/foods/{observation_id}",
+      "method": "GET",
+      "label": "读取指定食品证据版本",
+      "requirements": [
+        "FR-002",
+        "FR-012",
+        "FR-015"
+      ],
+      "module": "食品证据",
+      "tables": [
+        "food_observations",
+        "food_fields",
+        "field_sources"
+      ]
+    },
+    {
+      "operationId": "getSource",
+      "path": "/sources/{source_id}",
+      "method": "GET",
+      "label": "读取当前可用来源",
+      "requirements": [
+        "FR-012",
+        "FR-015"
+      ],
+      "module": "食品证据",
+      "tables": [
+        "source_references",
+        "media_assets"
+      ]
+    },
+    {
+      "operationId": "listIngredients",
+      "path": "/ingredients",
+      "method": "GET",
+      "label": "读取标准食材目录",
+      "requirements": [
+        "FR-018",
+        "FR-019"
+      ],
+      "module": "计划与准备",
+      "tables": [
+        "ingredients"
+      ]
+    },
+    {
+      "operationId": "resolveIngredients",
+      "path": "/ingredients/resolve",
+      "method": "POST",
+      "label": "核对已有食材或形成临时匹配",
+      "requirements": [
+        "FR-018",
+        "FR-019"
+      ],
+      "module": "计划与准备",
+      "tables": [
+        "task_sessions",
+        "ingredients"
+      ]
+    },
+    {
+      "operationId": "parseFood",
+      "path": "/analyses/food",
+      "method": "POST",
+      "label": "解析标签菜单或餐食图片",
+      "requirements": [
+        "FR-002",
+        "FR-003",
+        "FR-012",
+        "FR-013"
+      ],
+      "module": "外部工具执行",
+      "tables": [
+        "task_sessions",
+        "constraint_assessments"
+      ]
+    },
+    {
+      "operationId": "compareFoods",
+      "path": "/analyses/comparisons",
+      "method": "POST",
+      "label": "比较同口径营养",
+      "requirements": [
+        "FR-015",
+        "FR-013"
+      ],
+      "module": "外部工具执行",
+      "tables": [
+        "task_sessions",
+        "constraint_assessments"
+      ]
+    },
+    {
+      "operationId": "recommendMenu",
+      "path": "/analyses/menus",
+      "method": "POST",
+      "label": "筛选现实菜单",
+      "requirements": [
+        "FR-003",
+        "FR-016",
+        "FR-013"
+      ],
+      "module": "外部工具执行",
+      "tables": [
+        "task_sessions",
+        "constraint_assessments"
+      ]
+    },
+    {
+      "operationId": "proposePlan",
+      "path": "/analyses/plans",
+      "method": "POST",
+      "label": "形成分步日周计划草案",
+      "requirements": [
+        "FR-003",
+        "FR-017",
+        "FR-013"
+      ],
+      "module": "外部工具执行",
+      "tables": [
+        "task_sessions",
+        "constraint_assessments"
+      ]
+    },
+    {
+      "operationId": "proposeAction",
+      "path": "/analyses/actions",
+      "method": "POST",
+      "label": "形成完整微行动候选",
+      "requirements": [
+        "FR-003",
+        "FR-004",
+        "FR-008",
+        "FR-013"
+      ],
+      "module": "外部工具执行",
+      "tables": [
+        "task_sessions",
+        "constraint_assessments"
+      ]
+    },
+    {
+      "operationId": "explainReview",
+      "path": "/analyses/review-text",
+      "method": "POST",
+      "label": "表述已计算的期间回顾",
+      "requirements": [
+        "FR-009",
+        "FR-013"
+      ],
+      "module": "外部工具执行",
+      "tables": [
+        "task_sessions",
+        "constraint_assessments"
+      ]
+    },
+    {
+      "operationId": "listPlans",
+      "path": "/plans",
+      "method": "GET",
+      "label": "读取计划及当前范围",
+      "requirements": [
+        "FR-017"
+      ],
+      "module": "计划与准备",
+      "tables": [
+        "plan_heads",
+        "plan_revisions",
+        "slot_assignments"
+      ]
+    },
+    {
+      "operationId": "getPlan",
+      "path": "/plans/{plan_id}",
+      "method": "GET",
+      "label": "读取指定计划版本",
+      "requirements": [
+        "FR-017",
+        "FR-020"
+      ],
+      "module": "计划与准备",
+      "tables": [
+        "plan_heads",
+        "plan_revisions",
+        "planned_meals",
+        "planned_foods"
+      ]
+    },
+    {
+      "operationId": "getPreparationDraft",
+      "path": "/plans/{plan_id}/preparation-preview",
+      "method": "GET",
+      "label": "只读汇总需求与库存差额",
+      "requirements": [
+        "FR-018",
+        "FR-019"
+      ],
+      "module": "计划与准备",
+      "tables": [
+        "ingredient_requirements",
+        "inventory_revisions",
+        "preparation_lists"
+      ]
+    },
+    {
+      "operationId": "getPreparation",
+      "path": "/preparations/{list_id}",
+      "method": "GET",
+      "label": "读取准备清单及独立状态",
+      "requirements": [
+        "FR-018",
+        "FR-020"
+      ],
+      "module": "计划与准备",
+      "tables": [
+        "preparation_lists",
+        "preparation_lines"
+      ]
+    },
+    {
+      "operationId": "listInventory",
+      "path": "/inventory",
+      "method": "GET",
+      "label": "读取人工核对库存",
+      "requirements": [
+        "FR-019"
+      ],
+      "module": "计划与准备",
+      "tables": [
+        "inventory_heads",
+        "inventory_revisions"
+      ]
+    },
+    {
+      "operationId": "listMealRecords",
+      "path": "/meal-records",
+      "method": "GET",
+      "label": "读取本人实际用餐",
+      "requirements": [
+        "FR-014"
+      ],
+      "module": "实际餐食",
+      "tables": [
+        "meal_heads",
+        "meal_revisions",
+        "reported_foods"
+      ]
+    },
+    {
+      "operationId": "getMealRecord",
+      "path": "/meal-records/{record_id}",
+      "method": "GET",
+      "label": "读取实际用餐及多食物",
+      "requirements": [
+        "FR-014",
+        "FR-020"
+      ],
+      "module": "实际餐食",
+      "tables": [
+        "meal_heads",
+        "meal_revisions",
+        "reported_foods"
+      ]
+    },
+    {
+      "operationId": "prefillMeal",
+      "path": "/plans/{plan_id}/meal-prefill",
+      "method": "GET",
+      "label": "只读预填个人餐食草稿",
+      "requirements": [
+        "FR-014",
+        "FR-020"
+      ],
+      "module": "实际餐食",
+      "tables": [
+        "planned_foods",
+        "plan_revisions"
+      ]
+    },
+    {
+      "operationId": "listActions",
+      "path": "/actions",
+      "method": "GET",
+      "label": "读取本人行动与有效反馈",
+      "requirements": [
+        "FR-005",
+        "FR-006",
+        "FR-007"
+      ],
+      "module": "微行动",
+      "tables": [
+        "micro_actions",
+        "action_decisions",
+        "action_windows",
+        "execution_revisions"
+      ]
+    },
+    {
+      "operationId": "getAction",
+      "path": "/actions/{action_id}",
+      "method": "GET",
+      "label": "读取行动窗口及执行修订",
+      "requirements": [
+        "FR-006",
+        "FR-007"
+      ],
+      "module": "微行动",
+      "tables": [
+        "micro_actions",
+        "action_windows",
+        "execution_revisions"
+      ]
+    },
+    {
+      "operationId": "listLearningCandidates",
+      "path": "/learning-candidates",
+      "method": "GET",
+      "label": "读取待核对偏好与情境线索",
+      "requirements": [
+        "FR-008",
+        "FR-011"
+      ],
+      "module": "微行动",
+      "tables": [
+        "learning_candidates",
+        "learning_evidence"
+      ]
+    },
+    {
+      "operationId": "listPreferences",
+      "path": "/preferences",
+      "method": "GET",
+      "label": "读取本人稳定偏好规则",
+      "requirements": [
+        "FR-001",
+        "FR-008"
+      ],
+      "module": "微行动",
+      "tables": [
+        "preference_rule_revisions"
+      ]
+    },
+    {
+      "operationId": "getExpectedMeals",
+      "path": "/expected-meals/{week_start}",
+      "method": "GET",
+      "label": "读取已确认预期餐次分母",
+      "requirements": [
+        "FR-009"
+      ],
+      "module": "回顾查询",
+      "tables": [
+        "expected_schedules",
+        "expected_slots"
+      ]
+    },
+    {
+      "operationId": "listRecoveryEpisodes",
+      "path": "/recovery-episodes",
+      "method": "GET",
+      "label": "读取确认恢复周期",
+      "requirements": [
+        "FR-009"
+      ],
+      "module": "回顾查询",
+      "tables": [
+        "recovery_episodes",
+        "recovery_exclusions"
+      ]
+    },
+    {
+      "operationId": "getPeriodReview",
+      "path": "/reviews",
+      "method": "GET",
+      "label": "按一致截点计算期间回顾",
+      "requirements": [
+        "FR-009",
+        "FR-011"
+      ],
+      "module": "回顾查询",
+      "tables": [
+        "user_control",
+        "meal_revisions",
+        "execution_revisions",
+        "action_windows",
+        "expected_slots",
+        "week_presentations",
+        "recovery_episodes"
+      ]
+    },
+    {
+      "operationId": "previewCommand",
+      "path": "/command-previews",
+      "method": "POST",
+      "label": "预览业务变更及依赖影响",
+      "requirements": [
+        "FR-001",
+        "FR-003",
+        "FR-005",
+        "FR-010",
+        "FR-011",
+        "FR-014",
+        "FR-017",
+        "FR-018",
+        "FR-019",
+        "FR-020"
+      ],
+      "module": "命令与任务",
+      "tables": [
+        "task_sessions",
+        "user_control"
+      ]
+    },
+    {
+      "operationId": "commitCommand",
+      "path": "/commands",
+      "method": "POST",
+      "label": "明确确认并原子提交预览",
+      "requirements": [
+        "FR-001",
+        "FR-002",
+        "FR-003",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "FR-007",
+        "FR-008",
+        "FR-009",
+        "FR-010",
+        "FR-011",
+        "FR-012",
+        "FR-013",
+        "FR-014",
+        "FR-015",
+        "FR-016",
+        "FR-017",
+        "FR-018",
+        "FR-019",
+        "FR-020"
+      ],
+      "module": "命令与任务",
+      "tables": [
+        "command_receipts",
+        "audit_events",
+        "user_control"
+      ]
+    },
+    {
+      "operationId": "getCommandReceipt",
+      "path": "/command-receipts/{operation_key}",
+      "method": "GET",
+      "label": "按原键查提交结果",
+      "requirements": [
+        "FR-010",
+        "FR-013"
+      ],
+      "module": "命令与任务",
+      "tables": [
+        "command_receipts",
+        "user_control"
+      ]
+    },
+    {
+      "operationId": "getDataJob",
+      "path": "/data-jobs/{job_id}",
+      "method": "GET",
+      "label": "查询导出删除的真实进度",
+      "requirements": [
+        "FR-011"
+      ],
+      "module": "期限与数据控制",
+      "tables": [
+        "data_control_jobs",
+        "user_control"
+      ]
+    },
+    {
+      "operationId": "downloadExport",
+      "path": "/data-jobs/{job_id}/download",
+      "method": "GET",
+      "label": "认证后下载本人导出文件",
+      "requirements": [
+        "FR-011"
+      ],
+      "module": "期限与数据控制",
+      "tables": [
+        "data_control_jobs"
+      ]
+    },
+    {
+      "operationId": "getHealth",
+      "path": "/health",
+      "method": "GET",
+      "label": "读取最小运行状态",
+      "requirements": [],
+      "module": "请求与身份",
+      "tables": []
+    }
+  ],
+  "commands": [
+    {
+      "kind": "profile.confirm",
+      "label": "确认或修订档案",
+      "schema": "CommandProfileConfirm",
+      "data_schema": "ProfileData",
+      "requirements": [
+        "FR-001"
+      ],
+      "module": "档案与授权",
+      "tables": [
+        "profile_revisions",
+        "user_control"
+      ]
+    },
+    {
+      "kind": "consent.change",
+      "label": "变更用途授权",
+      "schema": "CommandConsentChange",
+      "data_schema": "ConsentInput",
+      "requirements": [
+        "FR-011"
+      ],
+      "module": "档案与授权",
+      "tables": [
+        "consent_revisions",
+        "user_control"
+      ]
+    },
+    {
+      "kind": "calibration.answer",
+      "label": "确认校准回答",
+      "schema": "CommandCalibrationAnswer",
+      "data_schema": "CalibrationAnswer",
+      "requirements": [
+        "FR-001",
+        "FR-011"
+      ],
+      "module": "档案与授权",
+      "tables": [
+        "calibration_revisions"
+      ]
+    },
+    {
+      "kind": "settings.change",
+      "label": "修改可选交互开关",
+      "schema": "CommandSettingsChange",
+      "data_schema": "SettingsInput",
+      "requirements": [
+        "FR-008",
+        "FR-011"
+      ],
+      "module": "微行动",
+      "tables": [
+        "interaction_settings"
+      ]
+    },
+    {
+      "kind": "context.confirm",
+      "label": "确认当前情境",
+      "schema": "CommandContextConfirm",
+      "data_schema": "ContextInput",
+      "requirements": [
+        "FR-003",
+        "FR-020"
+      ],
+      "module": "档案与授权",
+      "tables": [
+        "context_snapshots"
+      ]
+    },
+    {
+      "kind": "food.confirm",
+      "label": "逐字段核对食品",
+      "schema": "CommandFoodConfirm",
+      "data_schema": "FoodInput",
+      "requirements": [
+        "FR-002",
+        "FR-012",
+        "FR-015",
+        "FR-016"
+      ],
+      "module": "食品证据",
+      "tables": [
+        "food_observations",
+        "food_fields",
+        "field_sources",
+        "source_references"
+      ]
+    },
+    {
+      "kind": "plan.confirm",
+      "label": "确认或替换计划",
+      "schema": "CommandPlanConfirm",
+      "data_schema": "PlanInput",
+      "requirements": [
+        "FR-017",
+        "FR-020"
+      ],
+      "module": "计划与准备",
+      "tables": [
+        "plan_heads",
+        "plan_revisions",
+        "planned_meals",
+        "planned_foods",
+        "ingredient_requirements",
+        "slot_assignments"
+      ]
+    },
+    {
+      "kind": "preparation.confirm",
+      "label": "核对准备采购清单",
+      "schema": "CommandPreparationConfirm",
+      "data_schema": "PreparationInput",
+      "requirements": [
+        "FR-018"
+      ],
+      "module": "计划与准备",
+      "tables": [
+        "preparation_lists",
+        "preparation_lines",
+        "preparation_sources"
+      ]
+    },
+    {
+      "kind": "preparation.status",
+      "label": "报告已购或已准备",
+      "schema": "CommandPreparationStatus",
+      "data_schema": "PreparationStatusInput",
+      "requirements": [
+        "FR-018",
+        "FR-019",
+        "FR-020"
+      ],
+      "module": "计划与准备",
+      "tables": [
+        "preparation_lists",
+        "preparation_lines"
+      ]
+    },
+    {
+      "kind": "inventory.confirm",
+      "label": "核对或修订库存",
+      "schema": "CommandInventoryConfirm",
+      "data_schema": "InventoryInput",
+      "requirements": [
+        "FR-019"
+      ],
+      "module": "计划与准备",
+      "tables": [
+        "inventory_heads",
+        "inventory_revisions",
+        "preparation_lists"
+      ]
+    },
+    {
+      "kind": "meal.confirm",
+      "label": "确认或修订个人用餐",
+      "schema": "CommandMealConfirm",
+      "data_schema": "MealInput",
+      "requirements": [
+        "FR-014",
+        "FR-020"
+      ],
+      "module": "实际餐食",
+      "tables": [
+        "meal_heads",
+        "meal_revisions",
+        "reported_foods"
+      ]
+    },
+    {
+      "kind": "action.decide",
+      "label": "采纳跳过或替代候选",
+      "schema": "CommandActionDecide",
+      "data_schema": "ActionDecisionInput",
+      "requirements": [
+        "FR-004",
+        "FR-005",
+        "FR-020"
+      ],
+      "module": "微行动",
+      "tables": [
+        "micro_actions",
+        "action_decisions",
+        "action_windows",
+        "interaction_events"
+      ]
+    },
+    {
+      "kind": "action.window",
+      "label": "显式修正行动窗口",
+      "schema": "CommandActionWindow",
+      "data_schema": "WindowInput",
+      "requirements": [
+        "FR-007",
+        "FR-008"
+      ],
+      "module": "微行动",
+      "tables": [
+        "micro_actions",
+        "action_windows"
+      ]
+    },
+    {
+      "kind": "action.feedback",
+      "label": "报告或更正执行",
+      "schema": "CommandActionFeedback",
+      "data_schema": "ExecutionInput",
+      "requirements": [
+        "FR-006",
+        "FR-007"
+      ],
+      "module": "微行动",
+      "tables": [
+        "micro_actions",
+        "execution_revisions"
+      ]
+    },
+    {
+      "kind": "learning.decide",
+      "label": "核对偏好或情境候选",
+      "schema": "CommandLearningDecide",
+      "data_schema": "LearningDecisionInput",
+      "requirements": [
+        "FR-008",
+        "FR-011"
+      ],
+      "module": "微行动",
+      "tables": [
+        "learning_candidates",
+        "preference_rule_revisions",
+        "learning_evidence"
+      ]
+    },
+    {
+      "kind": "preference.confirm",
+      "label": "修订或停用稳定规则",
+      "schema": "CommandPreferenceConfirm",
+      "data_schema": "PreferenceInput",
+      "requirements": [
+        "FR-001",
+        "FR-008"
+      ],
+      "module": "微行动",
+      "tables": [
+        "preference_rule_revisions"
+      ]
+    },
+    {
+      "kind": "expected.confirm",
+      "label": "确认预期餐次分母",
+      "schema": "CommandExpectedConfirm",
+      "data_schema": "ExpectedInput",
+      "requirements": [
+        "FR-009"
+      ],
+      "module": "回顾查询",
+      "tables": [
+        "expected_schedules",
+        "expected_slots"
+      ]
+    },
+    {
+      "kind": "recovery.confirm",
+      "label": "确认恢复起止与排除",
+      "schema": "CommandRecoveryConfirm",
+      "data_schema": "RecoveryInput",
+      "requirements": [
+        "FR-009"
+      ],
+      "module": "回顾查询",
+      "tables": [
+        "recovery_episodes",
+        "recovery_exclusions"
+      ]
+    },
+    {
+      "kind": "week.present",
+      "label": "确认连续周呈现",
+      "schema": "CommandWeekPresent",
+      "data_schema": "WeekInput",
+      "requirements": [
+        "FR-009",
+        "FR-011"
+      ],
+      "module": "回顾查询",
+      "tables": [
+        "week_presentations"
+      ]
+    },
+    {
+      "kind": "data.export",
+      "label": "请求导出本人数据",
+      "schema": "CommandDataExport",
+      "data_schema": "ExportInput",
+      "requirements": [
+        "FR-011"
+      ],
+      "module": "期限与数据控制",
+      "tables": [
+        "data_control_jobs"
+      ]
+    },
+    {
+      "kind": "data.delete",
+      "label": "确认范围后请求删除",
+      "schema": "CommandDataDelete",
+      "data_schema": "DeleteInput",
+      "requirements": [
+        "FR-011",
+        "FR-020"
+      ],
+      "module": "期限与数据控制",
+      "tables": [
+        "user_control",
+        "data_control_jobs"
+      ]
+    },
+    {
+      "kind": "data.renew",
+      "label": "确认业务保留续期",
+      "schema": "CommandDataRenew",
+      "data_schema": "RenewInput",
+      "requirements": [
+        "FR-011"
+      ],
+      "module": "期限与数据控制",
+      "tables": [
+        "profile_revisions",
+        "media_assets",
+        "consent_revisions",
+        "context_snapshots",
+        "source_references",
+        "food_observations",
+        "constraint_assessments",
+        "ingredients",
+        "plan_heads",
+        "inventory_heads",
+        "preparation_lists",
+        "meal_heads",
+        "micro_actions",
+        "reminder_events",
+        "interaction_settings",
+        "interaction_events",
+        "learning_candidates",
+        "preference_rule_revisions",
+        "calibration_revisions",
+        "expected_schedules",
+        "recovery_episodes",
+        "week_presentations",
+        "audit_events"
+      ]
+    },
+    {
+      "kind": "ingredient.confirm",
+      "label": "确认标准食材身份",
+      "schema": "CommandIngredientConfirm",
+      "data_schema": "IngredientInput",
+      "requirements": [
+        "FR-018",
+        "FR-019"
+      ],
+      "module": "计划与准备",
+      "tables": [
+        "ingredients"
+      ]
+    }
+  ]
+}

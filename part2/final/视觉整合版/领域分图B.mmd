@@ -1,0 +1,47 @@
+classDiagram
+direction TB
+class ProfileVersion["确认档案"] {
+  确认目标及硬约束
+  授权与可选校准
+}
+class PreferenceRule["稳定偏好"] {
+  适用范围与状态
+}
+class FoodRecord["食品来源记录"] {
+  食品身份及来源
+  获取时间
+}
+class FieldEvidence["字段证据"] {
+  值与单位
+  状态及来源
+}
+class FoodEvidenceSummary["当前用途证据摘要"] {
+  用途与约束版本
+  安全价格营养分别判断
+}
+class ContextSnapshot["情境快照"] {
+  餐次障碍及档案版本
+}
+class Action["正式行动"] {
+  正式决定及执行
+  实际执行时间
+}
+class Task["任务"] {
+  类型与恢复位置
+}
+class CandidateDecisionEvent["候选选择事件"] {
+  候选标识与情境
+  事件及规则版本
+}
+class Review["阶段回顾"] {
+  期间覆盖与反馈
+}
+  ProfileVersion "1" o-- "*" PreferenceRule : 确认规则
+  FoodRecord "1" *-- "*" FieldEvidence : 来源字段
+  FoodEvidenceSummary ..> FoodRecord : 核对证据
+  ContextSnapshot ..> ProfileVersion : 采用版本
+  Action --> ContextSnapshot : 所用情境
+  Action ..> FoodEvidenceSummary : 候选证据
+  Task ..> Action : 可选任务关联
+  Review ..> Action : 读取决定与执行
+  Review ..> CandidateDecisionEvent : 读取明确选择

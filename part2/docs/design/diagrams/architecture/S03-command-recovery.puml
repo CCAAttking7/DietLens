@@ -1,0 +1,57 @@
+@startuml
+skinparam defaultFontName Noto Sans CJK SC
+skinparam backgroundColor #FCFBF7
+skinparam sequenceMessageAlign center
+skinparam maxMessageSize 220
+skinparam sequenceArrowFontSize 14
+skinparam ParticipantBackgroundColor #EDF3ED
+skinparam ParticipantBorderColor #486958
+skinparam NoteBackgroundColor #FFF1D9
+hide footbox
+title S03 原子命令、冲突与响应丢失恢复
+actor "用户" as U
+participant "网页工作台" as W
+participant "命令与任务" as C
+participant "领域模块" as B
+database "唯一权威业务库" as D
+U -> W : 确认已核对的版本
+W -> C : 命令：操作标识、摘要、预期版本
+C -> C : 验证身份、资源归属及当前授权
+C -> D : 开始短事务，先锁定用户处理控制
+C -> D : 查询操作标识并复核当前授权
+group 分支：已有回执且摘要一致
+D --> C : 原提交回执
+C -> D : 结束只读处理
+C --> W : 在当前授权内返回原提交
+else 同标识不同摘要
+C -> D : 回滚
+C --> W : 拒绝复用，要求新的明确操作
+else 尚无回执
+C -> B : 校验确认绑定、版本及不变量
+group 分支：授权、版本或业务校验失败
+B --> C : 具体冲突或待核对原因
+C -> D : 回滚，不留部分业务与回执
+C --> W : 返回差异，等待重新核对
+else 所有条件满足
+B --> C : 待持久化变更
+C -> D : 条件更新并检查行数；业务/任务/事件/回执同事务
+group 分支：写入或提交失败且确定未提交
+C -> D : 回滚
+C --> W : 失败，可按相同操作标识查询结果
+else 提交完成
+D --> C : 唯一提交标识
+C ->x W : 响应传输丢失
+W -> C : 原操作标识及摘要查询或重试
+C -> C : 再验身份、当前授权与归属
+C -> D : 查询持久回执，不重复业务写入
+D --> C : 原提交标识及授权内结果
+C --> W : 恢复原提交
+end
+end
+end
+note over C,D
+无法确定提交结果时先查回执，不能新造操作重做。
+并发同键受锁与唯一约束保护；冲突事务结束后再读已提交回执。
+当前删除或撤回可限制返回内容，原回执不绕过授权。
+end note
+@enduml

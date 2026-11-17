@@ -1,0 +1,28 @@
+@startuml
+skinparam defaultFontName Noto Sans CJK SC
+skinparam defaultFontSize 22
+skinparam backgroundColor #FCFBF7
+skinparam shadowing false
+skinparam sequenceArrowFontSize 20
+skinparam sequenceParticipantFontSize 22
+skinparam maxMessageSize 270
+hide footbox
+title 逻辑架构：受控编排的模块化单体
+rectangle "网页工作台\n对话入口＋结构化核对" as W
+package "一个后端应用" {
+rectangle "请求与身份\n当前主体和资源归属" as B
+rectangle "命令与任务\n确认绑定、版本、回执和恢复" as C
+rectangle "领域模块\n档案授权／食品证据／计划准备\n实际餐食／微行动／回顾" as M
+rectangle "工具执行\n白名单、超时、预算" as T
+rectangle "期限与数据控制\n导出、清理及派生失效" as R
+}
+database "唯一权威业务库" as D
+W --> B : 认证请求
+B --> C : 确认命令
+C --> M : 领域用例
+C --> T : 事务外外调
+M --> D : 统一事务范围
+C --> D : 原子提交和回执
+R --> D : 有断点清理
+B --> M : 授权查询
+@enduml

@@ -1,0 +1,22 @@
+digraph G {
+graph [rankdir=TB, bgcolor="#fcfbf7", pad="0.3", nodesep="0.35", ranksep="0.55", fontname="Microsoft YaHei", fontsize=18, labelloc=t, label="M06 · 目标原子命令与中断恢复 / UC-11"];
+node [shape=box, style="rounded,filled", fillcolor="#edf3ed", color="#486958", fontname="Microsoft YaHei", fontsize=12, margin="0.18,0.12"];
+edge [color="#627468", fontname="Microsoft YaHei", fontsize=10, arrowsize=0.7];
+n1 [label="API：验证身份、归属、最新授权\n同用户域查 操作键 / 请求摘要"];
+n2 [label="已有回执：同摘要返回原结果\n不同摘要返回 请求内容冲突"];
+n3 [label="新命令：事务开始\n唯一键 + 草稿确认 + 预期版本检查"];
+n4 [label="写业务对象 + 任务进度\n写事件 + 原结果回执"];
+n5 [label="提交事务\n四类写入一并生效"];
+n6 [label="向 网页 返回对象及版本"];
+n7 [label="响应丢失：保留原键和请求\n用户恢复 / 查询回执"];
+fail [label="任何事务内异常 → 回滚事务\n冲突提示重载；不盲目重试写入"];
+n1 -> n2 [label="已存在"];
+n1 -> n3 [label="不存在"];
+n3 -> n4 [label="检查通过"];
+n3 -> fail [label="拒绝/错误"];
+n4 -> fail [label="任一步失败"];
+n4 -> n5 [label="全部成功"];
+n5 -> n6 [label="响应正常"];
+n5 -> n7 [label="提交后断网"];
+n7 -> n1 [label="原键恢复；重新验权"];
+}

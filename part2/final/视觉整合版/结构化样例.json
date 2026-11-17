@@ -1,0 +1,262 @@
+[
+  {
+    "foodEvidenceSummary": {
+      "summaryId": "fes_001",
+      "foodRef": "food_oat_001",
+      "purpose": "micro_action_candidate",
+      "identity": {
+        "category": "packaged_product",
+        "barcode": "6900000000000",
+        "status": "matched"
+      },
+      "fieldEvidence": {
+        "ingredients": {
+          "status": "available",
+          "value": [
+            "燕麦",
+            "水"
+          ],
+          "sourceRef": "label_001"
+        },
+        "allergens": {
+          "status": "unknown",
+          "value": null,
+          "sourceRef": "source_001"
+        },
+        "energy": {
+          "status": "conflicted",
+          "values": [
+            42,
+            55
+          ],
+          "unit": "kcal/100mL"
+        }
+      },
+      "safetyAssessment": {
+        "status": "needs_confirmation",
+        "reason": "allergen_evidence_unknown"
+      },
+      "priceEvidence": {
+        "status": "unknown",
+        "price": null,
+        "unit": null
+      },
+      "nutritionCoverage": {
+        "energy": "conflicted"
+      },
+      "profileVersion": "profile_v7",
+      "ruleVersion": "food-rule-v2",
+      "allowedUses": [
+        "food_exploration",
+        "meal_record"
+      ],
+      "blockedUses": [
+        "meal_recommendation",
+        "plan_candidate",
+        "micro_action_candidate"
+      ]
+    }
+  },
+  {
+    "action": {
+      "actionId": "act_001",
+      "contextSnapshotRef": "ctx_001",
+      "dimension": "substitution",
+      "triggerCue": "点午餐饮品时",
+      "behavior": "把含糖饮品换成已确认可获得的白水",
+      "effort": "low",
+      "candidate": {
+        "candidateId": "cand_001",
+        "candidateKey": "drink_substitution_to_water",
+        "qualification": "eligible",
+        "foodEvidenceRefs": [
+          "fes_water_001"
+        ],
+        "profileVersion": "profile_v7"
+      },
+      "decision": "adopted",
+      "execution": "pending_feedback",
+      "decisionAt": "2026-11-17T04:00:00Z",
+      "feedbackWindow": {
+        "endsAt": "2026-11-18T04:00:00Z",
+        "timezone": "Asia/Shanghai"
+      },
+      "performedAt": null,
+      "feedbackHistory": [],
+      "ruleVersion": "action-rule-v2"
+    }
+  },
+  {
+    "shoppingList": {
+      "listId": "list_001",
+      "planRef": {
+        "planId": "plan_12",
+        "version": 2
+      },
+      "coveredSlots": [
+        "2026-11-18:dinner"
+      ],
+      "stockCheckedAt": "2026-11-17T03:00:00Z",
+      "items": [
+        {
+          "ingredientId": "chicken",
+          "required": {
+            "value": 300,
+            "unit": "g"
+          },
+          "confirmedInventory": {
+            "inventoryItemId": "stock_chicken_01",
+            "value": 200,
+            "unit": "g",
+            "expiresOn": "2026-11-20",
+            "updatedAt": "2026-11-17T02:30:00Z"
+          },
+          "gap": {
+            "value": 100,
+            "unit": "g",
+            "status": "available"
+          },
+          "sourcePlanItemIds": [
+            "plan_item_1"
+          ],
+          "purchaseStatus": "todo",
+          "preparationStatus": "todo"
+        },
+        {
+          "ingredientId": "oat_milk",
+          "required": {
+            "value": 500,
+            "unit": "mL"
+          },
+          "confirmedInventory": {
+            "inventoryItemId": "stock_oat_01",
+            "value": null,
+            "unit": "mL",
+            "quantityBand": "low",
+            "updatedAt": "2026-11-17T02:40:00Z"
+          },
+          "gap": {
+            "value": null,
+            "unit": "mL",
+            "status": "unknown"
+          },
+          "sourcePlanItemIds": [
+            "plan_item_1"
+          ],
+          "purchaseStatus": "needs_confirmation",
+          "preparationStatus": "todo"
+        }
+      ],
+      "status": "active",
+      "ruleVersion": "shopping-rule-v2"
+    }
+  },
+  {
+    "review": {
+      "sourceVersions": {
+        "profileVersion": "profile_v7",
+        "ruleVersion": "review-rule-v2"
+      },
+      "period": {
+        "start": "2026-11-09",
+        "end": "2026-11-15",
+        "timezone": "Asia/Shanghai"
+      },
+      "mealCoverage": {
+        "recordedExpectedSlots": 6,
+        "confirmedExpectedSlots": 10,
+        "extraRecordedSlots": 0,
+        "ratio": 0.6,
+        "displayLevel": "recorded_scope_only"
+      },
+      "nutritionCoverage": {
+        "energy": {
+          "calculableEntries": 5,
+          "relevantEntries": 8,
+          "ratio": 0.625,
+          "knownSubtotalKcal": 1420
+        }
+      },
+      "planAlignment": {
+        "explicit_source": 3,
+        "same_slot_unlinked": 1,
+        "record_only": 2,
+        "unverifiable": 0,
+        "plan_only": 1,
+        "neither_recorded_nor_planned": 3
+      },
+      "completedActionsByPerformedWeek": 2,
+      "actionFeedbackByWindowEndWeek": {
+        "closedAdoptions": 8,
+        "validFeedback": 5,
+        "complete": 3,
+        "partial": 1,
+        "notDone": 1,
+        "unknown": 3,
+        "feedbackCoverage": 0.625,
+        "completionAmongFeedback": 0.6
+      },
+      "adoptedActionsByDecisionWeek": 6,
+      "candidateChangesByDecisionWeek": {
+        "switched": 2,
+        "modified": 1,
+        "sourceEventIds": [
+          "change_001",
+          "change_002",
+          "change_003"
+        ]
+      },
+      "insights": [
+        {
+          "rule": "repeated_time_obstacle",
+          "evidence": [
+            {
+              "mealRecordId": "meal_003",
+              "mealSlot": "2026-11-11:dinner",
+              "actionId": "action_004",
+              "reportedObstacle": "time_shortage"
+            },
+            {
+              "mealRecordId": "meal_004",
+              "mealSlot": "2026-11-12:dinner",
+              "actionId": "action_005",
+              "reportedObstacle": "time_shortage"
+            }
+          ],
+          "text": "已记录的两次晚餐都提到时间困难，是否需要减少准备步骤？",
+          "nextStep": {
+            "targetTask": "micro_action",
+            "prefill": {
+              "mealSlot": "dinner",
+              "effortPreference": "low_prep_time"
+            },
+            "requiresUserConfirmation": true
+          }
+        }
+      ],
+      "sourceRecordIds": [
+        "meal_001",
+        "meal_002",
+        "meal_003",
+        "meal_004",
+        "meal_005",
+        "meal_006"
+      ],
+      "sourceActionIds": [
+        "action_001",
+        "action_002",
+        "action_003",
+        "action_004",
+        "action_005",
+        "action_006",
+        "action_007",
+        "action_008"
+      ],
+      "sourceCandidateDecisionEventIds": [
+        "change_001",
+        "change_002",
+        "change_003"
+      ]
+    }
+  }
+]

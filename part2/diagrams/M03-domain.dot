@@ -1,0 +1,37 @@
+digraph G {
+graph [rankdir=TB, bgcolor="#fcfbf7", pad="0.3", nodesep="0.35", ranksep="0.55", fontname="Microsoft YaHei", fontsize=18, labelloc=t, label="M03 · 目标领域结构（属性详见正文）"];
+node [shape=box, style="rounded,filled", fillcolor="#edf3ed", color="#486958", fontname="Microsoft YaHei", fontsize=12, margin="0.18,0.12"];
+edge [color="#627468", fontname="Microsoft YaHei", fontsize=10, arrowsize=0.7];
+p [label="档案版本\n用户 / 版本 / 硬约束"];
+c [label="用途授权\n用户 / 用途 / 修订"];
+t [label="饮食任务\n进度 / 版本 / 恢复位置"];
+s [label="情境快照\n所用档案版本 / 证据版本"];
+f [label="食品观察\n来源 / 字段 / 未知项"];
+pl [label="饮食计划\n身份 / 版本 / 状态 / 人数"];
+pm [label="计划餐次\n日期 / 餐次 / 选定范围"];
+il [label="食材需求行\n已知或未知数量 / 单位 / 基准"];
+sh [label="准备采购清单\n来源计划版本 / 库存版本"];
+i [label="库存条目\n已知或未知数量 / 单位 / 核对时间"];
+r [label="实际餐食记录\n版本 / 用户自述 / 已知或未知份量\n可选的计划引用"];
+a [label="微行动\n线索 / 行为 / 努力量 / 依据"];
+de [label="行动决策\n采纳 / 跳过 / 换一个"];
+ex [label="执行修订\n执行日期 / 报告时间 / 状态"];
+o [label="操作回执\n用户与操作键 / 请求摘要 / 结果"];
+e [label="业务事件\n操作者 / 业务对象 / 版本 / 时间"];
+p -> s [label="一个版本 / 零至多个情境快照"];
+c -> s [label="所用授权版本"];
+t -> s [label="一个任务 / 零或一个当前快照"];
+s -> f [label="零至多个证据引用"];
+t -> pl [label="零或一个计划关联"];
+pl -> pm [label="1 / 1..*"];
+pm -> il [label="1 / 1..*"];
+pl -> sh [label="一个计划 / 零至多个版本化清单"];
+i -> sh [label="读取库存版本 / 计算差额"];
+pm -> r [label="一个餐次 / 零至多个可选关联"];
+s -> a [label="一个情境 / 零至多个提案"];
+a -> de [label="一个行动 / 零至多条决策历史"];
+a -> ex [label="一个行动 / 零至多条执行修订"];
+r -> a [label="零或一个可选餐食引用"];
+t -> o [label="一个任务 / 零至多个命令"];
+o -> e [label="一个命令 / 一至多条已提交事件"];
+}

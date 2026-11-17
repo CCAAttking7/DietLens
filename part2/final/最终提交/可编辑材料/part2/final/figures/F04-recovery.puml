@@ -1,0 +1,32 @@
+@startuml
+skinparam defaultFontName Noto Sans CJK SC
+skinparam defaultFontSize 22
+skinparam backgroundColor #FCFBF7
+skinparam shadowing false
+skinparam sequenceArrowFontSize 20
+skinparam sequenceParticipantFontSize 22
+skinparam maxMessageSize 270
+hide footbox
+title 确认提交与断网恢复
+actor "用户" as U
+participant "工作台" as W
+participant "可信命令" as C
+database "权威库" as D
+U -> W : 确认具体内容和影响
+W -> C : 原预览、版本与操作键
+C -> C : 当前身份、授权及归属校验
+group 短事务：先锁处理控制
+C -> D : 原键查重，核对预期版本
+C -> D : 业务、事件、任务及回执同提交
+end
+C ->x W : 已提交，但响应丢失
+W -> C : 按原键查询结果
+C -> C : 再核对当前可返回范围
+C -> D : 读取原提交回执
+D --> C : 原提交标识
+C --> W : 显示原结果，禁止复制保存
+note over W,D
+版本不一致：返回差异并重新核对。
+查询不可用：保持待核对，不换新键重做。
+end note
+@enduml

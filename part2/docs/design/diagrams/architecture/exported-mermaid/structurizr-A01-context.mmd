@@ -1,0 +1,23 @@
+graph LR
+  linkStyle default fill:#ffffff
+
+  subgraph diagram ["A01 系统上下文：饮食管理与微习惯支持"]
+    style diagram fill:#ffffff,stroke:#ffffff
+
+    1["<div style='font-weight: bold'>成年用户</div><div style='font-size: 70%; margin-top: 0px'>[用户]</div><div style='font-size: 80%; margin-top:10px'>管理本人饮食目标、计划、实际餐食及微行动</div>"]
+    style 1 fill:#f3e1d9,stroke:#486958,color:#24231f
+    2["<div style='font-weight: bold'>外部模型服务</div><div style='font-size: 70%; margin-top: 0px'>[软件系统]</div><div style='font-size: 80%; margin-top:10px'>按授权理解输入与组织候选，不拥有业务写权限</div>"]
+    style 2 fill:#edf3ed,stroke:#486958,color:#24231f
+    3["<div style='font-weight: bold'>食品参考来源</div><div style='font-size: 70%; margin-top: 0px'>[软件系统]</div><div style='font-size: 80%; margin-top:10px'>公开食品资料、当前标签及本地食物编码；完整性分别核对</div>"]
+    style 3 fill:#edf3ed,stroke:#486958,color:#24231f
+    4["<div style='font-weight: bold'>托管身份服务</div><div style='font-size: 70%; margin-top: 0px'>[软件系统]</div><div style='font-size: 80%; margin-top:10px'>验证访问令牌，仅托管模式使用</div>"]
+    style 4 fill:#edf3ed,stroke:#486958,color:#24231f
+    5["<div style='font-weight: bold'>DietLens饮食工作台</div><div style='font-size: 70%; margin-top: 0px'>[软件系统]</div><div style='font-size: 80%; margin-top:10px'>连接饮食选择、未来准备、个人实际记录及微习惯反馈</div>"]
+    style 5 fill:#edf3ed,stroke:#486958,color:#24231f
+
+    1-. "<div>描述、核对、确认与查看</div><div style='font-size: 70%'></div>" .->5
+    5-. "<div>核验托管访问令牌</div><div style='font-size: 70%'>[HTTPS]</div>" .->4
+    5-. "<div>最小必要输入，返回候选</div><div style='font-size: 70%'>[HTTPS]</div>" .->2
+    5-. "<div>带来源的只读资料</div><div style='font-size: 70%'>[HTTPS / 本地索引]</div>" .->3
+
+  end

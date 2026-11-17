@@ -1,0 +1,36 @@
+graph TB
+  linkStyle default fill:#ffffff
+
+  subgraph diagram ["A04 本地演示部署"]
+    style diagram fill:#ffffff,stroke:#ffffff
+
+    subgraph 56 ["演示电脑"]
+      style 56 fill:#ffffff,stroke:#486958,color:#24231f
+
+      subgraph 57 ["浏览器"]
+        style 57 fill:#ffffff,stroke:#486958,color:#24231f
+
+        58["<div style='font-weight: bold'>网页工作台</div><div style='font-size: 70%; margin-top: 0px'>[运行单元: React / TypeScript]</div><div style='font-size: 80%; margin-top:10px'>对话入口、结构化核对、确认、版本差异与恢复</div>"]
+        style 58 fill:#edf3ed,stroke:#486958,color:#24231f
+      end
+
+      subgraph 59 ["应用运行环境"]
+        style 59 fill:#ffffff,stroke:#486958,color:#24231f
+
+        60["<div style='font-weight: bold'>后端应用</div><div style='font-size: 70%; margin-top: 0px'>[运行单元: Python / FastAPI]</div><div style='font-size: 80%; margin-top:10px'>一个可部署进程内划分领域模块，统一可信命令和授权查询</div>"]
+        style 60 fill:#edf3ed,stroke:#486958,color:#24231f
+      end
+
+      subgraph 62 ["本机数据文件"]
+        style 62 fill:#ffffff,stroke:#486958,color:#24231f
+
+        63["<div style='font-weight: bold'>权威业务库</div><div style='font-size: 70%; margin-top: 0px'>[运行单元: 本地SQLite或托管PostgreSQL]</div><div style='font-size: 80%; margin-top:10px'>一次部署择一保存确认事实、版本、任务、事件及回执</div>"]
+        style 63 fill:#edf3ed,stroke:#486958,color:#24231f
+      end
+
+    end
+
+    58-. "<div>业务请求及访问令牌</div><div style='font-size: 70%'>[HTTP / HTTPS]</div>" .->60
+    60-. "<div>有界查询及原子写入</div><div style='font-size: 70%'>[参数化数据库访问]</div>" .->63
+
+  end

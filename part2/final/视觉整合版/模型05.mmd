@@ -1,0 +1,28 @@
+flowchart TB
+  WEB["浏览器：Web 工作空间"] --> API["统一 API 边界：身份、授权、请求校验"]
+  API --> GUI["确定性页面请求"]
+  API --> H["Harness：自然语言任务协调"]
+  GUI --> DOM["领域服务入口"]
+  H --> DOM
+  subgraph APP["模块化单体应用"]
+    DOM --> PP["档案与偏好服务"]
+    DOM --> FS["食品服务"]
+    DOM --> PL["计划与清单服务"]
+    DOM --> IV["库存服务"]
+    DOM --> MR["餐食记录服务"]
+    DOM --> MA["微行动服务"]
+    DOM --> RV["回顾服务"]
+    H --> LLMAD["模型适配器"]
+    FS --> FAD["食品来源适配器"]
+    PP --> DB[("应用数据存储")]
+    FS --> DB
+    PL --> DB
+    IV --> DB
+    MR --> DB
+    MA --> DB
+    RV --> DB
+    H --> DB
+  end
+  FS --> LLMAD
+  LLMAD --> LLM["外部图文模型：文字理解与图片字段提取"]
+  FAD --> FOOD["外部食品来源 / 本地资料"]

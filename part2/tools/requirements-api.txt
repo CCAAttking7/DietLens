@@ -1,0 +1,6 @@
+# 接口设计静态验证依赖，不包含产品服务
+openapi-spec-validator==0.9.0
+openapi-schema-validator==0.9.0
+jsonschema==4.26.0
+referencing==0.37.0
+PyYAML==6.0.3

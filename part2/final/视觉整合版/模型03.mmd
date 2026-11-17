@@ -1,0 +1,33 @@
+sequenceDiagram
+  actor U as 用户
+  participant UI as 微行动页面
+  participant M as 微行动服务
+  participant F as 食品服务
+  U->>UI: 输入当前情境
+  UI-->>U: 提示补充必要字段
+  U->>UI: 确认当前情境
+  UI->>M: 经统一业务入口提交情境（可恢复草稿）
+  M->>M: 生成有限候选
+  M->>F: 核对候选涉及的食品
+  F-->>M: 来源证据与安全判断
+  M->>M: 核对整餐预算、可获得性和执行条件
+  M->>M: 仅排序合格候选，建立临时 proposed 预览
+  M-->>UI: 主候选、备选及理由或核对事项
+  alt 用户采纳
+    U->>UI: 明确采纳
+    UI->>M: 提交候选版本与操作键
+    M->>M: 复核资格并正式保存 Action
+    M-->>UI: adopted + pending_feedback
+    opt 用户反馈执行情况
+      U->>UI: 填写实际执行日期与结果
+      UI->>M: 按原 actionId 更新有效反馈
+      M-->>UI: 反馈已保存
+    end
+  else 用户跳过
+    U->>UI: 跳过
+    UI->>M: 用户明确跳过，正式保存 skipped，execution=null
+  else 用户更换未采纳提案
+    U->>UI: 修改条件或换候选
+    UI->>M: 替换临时 proposed，保存明确选择事件并重核新候选
+    M->>M: 对“换一个”另设七天冷却（不计入正式采纳）
+  end

@@ -1,0 +1,32 @@
+@startuml
+skinparam defaultFontName Noto Sans CJK SC
+skinparam defaultFontSize 22
+skinparam backgroundColor #FCFBF7
+skinparam shadowing false
+skinparam sequenceArrowFontSize 20
+skinparam sequenceParticipantFontSize 22
+skinparam maxMessageSize 270
+hide footbox
+title 微行动：生成、核对、采纳与独立反馈
+actor "用户" as U
+participant "工作台" as W
+participant "编排与规则" as C
+participant "外部适配器" as T
+database "权威库" as D
+U -> W : 说明当前情境
+W -> C : 核对档案、用途及约束
+C -> T : 有界理解与证据查询
+T --> C : 候选与来源；无写权限
+C --> W : 具体行动、依据、建议窗口
+U -> W : 核对行为及起止，确认采纳
+group 短事务：复核当前许可和版本
+W -> C : 提交绑定的确认预览
+C -> D : 行动、决策、窗口与回执同提交
+end
+C --> W : 已采纳，仍待反馈
+... 实际执行后 ...
+U -> W : 确认执行日期及结果
+W -> C : 原行动追加反馈修订
+C -> D : 切换有效反馈并更新数据修订
+C --> W : 采纳与完成分别展示
+@enduml

@@ -1,0 +1,19 @@
+sequenceDiagram
+  actor U as 用户
+  participant UI as 食品页面
+  participant FS as 食品服务
+  participant SRC as 食品来源适配器
+  participant PP as 档案与偏好服务
+  U->>UI: 输入食品与当前用途
+  UI->>FS: 查询食品
+  FS->>SRC: 读取不同来源
+  SRC-->>FS: 来源记录及缺失信息
+  FS->>PP: 读取当前有效硬约束
+  PP-->>FS: ProfileVersion
+  FS->>FS: 核对身份、字段与单位，分别评估
+  FS-->>UI: 来源、判断结果和待核对项
+  alt 用于主动推荐且关键证据不足
+    UI-->>U: 停止受影响推荐；提示补充证据或更换候选
+  else 仅浏览或记录实际餐食
+    UI-->>U: 保留未知字段；允许继续相应操作
+  end

@@ -1,0 +1,15 @@
+flowchart LR
+  subgraph USER["用户设备"]
+    WEB["浏览器"]
+  end
+  subgraph SERVER["演示应用主机"]
+    STATIC["React / TypeScript 静态资源"]
+    API["FastAPI + Harness + 七个领域服务"]
+    SQLITE[("SQLite：演示存储")]
+    API --> SQLITE
+  end
+  WEB -->|加载页面| STATIC
+  WEB -->|API 请求| API
+  API -->|授权后、受限调用| MODEL["外部图文模型：文字与图片候选解析"]
+  API -->|按来源查询| FOOD["食品资料来源"]
+  API -. 目标共享部署 .-> PG[("PostgreSQL / Supabase")]

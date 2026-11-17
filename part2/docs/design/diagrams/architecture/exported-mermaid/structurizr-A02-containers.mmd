@@ -1,0 +1,34 @@
+graph TB
+  linkStyle default fill:#ffffff
+
+  subgraph diagram ["A02 运行单元：网页、单体后端和唯一权威库"]
+    style diagram fill:#ffffff,stroke:#ffffff
+
+    1["<div style='font-weight: bold'>成年用户</div><div style='font-size: 70%; margin-top: 0px'>[用户]</div><div style='font-size: 80%; margin-top:10px'>管理本人饮食目标、计划、实际餐食及微行动</div>"]
+    style 1 fill:#f3e1d9,stroke:#486958,color:#24231f
+    2["<div style='font-weight: bold'>外部模型服务</div><div style='font-size: 70%; margin-top: 0px'>[软件系统]</div><div style='font-size: 80%; margin-top:10px'>按授权理解输入与组织候选，不拥有业务写权限</div>"]
+    style 2 fill:#edf3ed,stroke:#486958,color:#24231f
+    3["<div style='font-weight: bold'>食品参考来源</div><div style='font-size: 70%; margin-top: 0px'>[软件系统]</div><div style='font-size: 80%; margin-top:10px'>公开食品资料、当前标签及本地食物编码；完整性分别核对</div>"]
+    style 3 fill:#edf3ed,stroke:#486958,color:#24231f
+    4["<div style='font-weight: bold'>托管身份服务</div><div style='font-size: 70%; margin-top: 0px'>[软件系统]</div><div style='font-size: 80%; margin-top:10px'>验证访问令牌，仅托管模式使用</div>"]
+    style 4 fill:#edf3ed,stroke:#486958,color:#24231f
+
+    subgraph 5 ["DietLens饮食工作台"]
+      style 5 fill:#ffffff,stroke:#486958,color:#486958
+
+      19["<div style='font-weight: bold'>权威业务库</div><div style='font-size: 70%; margin-top: 0px'>[运行单元: 本地SQLite或托管PostgreSQL]</div><div style='font-size: 80%; margin-top:10px'>一次部署择一保存确认事实、版本、任务、事件及回执</div>"]
+      style 19 fill:#edf3ed,stroke:#486958,color:#24231f
+      6["<div style='font-weight: bold'>网页工作台</div><div style='font-size: 70%; margin-top: 0px'>[运行单元: React / TypeScript]</div><div style='font-size: 80%; margin-top:10px'>对话入口、结构化核对、确认、版本差异与恢复</div>"]
+      style 6 fill:#edf3ed,stroke:#486958,color:#24231f
+      7["<div style='font-weight: bold'>后端应用</div><div style='font-size: 70%; margin-top: 0px'>[运行单元: Python / FastAPI]</div><div style='font-size: 80%; margin-top:10px'>一个可部署进程内划分领域模块，统一可信命令和授权查询</div>"]
+      style 7 fill:#edf3ed,stroke:#486958,color:#24231f
+    end
+
+    1-. "<div>描述、核对、确认与查看</div><div style='font-size: 70%'></div>" .->6
+    6-. "<div>业务请求及访问令牌</div><div style='font-size: 70%'>[HTTP / HTTPS]</div>" .->7
+    7-. "<div>核验托管访问令牌</div><div style='font-size: 70%'>[HTTPS]</div>" .->4
+    7-. "<div>最小必要输入，返回候选</div><div style='font-size: 70%'>[HTTPS]</div>" .->2
+    7-. "<div>带来源的只读资料</div><div style='font-size: 70%'>[HTTPS / 本地索引]</div>" .->3
+    7-. "<div>有界查询及原子写入</div><div style='font-size: 70%'>[参数化数据库访问]</div>" .->19
+
+  end

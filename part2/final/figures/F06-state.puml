@@ -1,0 +1,27 @@
+@startuml
+skinparam defaultFontName Noto Sans CJK SC
+skinparam defaultFontSize 22
+skinparam backgroundColor #FCFBF7
+skinparam shadowing false
+skinparam sequenceArrowFontSize 20
+skinparam sequenceParticipantFontSize 22
+skinparam maxMessageSize 270
+hide footbox
+title 行动决策与执行的两层状态
+state "提案" as P
+state "已采纳" as A
+state "已跳过或被替代" as S
+state "待反馈" as W
+state "未知" as N
+state "有效自述：完成／部分／未完成" as R
+[*] --> P
+P --> A : 确认行为与窗口
+P --> S : 用户决定不采纳
+A --> W : 不增加完成数
+W --> N : 窗口结束且无有效自述
+W --> R : 确认实际日期与结果
+N --> R : 同一行动迟到补报
+R --> R : 原行动追加修订
+R --> N : 撤回且窗口已结束
+R --> W : 撤回且窗口未结束
+@enduml

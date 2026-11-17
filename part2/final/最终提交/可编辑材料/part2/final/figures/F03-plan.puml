@@ -1,0 +1,36 @@
+@startuml
+skinparam defaultFontName Noto Sans CJK SC
+skinparam defaultFontSize 22
+skinparam backgroundColor #FCFBF7
+skinparam shadowing false
+skinparam sequenceArrowFontSize 20
+skinparam sequenceParticipantFontSize 22
+skinparam maxMessageSize 270
+hide footbox
+title 计划到准备，再到个人实际
+actor "用户" as U
+participant "工作台" as W
+participant "计划与准备" as P
+participant "实际餐食" as M
+database "权威库" as D
+U -> W : 选择完整或指定餐次及人数
+W -> P : 预览餐次缺口与替换范围
+U -> W : 核对并确认计划
+W -> P : 提交绑定版本的确认命令
+P -> D : 新版本、当前槽位、清单失效同提交
+W -> P : 按食材口径读取需求和库存
+P --> W : 已知小计与未知差额
+U -> W : 单独确认清单或库存调整
+W -> P : 提交对应的独立确认
+P -> D : 保存对应准备事实
+... 实际用餐之后 ...
+W -> M : 从计划只读预填名称与出处
+M --> W : 个人多食物草案，份量待核对
+U -> W : 修改个人份量，确认这一餐
+W -> M : 提交个人餐食确认
+M -> D : 一次用餐、多食物及回执同提交
+note over P,M
+已购不扣库；准备量不等摄入；
+记餐不自动完成行动。
+end note
+@enduml

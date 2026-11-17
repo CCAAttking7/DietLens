@@ -1,0 +1,63 @@
+@startuml
+title D01 · 已确认情境与食品证据（第二轮领域候选版）
+skinparam backgroundColor #FCFBF7
+skinparam shadowing false
+skinparam defaultFontName Noto Sans CJK SC
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor #EDF3ED
+skinparam classBorderColor #486958
+hide empty members
+hide circle
+class "用户档案" as UserProfile <<聚合>> {
+ 用户身份
+ 当前版本
+ 提出变更()
+ 确认变更()
+}
+class "档案版本" as ProfileRevision <<实体>> {
+ 版本
+ 确认时间
+ 目标 / 硬约束 / 软偏好
+}
+class "用途授权" as ConsentRecord <<实体>> {
+ 用途 / 范围 / 修订
+ 生效时间 / 撤回时间
+ 允许() / 撤回()
+}
+class "饮食任务" as DietaryTask <<聚合>> {
+ 任务身份 / 类型
+ 进度 / 恢复位置
+ 暂停() / 恢复()
+}
+class "情境快照" as ContextSnapshot <<实体>> {
+ 情境身份 / 修订
+ 餐次槽位 / 准备人数
+ 档案版本引用
+ 确认情境()
+}
+class "食品观察" as FoodObservation <<实体>> {
+ 观察身份 / 证据版本
+ 当前商品或菜单规格
+ 核对字段()
+}
+class "核对字段" as VerifiedField <<值对象>> {
+ 原始值 / 核对值 / 单位
+ 候选 / 已核对 / 未知
+}
+class "来源引用" as SourceReference <<值对象>> {
+ 来源 / 对象规格
+ 资料日期 / 获取时间
+}
+UserProfile "1" *-- "1..*" ProfileRevision : 确认版本
+UserProfile "1" -- "0..*" ConsentRecord : 分项用途授权
+DietaryTask "0..*" --> "0..1" ContextSnapshot : 当前情境
+ContextSnapshot "0..*" --> "1" ProfileRevision : 所用版本
+ContextSnapshot "0..*" --> "0..*" FoodObservation : 所用证据
+FoodObservation "1" *-- "1..*" VerifiedField
+VerifiedField "0..*" --> "1..*" SourceReference : 来源依据
+ConsentRecord ..> DietaryTask : 恢复时检查当前授权
+note bottom of ContextSnapshot
+ 快照保留当时采用的条件。
+ 新处理仍须检查当前授权。
+end note
+@enduml

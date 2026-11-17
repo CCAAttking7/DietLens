@@ -1,0 +1,27 @@
+digraph G {
+graph [rankdir=TB, bgcolor="#fcfbf7", pad="0.3", nodesep="0.35", ranksep="0.55", fontname="Microsoft YaHei", fontsize=18, labelloc=t, label="M02 · 当前本地与目标托管部署（两种配置）"];
+node [shape=box, style="rounded,filled", fillcolor="#edf3ed", color="#486958", fontname="Microsoft YaHei", fontsize=12, margin="0.18,0.12"];
+edge [color="#627468", fontname="Microsoft YaHei", fontsize=10, arrowsize=0.7];
+b [label="本地浏览器"];
+v [label="Vite :5173"];
+a [label="FastAPI :8000"];
+d [label="SQLite 文件 / WAL"];
+cb [label="用户浏览器\n访问令牌"];
+web [label="静态站点 / HTTPS 入口"];
+api [label="反向代理 + API 实例\n服务端密钥 / 命令事务"];
+auth [label="Supabase Auth"];
+pg [label="唯一 Postgres 数据库\n备份到期 / 期限清理"];
+ext [label="外部模型与食品参考源\n只出站 / 授权 / 超时"];
+subgraph cluster_0 { label="当前 · 本机演示"; color="#b3b9b1"; b;v;a;d; }
+subgraph cluster_1 { label="目标 · 托管运行"; color="#b3b9b1"; cb;web;api;auth;pg; }
+b -> v [label="页面"];
+b -> a [label="HTTP /api"];
+a -> d [label="本机访问"];
+cb -> web [label="HTTPS"];
+web -> api [label="/api 转发"];
+cb -> auth [label="登录"];
+api -> auth [label="令牌身份核验"];
+api -> pg [label="数据库加密连接"];
+a -> ext [label="可选出站"];
+api -> ext [label="HTTPS / 按需"];
+}

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="820" viewBox="0 0 1100 820">
+<rect x="0" y="0" width="1100" height="820" rx="12" fill="#f7f6f2" stroke="#f7f6f2"/>
+<rect x="0" y="0" width="172" height="820" rx="0" fill="#ffffff" stroke="#ffffff"/>
+<text x="22" y="30" font-family="Microsoft YaHei,sans-serif" font-size="25" font-weight="700" fill="#b24e32" dominant-baseline="text-before-edge">DietLens</text>
+<text x="22" y="72" font-family="Microsoft YaHei,sans-serif" font-size="12" font-weight="400" fill="#6f6b63" dominant-baseline="text-before-edge">好好吃饭，慢慢改变</text>
+<rect x="12" y="133" width="146" height="46" rx="12" fill="#f3e1d9" stroke="#f3e1d9"/>
+<text x="25" y="143" font-family="Microsoft YaHei,sans-serif" font-size="17" font-weight="700" fill="#b24e32" dominant-baseline="text-before-edge">今日饮食</text>
+<text x="25" y="204" font-family="Microsoft YaHei,sans-serif" font-size="17" font-weight="400" fill="#6f6b63" dominant-baseline="text-before-edge">饮食计划</text>
+<text x="25" y="265" font-family="Microsoft YaHei,sans-serif" font-size="17" font-weight="400" fill="#6f6b63" dominant-baseline="text-before-edge">食品资料</text>
+<text x="25" y="326" font-family="Microsoft YaHei,sans-serif" font-size="17" font-weight="400" fill="#6f6b63" dominant-baseline="text-before-edge">食材库存</text>
+<text x="25" y="387" font-family="Microsoft YaHei,sans-serif" font-size="17" font-weight="400" fill="#6f6b63" dominant-baseline="text-before-edge">餐食记录</text>
+<text x="25" y="448" font-family="Microsoft YaHei,sans-serif" font-size="17" font-weight="400" fill="#6f6b63" dominant-baseline="text-before-edge">阶段回顾</text>
+<text x="25" y="509" font-family="Microsoft YaHei,sans-serif" font-size="17" font-weight="400" fill="#6f6b63" dominant-baseline="text-before-edge">设置</text>
+<text x="206" y="28" font-family="Microsoft YaHei,sans-serif" font-size="12" font-weight="400" fill="#6f6b63" dominant-baseline="text-before-edge">第二次作业 / 目标设计稿</text>
+<text x="206" y="66" font-family="Microsoft YaHei,sans-serif" font-size="29" font-weight="700" fill="#24231f" dominant-baseline="text-before-edge">这次小行动，进行得怎样？</text>
+<text x="206" y="111" font-family="Microsoft YaHei,sans-serif" font-size="16" font-weight="400" fill="#6f6b63" dominant-baseline="text-before-edge">已采纳 · 待反馈 · 行动 A01 · 可暂不反馈</text>
+<text x="206" y="784" font-family="Microsoft YaHei,sans-serif" font-size="13" font-weight="400" fill="#6f6b63" dominant-baseline="text-before-edge">目标设计稿 · 示例数据 · 非实际运行截图</text>
+<rect x="206" y="158" width="854" height="161" rx="12" fill="#ffffff" stroke="#dfdbd2"/>
+<text x="230" y="180" font-family="Microsoft YaHei,sans-serif" font-size="20" font-weight="700" fill="#24231f" dominant-baseline="text-before-edge">拿饮料时，换成白水</text>
+<text x="230" y="223" font-family="Microsoft YaHei,sans-serif" font-size="17" font-weight="400" fill="#6f6b63" dominant-baseline="text-before-edge">窗口：11-18 11:00 至 14:00（已确认，可显式修改）</text>
+<text x="230" y="257" font-family="Microsoft YaHei,sans-serif" font-size="17" font-weight="400" fill="#6f6b63" dominant-baseline="text-before-edge">实际执行日期：2026-11-18；报告时间另行记录</text>
+<rect x="206" y="342" width="854" height="230" rx="12" fill="#ffffff" stroke="#dfdbd2"/>
+<text x="230" y="364" font-family="Microsoft YaHei,sans-serif" font-size="21" font-weight="700" fill="#24231f" dominant-baseline="text-before-edge">选择本次执行情况</text>
+<rect x="230" y="411" width="178" height="52" rx="12" fill="#f7f6f2" stroke="#dfdbd2"/>
+<text x="246" y="429" font-family="Microsoft YaHei,sans-serif" font-size="18" font-weight="400" fill="#24231f" dominant-baseline="text-before-edge">○ 完成</text>
+<rect x="430" y="411" width="178" height="52" rx="12" fill="#f3e1d9" stroke="#dfdbd2"/>
+<text x="446" y="429" font-family="Microsoft YaHei,sans-serif" font-size="18" font-weight="400" fill="#24231f" dominant-baseline="text-before-edge">● 部分完成</text>
+<rect x="630" y="411" width="178" height="52" rx="12" fill="#f7f6f2" stroke="#dfdbd2"/>
+<text x="646" y="429" font-family="Microsoft YaHei,sans-serif" font-size="18" font-weight="400" fill="#24231f" dominant-baseline="text-before-edge">○ 未完成</text>
+<text x="230" y="508" font-family="Microsoft YaHei,sans-serif" font-size="17" font-weight="400" fill="#6f6b63" dominant-baseline="text-before-edge">备注（选填）：换成了小杯，仍喝了一些含糖饮料。</text>
+<rect x="230" y="605" width="190" height="46" rx="12" fill="#b24e32" stroke="#b24e32"/>
+<text x="248" y="618" font-family="Microsoft YaHei,sans-serif" font-size="16" font-weight="700" fill="#ffffff" dominant-baseline="text-before-edge">确认这次反馈</text>
+<rect x="445" y="605" width="190" height="46" rx="12" fill="#f1eee8" stroke="#f1eee8"/>
+<text x="463" y="618" font-family="Microsoft YaHei,sans-serif" font-size="16" font-weight="700" fill="#24231f" dominant-baseline="text-before-edge">暂不反馈</text>
+<text x="230" y="695" font-family="Microsoft YaHei,sans-serif" font-size="16" font-weight="400" fill="#6f6b63" dominant-baseline="text-before-edge">未反馈在窗口结束后保持未知；稍后可以补充或修改。</text>
+</svg>

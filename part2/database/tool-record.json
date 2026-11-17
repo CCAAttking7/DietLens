@@ -1,0 +1,25 @@
+{
+  "日期": "2026-11-17",
+  "工具": "本地drawDB",
+  "地址": "http://localhost:4300",
+  "独立画布": "http://localhost:4300/editor/diagrams/152d74a0-5f91-46b9-b339-90fe4be4f619",
+  "画布名称": "DietLens 中文数据库设计（P4候选）",
+  "操作前观察": "当前打开的初始画布为0张表、0条关系；创建本项目独立画布，未覆盖旧图",
+  "源版本": "af09640e1238c36e11f3c9b582bf1f88e89c46cf",
+  "实际操作": [
+    "导入中文PostgreSQL展示投影",
+    "核对45张表和99条关系",
+    "查看循环依赖提示",
+    "导出可编辑JSON",
+    "导出SQL参考副本",
+    "保存中文画布截图"
+  ],
+  "提示处理": "版本指针形成循环，保留提示；完整SQL采用延迟外键和同事务写入。工具导出不是完整DDL的无损往返。",
+  "未执行": "未导入真实业务库、未执行SQL或迁移；未启动/停止共享服务",
+  "产物摘要": {
+    "schema.diagram.sql": "00ff871f33984c8f81c18b59b7424eac924aeb699cb282ed02e65c295d5d4a19",
+    "drawdb-model.json": "c7643611bff8fdb5309e04185b233b6ce02f818bfa2497465e2809a203f6df97",
+    "drawdb-export-reference.sql": "ffbc1512c77457bb09be816edcb64d8fe31084209c7d31ea43f29f5709e1946a",
+    "drawdb-设计画布.jpg": "032073a4424bb4b96dfec4a4c554a59c97bb1f8ccdfec8c943fc31e8ac3ff050"
+  }
+}

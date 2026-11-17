@@ -1,0 +1,25 @@
+digraph G {
+graph [rankdir=TB, bgcolor="#fcfbf7", pad="0.3", nodesep="0.35", ranksep="0.55", fontname="Microsoft YaHei", fontsize=18, labelloc=t, label="M07A · 目标任务状态 / 进度不代表业务执行完成"];
+node [shape=box, style="rounded,filled", fillcolor="#edf3ed", color="#486958", fontname="Microsoft YaHei", fontsize=12, margin="0.18,0.12"];
+edge [color="#627468", fontname="Microsoft YaHei", fontsize=10, arrowsize=0.7];
+cr [label="已创建"];
+co [label="收集与核对\n情境 / 草稿 / 检索"];
+aw [label="等待用户确认"];
+af [label="等待执行反馈"];
+done [label="任务已结束"];
+cancel [label="用户已取消"];
+stop [label="已停止\n原因 / 可恢复位置"];
+cr -> co [label="开始"];
+co -> aw [label="写入预览可确认"];
+co -> done [label="只读任务完成"];
+aw -> done [label="计划/记餐确认；行动跳过"];
+aw -> af [label="微行动采纳"];
+aw -> co [label="编辑/重新核对"];
+af -> done [label="反馈或窗口到期置未知"];
+co -> cancel [label="用户取消"];
+aw -> cancel [label="取消草稿"];
+co -> stop [label="依赖/预算/冲突"];
+aw -> stop [label="提交校验失败"];
+stop -> co [label="用户恢复 + 复核"];
+done -> co [label="独立修正命令关联原对象"];
+}

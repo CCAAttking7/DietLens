@@ -1,0 +1,181 @@
+{
+  "版本": "P5候选",
+  "说明": "典型业务场景的错误语义；身份或当前权限不足时先按隐私边界隐藏详情。commit_state指业务提交，不指临时候选保存。",
+  "errors": [
+    {
+      "code": "INVALID_REQUEST",
+      "http_status": 400,
+      "title": "请求格式不正确",
+      "commit_state": "未提交",
+      "retry_strategy": "修正后重新预览"
+    },
+    {
+      "code": "AUTH_REQUIRED",
+      "http_status": 401,
+      "title": "请重新验证身份",
+      "commit_state": "不可返回",
+      "retry_strategy": "重新登录"
+    },
+    {
+      "code": "PURPOSE_NOT_ALLOWED",
+      "http_status": 403,
+      "title": "当前用途未获允许",
+      "commit_state": "未提交",
+      "retry_strategy": "停止"
+    },
+    {
+      "code": "RESOURCE_NOT_VISIBLE",
+      "http_status": 404,
+      "title": "对象不存在或当前不可访问",
+      "commit_state": "不可返回",
+      "retry_strategy": "停止"
+    },
+    {
+      "code": "RECEIPT_NOT_FOUND",
+      "http_status": 404,
+      "title": "当前未查到可返回的回执",
+      "commit_state": "结果待核对",
+      "retry_strategy": "查询原回执"
+    },
+    {
+      "code": "VERSION_CONFLICT",
+      "http_status": 409,
+      "title": "对象已发生变化",
+      "commit_state": "未提交",
+      "retry_strategy": "修正后重新预览"
+    },
+    {
+      "code": "DRAFT_CHANGED",
+      "http_status": 409,
+      "title": "核对内容或草稿已改变",
+      "commit_state": "未提交",
+      "retry_strategy": "修正后重新预览"
+    },
+    {
+      "code": "IDEMPOTENCY_KEY_REUSED",
+      "http_status": 409,
+      "title": "同一操作标识对应不同内容",
+      "commit_state": "不可返回",
+      "retry_strategy": "修正后重新预览"
+    },
+    {
+      "code": "CURSOR_STALE",
+      "http_status": 409,
+      "title": "分页数据截点已变化",
+      "commit_state": "不可返回",
+      "retry_strategy": "停止"
+    },
+    {
+      "code": "SNAPSHOT_CHANGED",
+      "http_status": 409,
+      "title": "回顾或证据截点已变化",
+      "commit_state": "未提交",
+      "retry_strategy": "修正后重新预览"
+    },
+    {
+      "code": "PREVIEW_EXPIRED",
+      "http_status": 410,
+      "title": "确认预览已到期",
+      "commit_state": "未提交",
+      "retry_strategy": "修正后重新预览"
+    },
+    {
+      "code": "TASK_EXPIRED",
+      "http_status": 410,
+      "title": "临时任务已到期",
+      "commit_state": "未提交",
+      "retry_strategy": "停止"
+    },
+    {
+      "code": "MEDIA_EXPIRED",
+      "http_status": 410,
+      "title": "临时图片已到期",
+      "commit_state": "不可返回",
+      "retry_strategy": "停止"
+    },
+    {
+      "code": "DOWNLOAD_EXPIRED",
+      "http_status": 410,
+      "title": "导出文件已到期",
+      "commit_state": "不可返回",
+      "retry_strategy": "停止"
+    },
+    {
+      "code": "STATUS_ACCESS_EXPIRED",
+      "http_status": 410,
+      "title": "本次删除进度凭证已到期",
+      "commit_state": "不可返回",
+      "retry_strategy": "停止"
+    },
+    {
+      "code": "MEDIA_TOO_LARGE",
+      "http_status": 413,
+      "title": "材料超过当前处理限制",
+      "commit_state": "未提交",
+      "retry_strategy": "停止"
+    },
+    {
+      "code": "UNSUPPORTED_MEDIA",
+      "http_status": 415,
+      "title": "请选择支持的图片格式",
+      "commit_state": "未提交",
+      "retry_strategy": "停止"
+    },
+    {
+      "code": "SCHEMA_INVALID",
+      "http_status": 422,
+      "title": "字段结构或值不正确",
+      "commit_state": "未提交",
+      "retry_strategy": "修正后重新预览"
+    },
+    {
+      "code": "MISSING_VERSION_GUARD",
+      "http_status": 422,
+      "title": "修改已有对象须带所见版本",
+      "commit_state": "未提交",
+      "retry_strategy": "修正后重新预览"
+    },
+    {
+      "code": "BUSINESS_RULE_BLOCKED",
+      "http_status": 422,
+      "title": "当前内容不满足业务条件",
+      "commit_state": "未提交",
+      "retry_strategy": "修正后重新预览"
+    },
+    {
+      "code": "BUDGET_EXHAUSTED",
+      "http_status": 429,
+      "title": "本步骤的调用预算已用尽",
+      "commit_state": "未提交",
+      "retry_strategy": "停止"
+    },
+    {
+      "code": "CONCURRENCY_LIMIT",
+      "http_status": 429,
+      "title": "当前请求较多，请稍后继续",
+      "commit_state": "未提交",
+      "retry_strategy": "稍后查询"
+    },
+    {
+      "code": "SOURCE_UNAVAILABLE",
+      "http_status": 503,
+      "title": "资料来源暂不可用",
+      "commit_state": "未提交",
+      "retry_strategy": "停止"
+    },
+    {
+      "code": "STORE_BUSY",
+      "http_status": 503,
+      "title": "当前无法可靠处理数据",
+      "commit_state": "结果待核对",
+      "retry_strategy": "查询原回执"
+    },
+    {
+      "code": "COMMIT_OUTCOME_UNKNOWN",
+      "http_status": 503,
+      "title": "提交结果仍需核对",
+      "commit_state": "结果待核对",
+      "retry_strategy": "查询原回执"
+    }
+  ]
+}

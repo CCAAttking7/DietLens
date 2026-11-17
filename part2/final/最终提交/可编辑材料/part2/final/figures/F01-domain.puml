@@ -1,0 +1,48 @@
+@startuml
+skinparam defaultFontName Noto Sans CJK SC
+skinparam defaultFontSize 22
+skinparam backgroundColor #FCFBF7
+skinparam shadowing false
+skinparam sequenceArrowFontSize 20
+skinparam sequenceParticipantFontSize 22
+skinparam maxMessageSize 270
+hide footbox
+title 核心领域：未来准备与个人实际分开
+left to right direction
+class "计划版本" as P {
+确认范围与模式
+}
+class "计划餐次" as M {
+日期、餐次、人数
+}
+class "计划食物" as F {
+准备份量与基准
+}
+class "食材需求" as I {
+标准食材、量或未知
+}
+class "采购清单" as L {
+来源版本与独立状态
+}
+class "库存核对" as S {
+人工数量、单位、修订
+}
+class "个人用餐版本" as A {
+实际日期、餐次
+}
+class "实际食物" as B {
+个人份量与出处
+}
+P "1" *-- "1..*" M
+M "1" *-- "1..*" F
+F "1" *-- "0..*" I
+P "1" <-- "0..*" L : 引用确认版本
+L ..> I : 汇总可追溯需求
+L ..> S : 读取，不扣减
+A "1" *-- "1..*" B
+B "0..*" --> "0..1" F : 可选预填出处
+note bottom of A
+同一午餐可有多次用餐；
+餐次覆盖按槽位去重。
+end note
+@enduml

@@ -1,0 +1,23 @@
+digraph G {
+graph [rankdir=TB, bgcolor="#fcfbf7", pad="0.3", nodesep="0.35", ranksep="0.55", fontname="Microsoft YaHei", fontsize=18, labelloc=t, label="M05 · 目标计划、准备与实际记录 / UC-05、06、07、14"];
+node [shape=box, style="rounded,filled", fillcolor="#edf3ed", color="#486958", fontname="Microsoft YaHei", fontsize=12, margin="0.18,0.12"];
+edge [color="#627468", fontname="Microsoft YaHei", fontsize=10, arrowsize=0.7];
+n1 [label="用户 / 计划服务\n日期、人数、餐次、配料、预算\n全餐或指定餐次；草案预览"];
+n2 [label="用户确认 → 原子命令\n保存计划版本 P/v1；完成计划任务"];
+n3 [label="清单服务\n按人数和数量基准汇总食材\n核对库存；未知差额待确认"];
+n4 [label="用户确认清单\n保存 L 引用 P/v1\n已购、已准备分别记录"];
+n5 [label="次日用户 → 记录服务\n从计划预填名称和引用\n个人实际数量待核对"];
+n6 [label="用户修改并确认 → 原子命令\n保存实际餐食 R / 自述证据\n未知份量保持 未知"];
+n7 [label="回顾服务\n读取有效版本 / 显式关联\n计划、实际、行动分别汇总"];
+n8 [label="替换计划 P/v2\n旧清单 已失效；差异预览后重建\n历史 R 和待反馈行动保持独立"];
+cancel [label="取消预填\n不创建实际记录"];
+n1 -> n2 [label=""];
+n2 -> n3 [label="独立准备入口"];
+n3 -> n4 [label=""];
+n2 -> n5 [label="到用餐时 / 可独立记餐"];
+n5 -> n6 [label=""];
+n5 -> cancel [label="取消"];
+n6 -> n7 [label=""];
+n4 -> n8 [label="计划变更"];
+n8 -> n3 [label="重建预览"];
+}

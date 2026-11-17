@@ -1,0 +1,26 @@
+digraph G {
+graph [rankdir=TB, bgcolor="#fcfbf7", pad="0.3", nodesep="0.35", ranksep="0.55", fontname="Microsoft YaHei", fontsize=18, labelloc=t, label="M07B · 目标行动决策与执行（两层语义）"];
+node [shape=box, style="rounded,filled", fillcolor="#edf3ed", color="#486958", fontname="Microsoft YaHei", fontsize=12, margin="0.18,0.12"];
+edge [color="#627468", fontname="Microsoft YaHei", fontsize=10, arrowsize=0.7];
+pr [label="待决定提案"];
+ad [label="已采纳"];
+sk [label="已跳过\n无执行状态"];
+su [label="已被替代\n重新校验新提案"];
+pe [label="待反馈"];
+un [label="执行未知"];
+re [label="有效执行修订\n完成 / 部分完成 / 未完成"];
+hi [label="同一行动身份的修订历史\n执行日期 / 报告时间 / 修订"];
+subgraph cluster_0 { label="决策"; color="#b3b9b1"; pr;ad;sk;su; }
+subgraph cluster_1 { label="执行：仅采纳后成立"; color="#b3b9b1"; pe;un;re;hi; }
+pr -> ad [label="采纳"];
+pr -> sk [label="跳过"];
+pr -> su [label="修改/换一个"];
+ad -> pe [label="决策已存，尚无执行自述"];
+pe -> un [label="窗口到期无反馈"];
+pe -> re [label="用户反馈"];
+un -> re [label="迟到反馈"];
+re -> re [label="明确修正：追加版本"];
+re -> un [label="改为未知：追加版本"];
+re -> hi [label="保存历史"];
+un -> hi [label="保存历史"];
+}

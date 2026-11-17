@@ -1,0 +1,21 @@
+digraph G {
+graph [rankdir=TB, bgcolor="#fcfbf7", pad="0.3", nodesep="0.35", ranksep="0.55", fontname="Microsoft YaHei", fontsize=18, labelloc=t, label="M04 · 目标微行动协作 / UC-09、10、12"];
+node [shape=box, style="rounded,filled", fillcolor="#edf3ed", color="#486958", fontname="Microsoft YaHei", fontsize=12, margin="0.18,0.12"];
+edge [color="#627468", fontname="Microsoft YaHei", fontsize=10, arrowsize=0.7];
+n1 [label="1 用户 → 网页\n说明当前餐次和可选项"];
+n2 [label="2 API / 编排控制 → 档案与证据\n身份、授权、版本；可选模型提取"];
+n3 [label="3 食品评估 → 网页\n缺配料/预算：只核对关键缺失\n明确冲突：阻止受影响候选"];
+n4 [label="4 确定性规则 → 网页\n校验餐食及新增食物；生成一个主行动\n线索 / 行为 / 努力量 / 依据"];
+n5 [label="5 用户 → 命令协调器\n采纳 / 跳过 / 修改 / 换一个"];
+n6 [label="6 协调器 → 存储接口\n当前授权和版本复核\n事务保存决策 + 任务 + 事件 + 回执"];
+n7 [label="7 用户 → 反馈服务\n完成 / 部分 / 未完成；可保持未知"];
+n8 [label="8 反馈服务 → 存储接口 / 回顾\n同一行动身份 追加执行修订\n更新执行所属周统计"];
+n1 -> n2 [label=""];
+n2 -> n3 [label=""];
+n3 -> n4 [label="所需事实已核对"];
+n4 -> n5 [label=""];
+n5 -> n4 [label="修改/更换：重查，最多两次"];
+n5 -> n6 [label="采纳/跳过"];
+n6 -> n7 [label="仅采纳进入待反馈"];
+n7 -> n8 [label="明确执行自述"];
+}

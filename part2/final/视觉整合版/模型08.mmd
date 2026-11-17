@@ -1,0 +1,27 @@
+flowchart TB
+  HOME["首页文字输入"] --> TASK["Harness 识别任务"]
+  SIDEBAR["侧栏确定性入口"] --> UI["直接进入对应业务页面"]
+  TASK --> FOOD["食品查询与核对"]
+  TASK --> PLAN["计划和清单"]
+  TASK --> MEAL["实际餐食记录"]
+  TASK --> ACTION["当前情境与微行动"]
+  TASK --> REVIEW["阶段回顾"]
+  UI --> FOOD
+  UI --> PLAN
+  UI --> INVENTORY["库存核对"]
+  UI --> SETTINGS["设置与数据管理"]
+  UI --> MEAL
+  UI --> ACTION
+  UI --> REVIEW
+  ACTION -. 首次使用可选 .-> CAL["至多三题情境校准"]
+  SETTINGS --> CAL
+  CAL -->|确认或跳过后继续| ACTION
+  PLAN -->|用户选择预填| MEAL
+  FOOD -->|选择已核对候选| ACTION
+  MEAL -->|可选择请求建议| ACTION
+  ACTION --> DECIDE{"用户决定"}
+  DECIDE -->|采纳| PENDING["待执行反馈"]
+  DECIDE -->|更换或修改| ACTION
+  DECIDE -->|跳过| END["结束本次提案"]
+  REVIEW --> EVIDENCE["查看统计依据与未知项"]
+  EVIDENCE -->|用户确认下一步| TASK

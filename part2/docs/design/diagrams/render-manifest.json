@@ -1,0 +1,92 @@
+{
+  "tool": "本地 PlantUML 服务",
+  "endpoint": "http://localhost:8082",
+  "date": "2026-11-17",
+  "operation": "渲染中文领域候选模型，未修改共享工作区",
+  "syntax_references": [
+    "https://plantuml.com/class-diagram",
+    "https://plantuml.com/text-encoding"
+  ],
+  "records": [
+    {
+      "source": "docs/design/diagrams/D01-context-evidence.puml",
+      "source_sha256": "ffcf8c8925b3c7165d2548f7b8c85d4511baafa6dad7a3b8e6c7cfd3b9d40c59",
+      "rendered_text_sha256": "37bcac2e62418985160b2639946cbf8c42d76456f57c69ee9571795509c064cb",
+      "output": "docs/design/diagrams/rendered/D01-context-evidence.svg",
+      "format": "svg",
+      "http_status": 200,
+      "content_type": "image/svg+xml",
+      "bytes": 18175
+    },
+    {
+      "source": "docs/design/diagrams/D01-context-evidence.puml",
+      "source_sha256": "ffcf8c8925b3c7165d2548f7b8c85d4511baafa6dad7a3b8e6c7cfd3b9d40c59",
+      "rendered_text_sha256": "37bcac2e62418985160b2639946cbf8c42d76456f57c69ee9571795509c064cb",
+      "output": "docs/design/diagrams/rendered/D01-context-evidence.png",
+      "format": "png",
+      "http_status": 200,
+      "content_type": "image/png",
+      "bytes": 50517
+    },
+    {
+      "source": "docs/design/diagrams/D02-meals-preparation.puml",
+      "source_sha256": "4d7d1c4d2ecdfa1039c63f0f9d9c2c5d5b64bb28dd4c3251272b93d22b842755",
+      "rendered_text_sha256": "a6daacc9a1b51a30701fd57763ecaa19c7c527fd60b937b8263dc8c65d408e4e",
+      "output": "docs/design/diagrams/rendered/D02-meals-preparation.svg",
+      "format": "svg",
+      "http_status": 200,
+      "content_type": "image/svg+xml",
+      "bytes": 27520
+    },
+    {
+      "source": "docs/design/diagrams/D02-meals-preparation.puml",
+      "source_sha256": "4d7d1c4d2ecdfa1039c63f0f9d9c2c5d5b64bb28dd4c3251272b93d22b842755",
+      "rendered_text_sha256": "a6daacc9a1b51a30701fd57763ecaa19c7c527fd60b937b8263dc8c65d408e4e",
+      "output": "docs/design/diagrams/rendered/D02-meals-preparation.png",
+      "format": "png",
+      "http_status": 200,
+      "content_type": "image/png",
+      "bytes": 76277
+    },
+    {
+      "source": "docs/design/diagrams/D03-actions-learning.puml",
+      "source_sha256": "c4318b5a4c6f54c0ba36b9e97eb373f74e221a899febed8afb618ea1efc269ff",
+      "rendered_text_sha256": "08c44ebf34b441bf11ff8fe36455640f778578be7a61a3bac5754dfa9fd4646e",
+      "output": "docs/design/diagrams/rendered/D03-actions-learning.svg",
+      "format": "svg",
+      "http_status": 200,
+      "content_type": "image/svg+xml",
+      "bytes": 21604
+    },
+    {
+      "source": "docs/design/diagrams/D03-actions-learning.puml",
+      "source_sha256": "c4318b5a4c6f54c0ba36b9e97eb373f74e221a899febed8afb618ea1efc269ff",
+      "rendered_text_sha256": "08c44ebf34b441bf11ff8fe36455640f778578be7a61a3bac5754dfa9fd4646e",
+      "output": "docs/design/diagrams/rendered/D03-actions-learning.png",
+      "format": "png",
+      "http_status": 200,
+      "content_type": "image/png",
+      "bytes": 64248
+    },
+    {
+      "source": "docs/design/diagrams/D04-action-lifecycle.puml",
+      "source_sha256": "2bb48be13b301bb4b69ac274a6af934007f9cc49b5ef5dac996083ca0724c20d",
+      "rendered_text_sha256": "75752bd6c7b9a334ad8328a5d8428bef54da5b9e4d4cf8afe1a164bfbe01cafb",
+      "output": "docs/design/diagrams/rendered/D04-action-lifecycle.svg",
+      "format": "svg",
+      "http_status": 200,
+      "content_type": "image/svg+xml",
+      "bytes": 17867
+    },
+    {
+      "source": "docs/design/diagrams/D04-action-lifecycle.puml",
+      "source_sha256": "2bb48be13b301bb4b69ac274a6af934007f9cc49b5ef5dac996083ca0724c20d",
+      "rendered_text_sha256": "75752bd6c7b9a334ad8328a5d8428bef54da5b9e4d4cf8afe1a164bfbe01cafb",
+      "output": "docs/design/diagrams/rendered/D04-action-lifecycle.png",
+      "format": "png",
+      "http_status": 200,
+      "content_type": "image/png",
+      "bytes": 49542
+    }
+  ]
+}

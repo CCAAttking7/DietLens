@@ -1,0 +1,77 @@
+graph TB
+  linkStyle default fill:#ffffff
+
+  subgraph diagram ["A03 后端模块与数据责任"]
+    style diagram fill:#ffffff,stroke:#ffffff
+
+    2["<div style='font-weight: bold'>外部模型服务</div><div style='font-size: 70%; margin-top: 0px'>[软件系统]</div><div style='font-size: 80%; margin-top:10px'>按授权理解输入与组织候选，不拥有业务写权限</div>"]
+    style 2 fill:#edf3ed,stroke:#486958,color:#24231f
+    3["<div style='font-weight: bold'>食品参考来源</div><div style='font-size: 70%; margin-top: 0px'>[软件系统]</div><div style='font-size: 80%; margin-top:10px'>公开食品资料、当前标签及本地食物编码；完整性分别核对</div>"]
+    style 3 fill:#edf3ed,stroke:#486958,color:#24231f
+    4["<div style='font-weight: bold'>托管身份服务</div><div style='font-size: 70%; margin-top: 0px'>[软件系统]</div><div style='font-size: 80%; margin-top:10px'>验证访问令牌，仅托管模式使用</div>"]
+    style 4 fill:#edf3ed,stroke:#486958,color:#24231f
+
+    subgraph 5 ["DietLens饮食工作台"]
+      style 5 fill:#ffffff,stroke:#486958,color:#486958
+
+      subgraph 7 ["后端应用"]
+        style 7 fill:#ffffff,stroke:#486958,color:#486958
+
+        10["<div style='font-weight: bold'>档案与授权模块</div><div style='font-size: 70%; margin-top: 0px'>[模块: 确定性规则]</div><div style='font-size: 80%; margin-top:10px'>确认档案、用途授权、校准及当前处理控制</div>"]
+        style 10 fill:#edf3ed,stroke:#486958,color:#24231f
+        11["<div style='font-weight: bold'>食品证据模块</div><div style='font-size: 70%; margin-top: 0px'>[模块: 确定性规则]</div><div style='font-size: 80%; margin-top:10px'>来源、逐字段核对、单位、菜单和硬约束评估</div>"]
+        style 11 fill:#edf3ed,stroke:#486958,color:#24231f
+        12["<div style='font-weight: bold'>计划与准备模块</div><div style='font-size: 70%; margin-top: 0px'>[模块: 确定性规则]</div><div style='font-size: 80%; margin-top:10px'>选定餐次、人数、多食材、清单与手动库存</div>"]
+        style 12 fill:#edf3ed,stroke:#486958,color:#24231f
+        13["<div style='font-weight: bold'>实际餐食模块</div><div style='font-size: 70%; margin-top: 0px'>[模块: 确定性规则]</div><div style='font-size: 80%; margin-top:10px'>一次个人用餐内的食物条目、份量及有效修订</div>"]
+        style 13 fill:#edf3ed,stroke:#486958,color:#24231f
+        14["<div style='font-weight: bold'>微行动模块</div><div style='font-size: 70%; margin-top: 0px'>[模块: 确定性规则]</div><div style='font-size: 80%; margin-top:10px'>提案、采纳窗口、执行修订、提醒与偏好候选</div>"]
+        style 14 fill:#edf3ed,stroke:#486958,color:#24231f
+        15["<div style='font-weight: bold'>回顾查询模块</div><div style='font-size: 70%; margin-top: 0px'>[模块: 授权只读聚合]</div><div style='font-size: 80%; margin-top:10px'>执行周、结束队列、餐次覆盖和可追溯观察</div>"]
+        style 15 fill:#edf3ed,stroke:#486958,color:#24231f
+        16["<div style='font-weight: bold'>外部工具执行模块</div><div style='font-size: 70%; margin-top: 0px'>[模块: 可替换适配器]</div><div style='font-size: 80%; margin-top:10px'>输入输出契约、白名单、预算、超时和只读重试</div>"]
+        style 16 fill:#edf3ed,stroke:#486958,color:#24231f
+        17["<div style='font-weight: bold'>存储与事务模块</div><div style='font-size: 70%; margin-top: 0px'>[模块: 数据库适配器]</div><div style='font-size: 80%; margin-top:10px'>用户域处理控制、条件版本更新、事件及回执</div>"]
+        style 17 fill:#edf3ed,stroke:#486958,color:#24231f
+        18["<div style='font-weight: bold'>期限与数据控制模块</div><div style='font-size: 70%; margin-top: 0px'>[模块: 同包维护入口]</div><div style='font-size: 80%; margin-top:10px'>删除、过期、派生失效与最小化审计</div>"]
+        style 18 fill:#edf3ed,stroke:#486958,color:#24231f
+        8["<div style='font-weight: bold'>请求与身份模块</div><div style='font-size: 70%; margin-top: 0px'>[模块: 请求作用域]</div><div style='font-size: 80%; margin-top:10px'>解析请求，验证主体与归属，映射错误与响应</div>"]
+        style 8 fill:#edf3ed,stroke:#486958,color:#24231f
+        9["<div style='font-weight: bold'>命令与任务模块</div><div style='font-size: 70%; margin-top: 0px'>[模块: 受控编排]</div><div style='font-size: 80%; margin-top:10px'>确认绑定、恢复、幂等、版本、短事务及任务进度</div>"]
+        style 9 fill:#edf3ed,stroke:#486958,color:#24231f
+      end
+
+      19["<div style='font-weight: bold'>权威业务库</div><div style='font-size: 70%; margin-top: 0px'>[运行单元: 本地SQLite或托管PostgreSQL]</div><div style='font-size: 80%; margin-top:10px'>一次部署择一保存确认事实、版本、任务、事件及回执</div>"]
+      style 19 fill:#edf3ed,stroke:#486958,color:#24231f
+      6["<div style='font-weight: bold'>网页工作台</div><div style='font-size: 70%; margin-top: 0px'>[运行单元: React / TypeScript]</div><div style='font-size: 80%; margin-top:10px'>对话入口、结构化核对、确认、版本差异与恢复</div>"]
+      style 6 fill:#edf3ed,stroke:#486958,color:#24231f
+    end
+
+    6-. "<div>业务请求及访问令牌</div><div style='font-size: 70%'>[HTTP / HTTPS]</div>" .->8
+    8-. "<div>已认证的确认命令</div><div style='font-size: 70%'></div>" .->9
+    8-. "<div>已认证的期间查询</div><div style='font-size: 70%'></div>" .->15
+    8-. "<div>档案及当前授权查询</div><div style='font-size: 70%'></div>" .->10
+    8-. "<div>授权食品查询</div><div style='font-size: 70%'></div>" .->11
+    8-. "<div>核验托管访问令牌</div><div style='font-size: 70%'>[HTTPS]</div>" .->4
+    9-. "<div>检查当前用途授权和档案版本</div><div style='font-size: 70%'></div>" .->10
+    9-. "<div>取得并复核候选证据</div><div style='font-size: 70%'></div>" .->11
+    9-. "<div>计划、清单、库存业务命令</div><div style='font-size: 70%'></div>" .->12
+    9-. "<div>个人餐食确认与修正</div><div style='font-size: 70%'></div>" .->13
+    9-. "<div>微行动采纳、窗口和执行反馈</div><div style='font-size: 70%'></div>" .->14
+    9-. "<div>一次命令的提交、回滚及回执</div><div style='font-size: 70%'></div>" .->17
+    11-. "<div>已授权的食品资料检索</div><div style='font-size: 70%'></div>" .->16
+    9-. "<div>可选结构化理解及候选整理</div><div style='font-size: 70%'></div>" .->16
+    16-. "<div>最小必要输入，返回候选</div><div style='font-size: 70%'>[HTTPS]</div>" .->2
+    16-. "<div>带来源的只读资料</div><div style='font-size: 70%'>[HTTPS / 本地索引]</div>" .->3
+    10-. "<div>档案及用途授权事实</div><div style='font-size: 70%'></div>" .->17
+    11-. "<div>证据和核对版本</div><div style='font-size: 70%'></div>" .->17
+    12-. "<div>计划、当前槽位、清单与库存</div><div style='font-size: 70%'></div>" .->17
+    13-. "<div>用餐、食物条目与修订</div><div style='font-size: 70%'></div>" .->17
+    14-. "<div>行动、窗口、执行和派生证据引用</div><div style='font-size: 70%'></div>" .->17
+    15-. "<div>当前历史分析授权</div><div style='font-size: 70%'></div>" .->10
+    15-. "<div>同一授权范围的有效版本快照</div><div style='font-size: 70%'></div>" .->17
+    18-. "<div>撤回和删除后的处理范围</div><div style='font-size: 70%'></div>" .->10
+    18-. "<div>期限清理及派生结果失效</div><div style='font-size: 70%'></div>" .->17
+    17-. "<div>有界查询及原子写入</div><div style='font-size: 70%'>[参数化数据库访问]</div>" .->19
+
+  end

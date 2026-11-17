@@ -1,0 +1,58 @@
+@startuml
+skinparam defaultFontName Noto Sans CJK SC
+skinparam backgroundColor #FCFBF7
+skinparam sequenceMessageAlign center
+skinparam maxMessageSize 220
+skinparam sequenceArrowFontSize 14
+skinparam ParticipantBackgroundColor #EDF3ED
+skinparam ParticipantBorderColor #486958
+skinparam NoteBackgroundColor #FFF1D9
+hide footbox
+title S02 未来准备与个人实际用餐分开确认
+actor "用户" as U
+participant "网页工作台" as W
+participant "命令与任务" as C
+participant "计划与准备" as P
+participant "实际餐食" as M
+database "权威业务库" as D
+U -> W : 选择完整计划或指定餐次；核对人数及食材
+W -> C : 预览计划（槽位、草稿与预期版本）
+C -> P : 校验完整模式3/21餐或所选槽位
+P --> C : 替换范围、保留槽位及清单影响
+U -> W : 确认受影响餐次
+W -> C : 提交绑定版本的计划命令
+group 第一次短事务：计划与当前槽位
+C -> D : 锁定处理控制，复核授权与版本
+C -> P : 应用已确认槽位替换
+C -> D : 保存新版本、当前槽位、清单失效及回执
+D --> C : 提交成功
+end
+C --> W : 新计划；旧清单过期提示
+U -> W : 单独核对采购数量及已购/已备状态
+W -> C : 准备清单或库存命令
+C -> P : 核对来源计划版本，旧状态不自动迁移
+C -> D : 独立事务提交准备事实与回执
+... 实际用餐之后 ...
+U -> W : 从计划预填本人的实际餐食
+W -> C : 请求只读预填，准备核对本人份量
+C -> M : 取得计划引用与多个食物候选
+M --> C : 未保存的个人用餐草稿
+C --> W : 展示食物、个人份量及来源供调整
+group 分支：用户确认
+W -> C : 记餐命令（日期、餐次、多个食物、预期版本）
+group 第二类独立短事务：个人实际事实
+C -> D : 锁定处理控制，复核授权与版本
+C -> M : 校验个人用餐及食物条目
+C -> D : 保存用餐、条目、版本及回执
+D --> C : 提交成功
+end
+C --> W : 个人用餐记录与回执
+else 用户取消
+W --> U : 关闭草稿，不保存实际记录
+end
+note over P,M
+多人准备量不等于个人摄入。
+同日期餐次可有多次用餐，餐次覆盖只计一次。
+记餐不隐式扣库存，也不自动写行动执行。
+end note
+@enduml

@@ -1,0 +1,75 @@
+@startuml
+title D03 · 微行动、执行自述与反馈调整（第二轮领域候选版）
+skinparam backgroundColor #FCFBF7
+skinparam shadowing false
+skinparam defaultFontName Noto Sans CJK SC
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor #EDF3ED
+skinparam classBorderColor #486958
+hide empty members
+hide circle
+class "微行动" as MicroAction <<聚合>> {
+ 行动身份 / 情境引用
+ 线索 / 行为 / 努力量 / 依据
+ 动作维度 / 提案版本
+ 已确认窗口版本
+ 采纳() / 跳过() / 换一个()
+}
+class "行动决策" as ActionDecision <<实体>> {
+ 行动引用 / 决策
+ 所采纳提案版本 / 决策时间
+}
+class "行动窗口" as ActionWindow <<值对象>> {
+ 场景 / 开始时间 / 结束时间 / 时区
+ 确认版本
+}
+class "执行修订" as ExecutionRevision <<实体>> {
+ 行动引用 / 自述修订
+ 执行状态 / 执行日期 / 报告时间
+ 修正执行自述()
+}
+class "偏好候选" as PreferenceSuggestion <<实体>> {
+ 候选身份 / 证据范围
+ 原因 / 候选调整方向
+}
+class "稳定偏好规则" as PreferenceRule <<聚合>> {
+ 规则身份 / 修订 / 确认时间
+ 条件 / 方向 / 状态
+ 确认() / 停用() / 删除()
+}
+class "情境线索" as ContextClue <<实体>> {
+ 线索身份 / 证据范围
+ 假设 / 不确定性 / 用户核对
+}
+class "恢复周期" as RecoveryEpisode <<实体>> {
+ 周期身份 / 已确认偏离
+ 已确认回归 / 排除时段
+}
+class "预期餐次安排" as ExpectedMealSchedule <<聚合>> {
+ 用户 / 自然周 / 修订
+ 已确认预期餐次槽位
+}
+class "连续周呈现" as WeekPresentation <<实体>> {
+ 用户 / 自然周 / 证据依据
+ 完成周 / 冻结周 / 未知周
+}
+class "期间回顾" as PeriodSummary <<派生结果>> {
+ 期间 / 时区 / 更新时间
+ 来源 / 分子 / 分母
+ 未知与覆盖范围
+}
+MicroAction "1" *-- "0..1" ActionDecision
+MicroAction "1" *-- "1" ActionWindow : 提案后在采纳时确认
+MicroAction "1" *-- "0..*" ExecutionRevision : 仅已采纳时成立
+ExecutionRevision ..> PreferenceSuggestion : 授权范围内的证据
+PreferenceSuggestion "0..*" --> "0..1" PreferenceRule : 用户明确确认
+ContextClue ..> RecoveryEpisode : 用户确认起止点
+PeriodSummary ..> ExecutionRevision : 最新有效执行自述
+PeriodSummary ..> ExpectedMealSchedule : 预期餐次分母
+WeekPresentation ..> PeriodSummary : 仅作呈现，不修改事实
+note bottom of ExecutionRevision
+ 迟到反馈与修正沿用同一行动身份。
+ 完成数按执行日期归周。
+ 反馈队列按窗口结束时间归周。
+end note
+@enduml

@@ -1,0 +1,26 @@
+{
+  "version": "R2-P1",
+  "date": "2026-11-17",
+  "scope": "需求材料静态检查，非实现或运行验收",
+  "spec": "specs/001-dietlens-design/spec.md",
+  "fr_definitions": 20,
+  "nfr_definitions": 26,
+  "user_stories": 6,
+  "covered_use_cases": 14,
+  "quality_checklist": {
+    "before": 13,
+    "after": 16,
+    "total": 16
+  },
+  "valid_relative_links": 10,
+  "open_scope_questions": 0,
+  "hooks": "extensions.yml不存在，无扩展钩子",
+  "phase": "候选需求版，待用户阶段确认",
+  "deferred": [
+    "P2记录粒度、窗口及迁移语义",
+    "P3技术与架构选型",
+    "正式设计与运行验收"
+  ],
+  "subsequent_phase_status": "2026-11-17 用户确认P1，已进入P2；原检查结果为P1产出时记录",
+  "language": "中文；必要技术标识保留原样"
+}

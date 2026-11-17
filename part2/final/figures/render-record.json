@@ -1,0 +1,102 @@
+{
+  "说明": "报告精简模型；完整源模型保留作附件",
+  "图数": 8,
+  "记录": [
+    {
+      "源": "final\\figures\\F01-domain.puml",
+      "产物": "final\\figures\\F01-domain.svg",
+      "源摘要": "c2da15e2edcb2f32ef5765809e8256814715b48df45bbb97583d17cee7f02720",
+      "摘要": "8bbf66d1a1800a0ec2b4fd83fe297c28656bf42cfe5357ceeeb029fdda097cfe"
+    },
+    {
+      "源": "final\\figures\\F01-domain.puml",
+      "产物": "final\\figures\\F01-domain.png",
+      "源摘要": "c2da15e2edcb2f32ef5765809e8256814715b48df45bbb97583d17cee7f02720",
+      "摘要": "a908abfd1672f5ee75e782666f41d802427dce0e495e4376c9a2b5affcf6f2a5"
+    },
+    {
+      "源": "final\\figures\\F02-action.puml",
+      "产物": "final\\figures\\F02-action.svg",
+      "源摘要": "3bb7b27f9fdd511207e432503a083a3489d7686b35c25ffe44b824186a16b7f8",
+      "摘要": "432ed273624c32742fa554a7e1e201ac38a75f876ad74d9bd1c1269cf83680fe"
+    },
+    {
+      "源": "final\\figures\\F02-action.puml",
+      "产物": "final\\figures\\F02-action.png",
+      "源摘要": "3bb7b27f9fdd511207e432503a083a3489d7686b35c25ffe44b824186a16b7f8",
+      "摘要": "740a3fa889178934305711a095e3c49c2bf053949a4ae9db11ade74533bbc253"
+    },
+    {
+      "源": "final\\figures\\F03-plan.puml",
+      "产物": "final\\figures\\F03-plan.svg",
+      "源摘要": "b7cc2ef2b170e45e4d42e6dcd79402db8bb40b51bdc11ceae0cf7d2cd1b30211",
+      "摘要": "4f7b6a690a8873d313e8f3c72faa7530d6aaa9045aa3412a8e129b2af3155aa8"
+    },
+    {
+      "源": "final\\figures\\F03-plan.puml",
+      "产物": "final\\figures\\F03-plan.png",
+      "源摘要": "b7cc2ef2b170e45e4d42e6dcd79402db8bb40b51bdc11ceae0cf7d2cd1b30211",
+      "摘要": "09ec1e6742aeceb53d736d40d355f7c009372fa961094efc3532c6a46679224a"
+    },
+    {
+      "源": "final\\figures\\F04-recovery.puml",
+      "产物": "final\\figures\\F04-recovery.svg",
+      "源摘要": "5f5e00c866b585c0a385f2a8be634aa5ede286f9cd58b9f4fd852cb0a90d9dfe",
+      "摘要": "b9c29651304b1dc395a9f419b22415de50109ddb3a684872bcf4c5f4edf08277"
+    },
+    {
+      "源": "final\\figures\\F04-recovery.puml",
+      "产物": "final\\figures\\F04-recovery.png",
+      "源摘要": "5f5e00c866b585c0a385f2a8be634aa5ede286f9cd58b9f4fd852cb0a90d9dfe",
+      "摘要": "9d86f1b6d44430ce0c2c402ab0c762d3cbd675092b645ba709a8740b81f92011"
+    },
+    {
+      "源": "final\\figures\\F05-flow.puml",
+      "产物": "final\\figures\\F05-flow.svg",
+      "源摘要": "ac272f741285ef7a82e1e61085e4b03637f4a8472af8ee514e69d6745adc3fc3",
+      "摘要": "1fb0e1007b191f3d4a71d2d598c717e2b856e15d444a56086591ff0e36dab016"
+    },
+    {
+      "源": "final\\figures\\F05-flow.puml",
+      "产物": "final\\figures\\F05-flow.png",
+      "源摘要": "ac272f741285ef7a82e1e61085e4b03637f4a8472af8ee514e69d6745adc3fc3",
+      "摘要": "cb1880cc9f3d02e70f173783720f68154ebb12aad508a0a4da4004ef440d651f"
+    },
+    {
+      "源": "final\\figures\\F06-state.puml",
+      "产物": "final\\figures\\F06-state.svg",
+      "源摘要": "8c100d8b1a56155033f9ab788d5361a255de777be81fc0c5cd88e9e3ca949dd6",
+      "摘要": "c9c93f02b679921eb7c5526a7eae4a0730b5ae4b3a0fc53dd70e10dbafa7d198"
+    },
+    {
+      "源": "final\\figures\\F06-state.puml",
+      "产物": "final\\figures\\F06-state.png",
+      "源摘要": "8c100d8b1a56155033f9ab788d5361a255de777be81fc0c5cd88e9e3ca949dd6",
+      "摘要": "79352337d15675f9379fd82acdf212ba05805b8bcb4132e08d3d67ec59cbecac"
+    },
+    {
+      "源": "final\\figures\\F07-context.puml",
+      "产物": "final\\figures\\F07-context.svg",
+      "源摘要": "050f0240b9fc72e11b44ea130e66e6b52b9e805e70132e824fbd8377604bb850",
+      "摘要": "34412f6062b2fbaa5f37c8970f9f2b55979945e8596c674e02386b97a5e98f1d"
+    },
+    {
+      "源": "final\\figures\\F07-context.puml",
+      "产物": "final\\figures\\F07-context.png",
+      "源摘要": "050f0240b9fc72e11b44ea130e66e6b52b9e805e70132e824fbd8377604bb850",
+      "摘要": "c81f14f918462084661ace2c9df055c5e11b8711395d50201facf5b2bf9e4273"
+    },
+    {
+      "源": "final\\figures\\F08-logical.puml",
+      "产物": "final\\figures\\F08-logical.svg",
+      "源摘要": "861a9a25cc0bca3594d9762fc9f2f119ab59254d486d6b1c57c6b0d0458584b5",
+      "摘要": "3751fa40edfa6a226d7b9e9ad3ea165d50b3cc430f184125eb976868971f3327"
+    },
+    {
+      "源": "final\\figures\\F08-logical.puml",
+      "产物": "final\\figures\\F08-logical.png",
+      "源摘要": "861a9a25cc0bca3594d9762fc9f2f119ab59254d486d6b1c57c6b0d0458584b5",
+      "摘要": "dc4599b2d53e87f3b3cf4681f86a876fa39c25b573249a13dbd3a8e0b8e22a4f"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+digraph G {
+graph [rankdir=TB, bgcolor="#fcfbf7", pad="0.3", nodesep="0.35", ranksep="0.55", fontname="Microsoft YaHei", fontsize=18, labelloc=t, label="M01B · 目标逻辑架构 / 单体内职责"];
+node [shape=box, style="rounded,filled", fillcolor="#edf3ed", color="#486958", fontname="Microsoft YaHei", fontsize=12, margin="0.18,0.12"];
+edge [color="#627468", fontname="Microsoft YaHei", fontsize=10, arrowsize=0.7];
+w [label="网页 工作台\n候选 / 差异 / 确认 / 恢复"];
+a [label="API 身份边界\n请求主体 / 对象归属"];
+c [label="命令协调器 + 编排控制\n确认 / 授权 / 版本 / 幂等\n事务 / 调用预算 / 恢复"];
+p [label="档案与授权"];
+f [label="食品与菜单评估\n证据 / 单位 / 硬约束"];
+l [label="计划 / 清单 / 库存"];
+r [label="实际餐食记录"];
+x [label="微行动与反馈"];
+v [label="回顾查询\n期间 / 分母 / 有效版本"];
+d [label="存储接口 / 唯一权威库\n业务 + 任务 + 事件 + 回执"];
+m [label="模型适配器\n结构化候选 / 表达"];
+s [label="食品来源适配器"];
+w -> a [label="请求"];
+a -> c [label="确认写命令"];
+a -> v [label="授权查询"];
+c -> p [label=""];
+c -> f [label=""];
+c -> l [label=""];
+c -> r [label=""];
+c -> x [label=""];
+p -> d [label=""];
+f -> d [label=""];
+l -> d [label=""];
+r -> d [label=""];
+x -> d [label=""];
+v -> d [label="只读聚合"];
+c -> m [label="事务外调用"];
+f -> s [label="检索"];
+}

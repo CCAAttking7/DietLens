@@ -1,0 +1,40 @@
+﻿@page{size:A4;margin:20mm 17mm 18mm 17mm;
+  @top-left{content:"DietLens｜系统分析与设计报告（界面重设计版）";font:8pt 'Microsoft YaHei';color:#5b6b61}
+  @top-right{content:"第二组";font:8pt 'Microsoft YaHei';color:#5b6b61}
+  @bottom-center{content:"第 " counter(page) " 页";font:8pt 'Microsoft YaHei';color:#5b6b61}}
+@page:first{margin:0;@top-left{content:none}@top-right{content:none}@bottom-center{content:none}}
+*{box-sizing:border-box}
+body{font-family:'SimSun','宋体',serif;font-size:10.3pt;line-height:1.75;color:#111;margin:0}
+h1,h2,h3,h4,th,figcaption,.kicker,.intent,.mkb,.uinotes b{font-family:'Microsoft YaHei','微软雅黑',sans-serif}
+h2{font-size:16pt;margin:20pt 0 8pt;padding-left:10px;border-left:5px solid #0F7D47;color:#073D27;break-after:avoid}
+h3{font-size:12pt;margin:14pt 0 6pt;color:#0b3f2a;break-after:avoid}
+p{margin:0 0 7pt;text-align:justify}
+a{color:#0F7D47;text-decoration:none}
+table{border-collapse:collapse;width:100%;margin:6pt 0 10pt;font-size:9pt;line-height:1.55;break-inside:auto}
+tr{break-inside:avoid}
+th{background:#E3F2E8;color:#073D27;font-weight:700;text-align:left}
+th,td{border:.5pt solid #9fb3a6;padding:3pt 6pt;vertical-align:top}
+figure{margin:8pt auto 10pt;text-align:center;break-inside:avoid}
+figure img{max-width:100%;max-height:200mm}
+figcaption{font-size:8.6pt;color:#3d5246;margin-top:4pt;line-height:1.5}
+.pair{display:flex;gap:8px;margin:6pt 0}.pair img{width:50%;min-width:0;object-fit:contain}
+em{font-style:normal;font-size:8.6pt;color:#3d5246;font-family:'Microsoft YaHei'}
+/* 封面 */
+.cover{width:210mm;height:296mm;padding:22mm 18mm 0;background:linear-gradient(160deg,#E4F4E8 0%,#FAF4E4 55%,#FFE9DD 100%);break-after:page;overflow:hidden}
+.kicker{font-size:11pt;letter-spacing:2px;color:#0F7D47;font-weight:700}
+.cover h1{font-size:30pt;line-height:1.25;margin:6mm 0 3mm;color:#073D27;font-weight:800}
+.subtitle{font-family:'Microsoft YaHei';font-size:12.5pt;color:#2d4a3a}
+.meta{font-family:'Microsoft YaHei';font-size:10.5pt;color:#41564a;margin-top:3mm}
+.cover img{display:block;width:174mm;margin:10mm auto 0}
+/* 界面块 */
+.uiblock{display:flex;gap:16px;align-items:flex-start;margin:8pt 0 12pt;break-inside:avoid}
+.uiblock figure{flex:none;width:72mm;margin:0}
+.uiblock figure img{width:72mm;max-height:none;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.uinotes{flex:1;min-width:0}
+.intent{font-size:10pt;font-weight:700;color:#073D27;background:#E3F2E8;border-radius:8px;padding:6pt 9pt;margin:0 0 8pt;line-height:1.6}
+ol.mks{list-style:none;margin:0;padding:0}
+ol.mks li{display:flex;gap:8px;margin-bottom:8pt;font-size:9.6pt;line-height:1.65;text-align:left}
+.mkb{flex:none;width:18px;height:18px;border-radius:50%;background:#10251C;color:#fff;font-size:9pt;display:inline-flex;align-items:center;justify-content:center;margin-top:2px}
+.uinotes b{color:#0b3f2a}
+ol.mks.wide{margin-bottom:10pt}
+

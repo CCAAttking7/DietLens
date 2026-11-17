@@ -1,0 +1,32 @@
+@startuml
+skinparam defaultFontName Noto Sans CJK SC
+skinparam defaultFontSize 22
+skinparam backgroundColor #FCFBF7
+skinparam shadowing false
+skinparam sequenceArrowFontSize 20
+skinparam sequenceParticipantFontSize 22
+skinparam maxMessageSize 270
+hide footbox
+title 用户流程：按当前任务进入，明确确认事实
+start
+:选择食品、计划、记录、微行动或回顾;
+:复用已确认档案，核对当前缺口;
+if (需要外部图片解析？) then (是)
+:逐图确认用途和接收方;
+else (否)
+:手输或读取允许使用的资料;
+endif
+:形成候选与结构化预览;
+if (有关键未知或冲突？) then (是)
+:补充、改选或手动继续;
+:重新核对受影响内容;
+else (否)
+endif
+:显示变更范围、来源与独立影响;
+if (用户确认？) then (确认)
+:提交原预览，显示回执或核对结果;
+else (取消)
+:退出草案，保留原已确认事实;
+endif
+stop
+@enduml

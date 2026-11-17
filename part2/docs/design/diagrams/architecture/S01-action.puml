@@ -1,0 +1,55 @@
+@startuml
+skinparam defaultFontName Noto Sans CJK SC
+skinparam backgroundColor #FCFBF7
+skinparam sequenceMessageAlign center
+skinparam maxMessageSize 220
+skinparam sequenceArrowFontSize 14
+skinparam ParticipantBackgroundColor #EDF3ED
+skinparam ParticipantBorderColor #486958
+skinparam NoteBackgroundColor #FFF1D9
+hide footbox
+title S01 微行动：候选、确认采纳与独立反馈
+actor "用户" as U
+participant "网页工作台" as W
+participant "命令与任务" as C
+participant "档案与食品证据" as P
+participant "外部工具执行" as T
+participant "微行动" as A
+database "权威业务库" as D
+U -> W : 描述当前问题与约束
+W -> C : 请求候选（独立请求上下文）
+C -> P : 核验用途授权、档案及证据
+P --> C : 版本与可用字段
+group 可选：需要外部理解或资料
+C -> T : 最小必要输入、截止时间及预算
+T --> C : 候选与来源；无写权限
+end
+group 分支：证据足够且硬约束通过
+C -> A : 校验行动、理由和拟议窗口
+A --> C : 待核对草稿及版本
+C --> W : 候选、来源、窗口与待确认项
+U -> W : 核对内容，确认或修改结束时间
+W -> C : 采纳命令（操作标识、草稿和预期版本）
+group 短事务；外部调用已结束
+C -> D : 开始事务，锁定用户处理控制
+C -> P : 复核当前授权与绑定版本
+C -> A : 校验采纳状态及确认窗口
+A --> C : 一份采纳事实
+C -> D : 原子写入行动、任务、事件与回执
+D --> C : 提交成功
+end
+C --> W : 行动标识、窗口及提交回执
+else 证据不足、超时或约束不满足
+C --> W : 说明待核对项及可继续路径
+end
+... 用户之后执行或补报 ...
+U -> W : 报告实际执行日期及状态
+W -> C : 独立反馈命令（原行动标识）
+C -> A : 校验已采纳行动与反馈修订
+note over C,A
+当前授权仍需检查；档案变化不抹去历史行动。
+同一行动保留一个有效反馈版本，迟报不复制成功。
+end note
+C -> D : 短事务复核并提交反馈及回执
+C --> W : 按执行日期归周，相关回顾失效待重算
+@enduml

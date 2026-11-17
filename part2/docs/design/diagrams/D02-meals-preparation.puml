@@ -1,0 +1,87 @@
+@startuml
+title D02 · 未来准备与个人实际餐食（第二轮领域候选版）
+skinparam backgroundColor #FCFBF7
+skinparam shadowing false
+skinparam defaultFontName Noto Sans CJK SC
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor #EDF3ED
+skinparam classBorderColor #486958
+hide empty members
+hide circle
+class "饮食计划" as DietPlan <<聚合>> {
+ 计划身份 / 所属用户
+ 确认新版本()
+}
+class "计划版本" as PlanRevision <<实体>> {
+ 修订 / 日期范围
+ 模式 / 选定槽位 / 状态
+}
+class "计划餐次" as PlannedMeal <<实体>> {
+ 计划餐次身份 / 槽位
+ 准备人数
+}
+class "计划食物" as PlannedFood <<实体>> {
+ 计划食物身份 / 规格
+ 证据版本引用
+}
+class "食材需求" as IngredientRequirement <<值对象>> {
+ 已知或未知数量 / 单位
+ 每人或全餐总量 / 依据
+}
+class "标准食材" as Ingredient <<实体>> {
+ 食材身份 / 标准名称
+}
+class "准备采购清单" as PreparationList <<聚合>> {
+ 清单身份 / 计划版本
+ 库存核对依据 / 状态
+ 预览() / 确认()
+}
+class "清单条目" as PreparationLine <<实体>> {
+ 条目身份 / 兼容口径
+ 需求 / 差额 / 未知
+ 自述已购 / 自述已准备
+}
+class "库存核对" as InventoryObservation <<聚合>> {
+ 库存身份 / 修订
+ 已知或未知数量 / 单位
+ 确认时间
+ 调整() / 删除()
+}
+class "餐次归属" as SlotAssignment <<值对象>> {
+ 用户 / 日期 / 餐次槽位
+ 当前有效计划餐次引用
+}
+class "实际餐食记录" as MealRecord <<聚合>> {
+ 用餐记录身份 / 修订
+ 日期 / 餐次 / 用餐时间 / 状态
+ 确认() / 修正() / 删除()
+}
+class "实际食物条目" as ReportedFood <<实体>> {
+ 食物条目身份 / 规格
+ 个人已知或未知份量 / 单位
+ 输入出处 / 自述证据类型
+}
+DietPlan "1" *-- "1..*" PlanRevision
+PlanRevision "1" *-- "1..*" PlannedMeal
+PlannedMeal "1" *-- "1..*" PlannedFood
+PlannedFood "1" *-- "0..*" IngredientRequirement
+IngredientRequirement "0..*" --> "1" Ingredient
+PreparationList "0..*" --> "1" PlanRevision : 来源计划的明确版本
+PreparationList "1" *-- "1..*" PreparationLine
+PreparationLine "0..*" --> "1" Ingredient
+PreparationLine ..> IngredientRequirement : 追溯原需求
+InventoryObservation "0..*" --> "1" Ingredient
+PreparationLine ..> InventoryObservation : 读取已核对库存
+SlotAssignment "0..*" --> "1" PlannedMeal : 当前槽位归属
+MealRecord "1" *-- "1..*" ReportedFood
+ReportedFood "0..*" --> "0..1" PlannedFood : 可选的版本引用
+note bottom of MealRecord
+ 已确认：一次个人用餐包含多条食物。
+ 同一日期与餐次可有多次实际用餐。
+ 覆盖度对该餐次槽位仅计一次。
+end note
+note bottom of PreparationLine
+ 需求或库存未知时，完整差额保持未知。
+ 勾选已购或已准备不自动改变库存。
+end note
+@enduml

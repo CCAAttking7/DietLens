@@ -1,0 +1,6099 @@
+{
+  "版本": "R2-P4候选",
+  "说明": "生成设计产物的结构元数据，不含真实用户数据",
+  "tables": [
+    {
+      "name": "user_control",
+      "label": "用户处理控制",
+      "group": "授权与证据",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "external_subject",
+          "label": "托管身份主体",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": "只存身份映射，不存口令或访问令牌"
+        },
+        {
+          "name": "processing_state",
+          "label": "处理状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "authorization_epoch",
+          "label": "授权修订标记",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "data_revision",
+          "label": "用户数据修订",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "current_profile_revision",
+          "label": "当前档案修订",
+          "kind": "positive",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "delete_requested_at",
+          "label": "主动删除请求时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id"
+      ],
+      "unique": [
+        [
+          "external_subject"
+        ]
+      ],
+      "checks": [
+        "processing_state IN ('正常', '待删除', '清理中', '清理失败', '已清理待备份到期')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id",
+            "current_profile_revision"
+          ],
+          "target": "profile_revisions",
+          "target_columns": [
+            "user_id",
+            "revision"
+          ],
+          "late": true
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "current_profile_revision"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "profile_revisions",
+      "label": "档案确认版本",
+      "group": "授权与证据",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "revision",
+          "label": "修订号",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "confirmed_fields",
+          "label": "已确认字段",
+          "kind": "json",
+          "nullable": false,
+          "default": null,
+          "note": "目标、预算、硬约束、软偏好及逐字段来源；固定结构由模块校验"
+        },
+        {
+          "name": "confirmed_at",
+          "label": "用户确认时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "revision"
+      ],
+      "unique": [],
+      "checks": [],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "media_assets",
+      "label": "临时图片",
+      "group": "授权与证据",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "storage_key",
+          "label": "本机受控文件键",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "media_kind",
+          "label": "材料用途",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "content_hash",
+          "label": "内容摘要",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "expires_at",
+          "label": "图片过期时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "processing_state",
+          "label": "图片处理状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [
+        "processing_state IN ('可用', '待清理', '已清理')",
+        "((processing_state = '已清理' AND storage_key IS NULL) OR (processing_state <> '已清理' AND storage_key IS NOT NULL))"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "expires_at"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "consent_revisions",
+      "label": "用途授权修订",
+      "group": "授权与证据",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "purpose",
+          "label": "用途",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "scope_key",
+          "label": "范围键",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": "全域或对应图片标识"
+        },
+        {
+          "name": "revision",
+          "label": "修订号",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "asset_id",
+          "label": "外传图片标识",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "allowed",
+          "label": "允许使用",
+          "kind": "bool",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "recipient",
+          "label": "接收方",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "authorization_epoch",
+          "label": "授权修订标记",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "confirmed_at",
+          "label": "用户确认时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "purpose",
+        "scope_key",
+        "revision"
+      ],
+      "unique": [],
+      "checks": [
+        "purpose IN ('历史分析', '图片外传', '提醒')",
+        "((purpose = '图片外传' AND asset_id IS NOT NULL AND scope_key = asset_id AND recipient IS NOT NULL) OR (purpose <> '图片外传' AND asset_id IS NULL AND scope_key = '全域'))"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "asset_id"
+          ],
+          "target": "media_assets",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "asset_id"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "task_sessions",
+      "label": "临时任务会话",
+      "group": "授权与证据",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "task_kind",
+          "label": "任务类型",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "state",
+          "label": "任务状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "draft_revision",
+          "label": "草稿修订",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "draft_payload",
+          "label": "未确认草稿",
+          "kind": "json",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "authorization_epoch",
+          "label": "绑定授权修订",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "expires_at",
+          "label": "任务过期时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [
+        "state IN ('进行中', '已暂停', '已取消', '已完成')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "expires_at"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "context_snapshots",
+      "label": "已确认情境",
+      "group": "授权与证据",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "profile_revision",
+          "label": "档案修订",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "context_key",
+          "label": "情境指纹",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": "相同情境冷却的规范化键，不以新快照标识绕过冷却"
+        },
+        {
+          "name": "situation",
+          "label": "已确认情境内容",
+          "kind": "json",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "authorization_epoch",
+          "label": "当时授权修订",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "confirmed_at",
+          "label": "用户确认时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "profile_revision"
+          ],
+          "target": "profile_revisions",
+          "target_columns": [
+            "user_id",
+            "revision"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "profile_revision"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "context_key"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "source_references",
+      "label": "证据来源",
+      "group": "授权与证据",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "source_kind",
+          "label": "来源类型",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "source_locator",
+          "label": "出处或自述说明",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "specification",
+          "label": "商品或菜单规格",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "published_at",
+          "label": "材料时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "acquired_at",
+          "label": "取得时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "asset_id",
+          "label": "原图片标识",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "asset_digest",
+          "label": "材料摘要",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "verification_note",
+          "label": "核对依据",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [
+        "source_kind IN ('用户自述', '商品标签', '菜单', '公开资料', '本地编码')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "asset_id"
+          ],
+          "target": "media_assets",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "asset_id"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "food_observations",
+      "label": "食品证据版本",
+      "group": "授权与证据",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "previous_id",
+          "label": "上一证据版本",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "food_name",
+          "label": "食品名称",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "specification",
+          "label": "当前规格",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "recipe_coverage",
+          "label": "配方覆盖",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "checked_at",
+          "label": "核对时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "basis_state",
+          "label": "营养基准量状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "basis_micros",
+          "label": "营养基准量定点值",
+          "kind": "amount",
+          "nullable": true,
+          "default": null,
+          "note": "实际值乘1000000；未知必须为空"
+        },
+        {
+          "name": "basis_unit",
+          "label": "营养基准量单位",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [
+        "recipe_coverage IN ('完整已核对', '仅部分已知', '未知')",
+        "basis_state IN ('已知', '未知')",
+        "((basis_state = '已知' AND basis_micros IS NOT NULL AND basis_unit IS NOT NULL) OR (basis_state = '未知' AND basis_micros IS NULL))"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "previous_id"
+          ],
+          "target": "food_observations",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "previous_id"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "food_name"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "food_fields",
+      "label": "食品逐字段事实",
+      "group": "授权与证据",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "observation_id",
+          "label": "食品证据标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "field_key",
+          "label": "字段键",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "state",
+          "label": "字段状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "value_kind",
+          "label": "值类型",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "number_micros",
+          "label": "数值定点值",
+          "kind": "amount",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "text_value",
+          "label": "文字值",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "unit",
+          "label": "字段单位",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "raw_value",
+          "label": "原始候选值",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "checked_at",
+          "label": "核对时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "observation_id",
+        "field_key"
+      ],
+      "unique": [],
+      "checks": [
+        "state IN ('已核对', '待核对', '未知', '冲突')",
+        "value_kind IN ('数值', '文字')",
+        "((state IN ('未知','冲突') AND number_micros IS NULL AND text_value IS NULL) OR (state IN ('已核对','待核对') AND ((value_kind = '数值' AND number_micros IS NOT NULL AND text_value IS NULL AND unit IS NOT NULL) OR (value_kind = '文字' AND text_value IS NOT NULL AND number_micros IS NULL))))"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "observation_id"
+          ],
+          "target": "food_observations",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "name": "field_sources",
+      "label": "字段来源关联",
+      "group": "授权与证据",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "observation_id",
+          "label": "食品证据标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "field_key",
+          "label": "字段键",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "source_id",
+          "label": "来源标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "source_role",
+          "label": "来源角色",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "observation_id",
+        "field_key",
+        "source_id"
+      ],
+      "unique": [],
+      "checks": [
+        "source_role IN ('原始材料', '用户核对', '冲突材料')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "observation_id",
+            "field_key"
+          ],
+          "target": "food_fields",
+          "target_columns": [
+            "user_id",
+            "observation_id",
+            "field_key"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "source_id"
+          ],
+          "target": "source_references",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "source_id"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "constraint_assessments",
+      "label": "约束评估",
+      "group": "授权与证据",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "context_id",
+          "label": "情境标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "observation_id",
+          "label": "食品证据标识",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "rule_version",
+          "label": "规则版本",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "outcome",
+          "label": "评估结论",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "reasons",
+          "label": "原因与受影响操作",
+          "kind": "json",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "evaluated_at",
+          "label": "评估时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [
+        "outcome IN ('通过', '拦截', '待核对')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "context_id"
+          ],
+          "target": "context_snapshots",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "observation_id"
+          ],
+          "target": "food_observations",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "context_id"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "observation_id"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "ingredients",
+      "label": "标准食材",
+      "group": "计划与准备",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "canonical_name",
+          "label": "标准名称",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "catalog_code",
+          "label": "外部编码",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "plan_heads",
+      "label": "计划身份",
+      "group": "计划与准备",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "current_revision",
+          "label": "当前确认修订",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "row_version",
+          "label": "并发版本",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "state",
+          "label": "身份状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [
+        "state IN ('有效', '已删除')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "id",
+            "current_revision"
+          ],
+          "target": "plan_revisions",
+          "target_columns": [
+            "user_id",
+            "id",
+            "revision"
+          ],
+          "late": true
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "id",
+            "current_revision"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "plan_revisions",
+      "label": "计划确认版本",
+      "group": "计划与准备",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "revision",
+          "label": "修订号",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "mode",
+          "label": "计划模式",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "start_date",
+          "label": "开始日期",
+          "kind": "date",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "end_date",
+          "label": "结束日期",
+          "kind": "date",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "day_count",
+          "label": "计划天数",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "context_id",
+          "label": "情境标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "confirmed_at",
+          "label": "用户确认时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id",
+        "revision"
+      ],
+      "unique": [],
+      "checks": [
+        "end_date >= start_date",
+        "day_count IN (1, 7)",
+        "mode IN ('完整', '指定')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "id"
+          ],
+          "target": "plan_heads",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "context_id"
+          ],
+          "target": "context_snapshots",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "context_id"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "planned_meals",
+      "label": "计划餐次",
+      "group": "计划与准备",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "plan_id",
+          "label": "计划标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "plan_revision",
+          "label": "计划修订",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "meal_date",
+          "label": "餐次日期",
+          "kind": "date",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "meal_slot",
+          "label": "规范餐次",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "people_count",
+          "label": "准备人数",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [
+        [
+          "user_id",
+          "plan_id",
+          "plan_revision",
+          "meal_date",
+          "meal_slot"
+        ],
+        [
+          "user_id",
+          "id",
+          "meal_date",
+          "meal_slot"
+        ]
+      ],
+      "checks": [
+        "meal_slot IN ('早餐', '午餐', '晚餐')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "plan_id",
+            "plan_revision"
+          ],
+          "target": "plan_revisions",
+          "target_columns": [
+            "user_id",
+            "id",
+            "revision"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "name": "planned_foods",
+      "label": "计划食物",
+      "group": "计划与准备",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "planned_meal_id",
+          "label": "计划餐次标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "food_name",
+          "label": "食物名称",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "observation_id",
+          "label": "食品证据标识",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "assessment_id",
+          "label": "约束评估标识",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "quantity_basis",
+          "label": "数量基准",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "quantity_state",
+          "label": "计划份量状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "quantity_micros",
+          "label": "计划份量定点值",
+          "kind": "amount",
+          "nullable": true,
+          "default": null,
+          "note": "实际值乘1000000；未知必须为空"
+        },
+        {
+          "name": "quantity_unit",
+          "label": "计划份量单位",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [
+        "quantity_basis IN ('每人', '本餐总量')",
+        "quantity_state IN ('已知', '未知')",
+        "((quantity_state = '已知' AND quantity_micros IS NOT NULL AND quantity_unit IS NOT NULL) OR (quantity_state = '未知' AND quantity_micros IS NULL))"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "planned_meal_id"
+          ],
+          "target": "planned_meals",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "observation_id"
+          ],
+          "target": "food_observations",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "assessment_id"
+          ],
+          "target": "constraint_assessments",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "planned_meal_id"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "observation_id"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "assessment_id"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "ingredient_requirements",
+      "label": "食材需求",
+      "group": "计划与准备",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "planned_food_id",
+          "label": "计划食物标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "ingredient_id",
+          "label": "食材标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "quantity_basis",
+          "label": "数量基准",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "source_id",
+          "label": "配方来源",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "quantity_state",
+          "label": "食材用量状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "quantity_micros",
+          "label": "食材用量定点值",
+          "kind": "amount",
+          "nullable": true,
+          "default": null,
+          "note": "实际值乘1000000；未知必须为空"
+        },
+        {
+          "name": "quantity_unit",
+          "label": "食材用量单位",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [
+        "quantity_basis IN ('每人', '本餐总量')",
+        "quantity_state IN ('已知', '未知')",
+        "((quantity_state = '已知' AND quantity_micros IS NOT NULL AND quantity_unit IS NOT NULL) OR (quantity_state = '未知' AND quantity_micros IS NULL))"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "planned_food_id"
+          ],
+          "target": "planned_foods",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "ingredient_id"
+          ],
+          "target": "ingredients",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "source_id"
+          ],
+          "target": "source_references",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "planned_food_id"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "ingredient_id"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "source_id"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "slot_assignments",
+      "label": "当前槽位归属",
+      "group": "计划与准备",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "meal_date",
+          "label": "餐次日期",
+          "kind": "date",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "meal_slot",
+          "label": "规范餐次",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "planned_meal_id",
+          "label": "当前计划餐次标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "row_version",
+          "label": "槽位并发版本",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "meal_date",
+        "meal_slot"
+      ],
+      "unique": [],
+      "checks": [
+        "meal_slot IN ('早餐', '午餐', '晚餐')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "planned_meal_id",
+            "meal_date",
+            "meal_slot"
+          ],
+          "target": "planned_meals",
+          "target_columns": [
+            "user_id",
+            "id",
+            "meal_date",
+            "meal_slot"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "planned_meal_id",
+            "meal_date",
+            "meal_slot"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "inventory_heads",
+      "label": "库存身份",
+      "group": "计划与准备",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "ingredient_id",
+          "label": "标准食材标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "unit",
+          "label": "核对口径单位",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "current_revision",
+          "label": "当前库存修订",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "row_version",
+          "label": "并发版本",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "state",
+          "label": "身份状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [
+        [
+          "user_id",
+          "ingredient_id",
+          "unit"
+        ]
+      ],
+      "checks": [
+        "state IN ('有效', '已删除')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "ingredient_id"
+          ],
+          "target": "ingredients",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "id",
+            "current_revision"
+          ],
+          "target": "inventory_revisions",
+          "target_columns": [
+            "user_id",
+            "id",
+            "revision"
+          ],
+          "late": true
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "id",
+            "current_revision"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "inventory_revisions",
+      "label": "库存核对版本",
+      "group": "计划与准备",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "revision",
+          "label": "修订号",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "quantity_state",
+          "label": "库存量状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "quantity_micros",
+          "label": "库存定点值",
+          "kind": "amount",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "observed_at",
+          "label": "库存核对时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "reason",
+          "label": "变更原因",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "confirmed_at",
+          "label": "用户确认时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id",
+        "revision"
+      ],
+      "unique": [],
+      "checks": [
+        "quantity_state IN ('已知', '未知')",
+        "((quantity_state = '已知' AND quantity_micros IS NOT NULL) OR (quantity_state = '未知' AND quantity_micros IS NULL))"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "id"
+          ],
+          "target": "inventory_heads",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "name": "preparation_lists",
+      "label": "准备采购清单",
+      "group": "计划与准备",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "plan_id",
+          "label": "来源计划标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "plan_revision",
+          "label": "来源计划修订",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "row_version",
+          "label": "并发版本",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "state",
+          "label": "清单状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "inventory_data_revision",
+          "label": "库存核对截点",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "confirmed_at",
+          "label": "用户确认时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [
+        "state IN ('有效', '已失效', '已取消')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "plan_id",
+            "plan_revision"
+          ],
+          "target": "plan_revisions",
+          "target_columns": [
+            "user_id",
+            "id",
+            "revision"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "plan_id",
+            "plan_revision"
+          ],
+          "unique": true,
+          "where": "state = '有效'"
+        },
+        {
+          "columns": [
+            "user_id",
+            "plan_id",
+            "plan_revision"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "preparation_lines",
+      "label": "清单条目",
+      "group": "计划与准备",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "list_id",
+          "label": "清单标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "ingredient_id",
+          "label": "标准食材标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "unit",
+          "label": "汇总口径单位",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "has_unknown_requirement",
+          "label": "另有未知需求",
+          "kind": "bool",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "known_need_micros",
+          "label": "已知需求小计",
+          "kind": "amount",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "stock_state",
+          "label": "库存量状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "stock_micros",
+          "label": "核对库存定点值",
+          "kind": "amount",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "shortage_state",
+          "label": "差额状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "shortage_micros",
+          "label": "采购差额定点值",
+          "kind": "amount",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "purchased_state",
+          "label": "采购自述状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "prepared_state",
+          "label": "准备自述状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "inventory_id",
+          "label": "所用库存身份",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "inventory_revision",
+          "label": "所用库存修订",
+          "kind": "positive",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "manual_reason",
+          "label": "人工调整原因",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [
+        [
+          "user_id",
+          "list_id",
+          "ingredient_id",
+          "unit"
+        ]
+      ],
+      "checks": [
+        "((inventory_id IS NULL AND inventory_revision IS NULL) OR (inventory_id IS NOT NULL AND inventory_revision IS NOT NULL))",
+        "((stock_state = '已知' AND stock_micros IS NOT NULL) OR (stock_state = '未知' AND stock_micros IS NULL))",
+        "((shortage_state = '已知' AND shortage_micros IS NOT NULL AND stock_state = '已知' AND has_unknown_requirement = 0) OR (shortage_state = '未知' AND shortage_micros IS NULL))",
+        "stock_state IN ('已知', '未知')",
+        "shortage_state IN ('已知', '未知')",
+        "purchased_state IN ('未报告', '已确认', '不适用')",
+        "prepared_state IN ('未报告', '已确认', '不适用')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "list_id"
+          ],
+          "target": "preparation_lists",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "ingredient_id"
+          ],
+          "target": "ingredients",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "inventory_id",
+            "inventory_revision"
+          ],
+          "target": "inventory_revisions",
+          "target_columns": [
+            "user_id",
+            "id",
+            "revision"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "ingredient_id"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "inventory_id",
+            "inventory_revision"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "preparation_sources",
+      "label": "清单需求来源",
+      "group": "计划与准备",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "line_id",
+          "label": "清单条目标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "requirement_id",
+          "label": "食材需求标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "line_id",
+        "requirement_id"
+      ],
+      "unique": [],
+      "checks": [],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "line_id"
+          ],
+          "target": "preparation_lines",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "requirement_id"
+          ],
+          "target": "ingredient_requirements",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "requirement_id"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "meal_heads",
+      "label": "个人用餐身份",
+      "group": "实际与回顾",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "current_revision",
+          "label": "当前餐食修订",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "row_version",
+          "label": "并发版本",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "state",
+          "label": "身份状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [
+        "state IN ('有效', '已删除')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "id",
+            "current_revision"
+          ],
+          "target": "meal_revisions",
+          "target_columns": [
+            "user_id",
+            "id",
+            "revision"
+          ],
+          "late": true
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "id",
+            "current_revision"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "meal_revisions",
+      "label": "个人用餐版本",
+      "group": "实际与回顾",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "revision",
+          "label": "修订号",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "meal_date",
+          "label": "业务用餐日期",
+          "kind": "date",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "meal_slot",
+          "label": "规范餐次",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "actual_at",
+          "label": "实际时点",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "note",
+          "label": "用户自述",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "confirmed_at",
+          "label": "用户确认时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id",
+        "revision"
+      ],
+      "unique": [],
+      "checks": [
+        "meal_slot IN ('早餐', '午餐', '晚餐', '加餐')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "id"
+          ],
+          "target": "meal_heads",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "meal_date",
+            "meal_slot"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "reported_foods",
+      "label": "个人实际食物",
+      "group": "实际与回顾",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "record_id",
+          "label": "用餐身份",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "record_revision",
+          "label": "用餐修订",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "item_id",
+          "label": "条目标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "food_name",
+          "label": "实际食物名称",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "observation_id",
+          "label": "食品证据标识",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "planned_food_id",
+          "label": "计划食物出处",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "entry_source",
+          "label": "录入来源",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "quantity_state",
+          "label": "个人实际份量状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "quantity_micros",
+          "label": "个人实际份量定点值",
+          "kind": "amount",
+          "nullable": true,
+          "default": null,
+          "note": "实际值乘1000000；未知必须为空"
+        },
+        {
+          "name": "quantity_unit",
+          "label": "个人实际份量单位",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "record_id",
+        "record_revision",
+        "item_id"
+      ],
+      "unique": [],
+      "checks": [
+        "entry_source IN ('手动自述', '计划预填', '图文核对')",
+        "quantity_state IN ('已知', '未知')",
+        "((quantity_state = '已知' AND quantity_micros IS NOT NULL AND quantity_unit IS NOT NULL) OR (quantity_state = '未知' AND quantity_micros IS NULL))"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "record_id",
+            "record_revision"
+          ],
+          "target": "meal_revisions",
+          "target_columns": [
+            "user_id",
+            "id",
+            "revision"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "observation_id"
+          ],
+          "target": "food_observations",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "planned_food_id"
+          ],
+          "target": "planned_foods",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "observation_id"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "planned_food_id"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "micro_actions",
+      "label": "微行动提案",
+      "group": "行动与学习",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "context_id",
+          "label": "情境标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "dimension",
+          "label": "行动维度",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "cue",
+          "label": "行动线索",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "behavior",
+          "label": "具体行为",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "effort",
+          "label": "努力量",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "rationale",
+          "label": "行动依据",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "replacement_of",
+          "label": "被替代提案标识",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "planned_meal_id",
+          "label": "关联计划餐次",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "current_window_revision",
+          "label": "当前窗口修订",
+          "kind": "positive",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "current_execution_revision",
+          "label": "当前执行修订",
+          "kind": "positive",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "row_version",
+          "label": "并发版本",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "state",
+          "label": "身份状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "record_id",
+          "label": "关联实际用餐标识",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "record_revision",
+          "label": "关联实际用餐修订号",
+          "kind": "positive",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [
+        "((record_id IS NULL AND record_revision IS NULL) OR (record_id IS NOT NULL AND record_revision IS NOT NULL))",
+        "dimension IN ('平替', '顺手加法', '进食顺序', '时序节律')",
+        "state IN ('有效', '已删除')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "record_id",
+            "record_revision"
+          ],
+          "target": "meal_revisions",
+          "target_columns": [
+            "user_id",
+            "id",
+            "revision"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "context_id"
+          ],
+          "target": "context_snapshots",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "replacement_of"
+          ],
+          "target": "micro_actions",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "planned_meal_id"
+          ],
+          "target": "planned_meals",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "id",
+            "current_window_revision"
+          ],
+          "target": "action_windows",
+          "target_columns": [
+            "user_id",
+            "action_id",
+            "revision"
+          ],
+          "late": true
+        },
+        {
+          "columns": [
+            "user_id",
+            "id",
+            "current_execution_revision"
+          ],
+          "target": "execution_revisions",
+          "target_columns": [
+            "user_id",
+            "action_id",
+            "revision"
+          ],
+          "late": true
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "record_id",
+            "record_revision"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "context_id"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "replacement_of"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "planned_meal_id"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "id",
+            "current_window_revision"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "id",
+            "current_execution_revision"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "action_decisions",
+      "label": "行动最终决策",
+      "group": "行动与学习",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "action_id",
+          "label": "行动标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "decision",
+          "label": "用户决策",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "confirmed_at",
+          "label": "用户确认时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "action_id"
+      ],
+      "unique": [],
+      "checks": [
+        "decision IN ('采纳', '跳过', '被替代')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "action_id"
+          ],
+          "target": "micro_actions",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "name": "action_windows",
+      "label": "行动窗口修订",
+      "group": "行动与学习",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "action_id",
+          "label": "行动标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "revision",
+          "label": "修订号",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "starts_at",
+          "label": "窗口开始",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "ends_at",
+          "label": "窗口结束",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "timezone",
+          "label": "业务时区",
+          "kind": "text",
+          "nullable": false,
+          "default": "'Asia/Shanghai'",
+          "note": ""
+        },
+        {
+          "name": "reason",
+          "label": "确认或修正原因",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "confirmed_at",
+          "label": "用户确认时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "action_id",
+        "revision"
+      ],
+      "unique": [],
+      "checks": [
+        "ends_at >= starts_at",
+        "timezone = 'Asia/Shanghai'"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "action_id"
+          ],
+          "target": "action_decisions",
+          "target_columns": [
+            "user_id",
+            "action_id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "ends_at"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "execution_revisions",
+      "label": "执行自述修订",
+      "group": "行动与学习",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "action_id",
+          "label": "行动标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "revision",
+          "label": "修订号",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "execution_state",
+          "label": "有效自述状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "execution_date",
+          "label": "实际执行日期",
+          "kind": "date",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "reported_at",
+          "label": "报告时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "note",
+          "label": "执行自述备注",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "confirmed_at",
+          "label": "用户确认时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "action_id",
+        "revision"
+      ],
+      "unique": [],
+      "checks": [
+        "execution_state IN ('完成', '部分', '未完成', '撤回为不确定')",
+        "((execution_state = '撤回为不确定' AND execution_date IS NULL) OR (execution_state <> '撤回为不确定' AND execution_date IS NOT NULL))"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "action_id"
+          ],
+          "target": "action_decisions",
+          "target_columns": [
+            "user_id",
+            "action_id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "execution_date",
+            "execution_state"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "reminder_events",
+      "label": "提醒与回应历史",
+      "group": "行动与学习",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "action_id",
+          "label": "行动标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "scheduled_at",
+          "label": "计划提醒时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "sent_at",
+          "label": "实际提醒时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "responded_at",
+          "label": "回应时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "outcome",
+          "label": "发送结果",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "authorization_epoch",
+          "label": "发送授权修订",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [
+        "outcome IN ('待发送', '已发送', '已取消', '失败')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "action_id"
+          ],
+          "target": "action_decisions",
+          "target_columns": [
+            "user_id",
+            "action_id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "action_id"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "scheduled_at"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "interaction_settings",
+      "label": "交互与提醒状态",
+      "group": "行动与学习",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "row_version",
+          "label": "并发版本",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "unanswered_count",
+          "label": "连续未响应数",
+          "kind": "nonnegative",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "backoff_until",
+          "label": "静默截止",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "companion_enabled",
+          "label": "陪伴开启",
+          "kind": "bool",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "collection_enabled",
+          "label": "图鉴开启",
+          "kind": "bool",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "calibration_enabled",
+          "label": "校准开启",
+          "kind": "bool",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "ranking_version",
+          "label": "内环规则版本",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "ranking_parameters",
+          "label": "内环参数及原因",
+          "kind": "json",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id"
+      ],
+      "unique": [],
+      "checks": [],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "interaction_events",
+      "label": "内环决策记录",
+      "group": "行动与学习",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "context_id",
+          "label": "情境标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "action_id",
+          "label": "行动标识",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "event_kind",
+          "label": "交互类型",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "rule_version",
+          "label": "排序规则版本",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "explanation",
+          "label": "依据及参数",
+          "kind": "json",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "cooldown_until",
+          "label": "情境冷却截止",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [
+        "event_kind IN ('采纳', '换一个', '暂不需要', '规则调整')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "context_id"
+          ],
+          "target": "context_snapshots",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "action_id"
+          ],
+          "target": "micro_actions",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "context_id"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "action_id"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "context_id",
+            "cooldown_until"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "learning_candidates",
+      "label": "偏好与情境候选",
+      "group": "行动与学习",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "candidate_kind",
+          "label": "候选类型",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "hypothesis",
+          "label": "待核对内容",
+          "kind": "json",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "state",
+          "label": "核对状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "authorization_epoch",
+          "label": "来源授权修订",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "range_start",
+          "label": "证据开始日期",
+          "kind": "date",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "range_end",
+          "label": "证据结束日期",
+          "kind": "date",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "confirmed_at",
+          "label": "核对时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [
+        "candidate_kind IN ('稳定偏好', '情境线索')",
+        "state IN ('待核对', '已确认', '已拒绝', '已到期')",
+        "range_end >= range_start"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "learning_evidence",
+      "label": "学习证据引用",
+      "group": "行动与学习",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "candidate_id",
+          "label": "候选标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "action_id",
+          "label": "来源行动",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "execution_revision",
+          "label": "来源执行修订",
+          "kind": "positive",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "record_id",
+          "label": "来源用餐",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "record_revision",
+          "label": "来源用餐修订",
+          "kind": "positive",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [
+        "((action_id IS NOT NULL AND execution_revision IS NOT NULL AND record_id IS NULL AND record_revision IS NULL) OR (action_id IS NULL AND execution_revision IS NULL AND record_id IS NOT NULL AND record_revision IS NOT NULL))"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "candidate_id"
+          ],
+          "target": "learning_candidates",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "action_id",
+            "execution_revision"
+          ],
+          "target": "execution_revisions",
+          "target_columns": [
+            "user_id",
+            "action_id",
+            "revision"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "record_id",
+            "record_revision"
+          ],
+          "target": "meal_revisions",
+          "target_columns": [
+            "user_id",
+            "id",
+            "revision"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "candidate_id"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "action_id",
+            "execution_revision"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "record_id",
+            "record_revision"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "preference_rule_revisions",
+      "label": "稳定偏好修订",
+      "group": "行动与学习",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "revision",
+          "label": "修订号",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "candidate_id",
+          "label": "已确认候选",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "rule_content",
+          "label": "条件方向与适用范围",
+          "kind": "json",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "state",
+          "label": "规则状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "confirmed_at",
+          "label": "用户确认时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id",
+        "revision"
+      ],
+      "unique": [],
+      "checks": [
+        "state IN ('有效', '已停用', '已删除')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "candidate_id"
+          ],
+          "target": "learning_candidates",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "candidate_id"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "calibration_revisions",
+      "label": "校准回答修订",
+      "group": "行动与学习",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "question_key",
+          "label": "题目标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "question_version",
+          "label": "题目版本",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "revision",
+          "label": "修订号",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "answer",
+          "label": "确认回答",
+          "kind": "json",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "state",
+          "label": "回答状态",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "confirmed_at",
+          "label": "用户确认时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "question_key",
+        "revision"
+      ],
+      "unique": [],
+      "checks": [
+        "state IN ('已确认', '已删除')",
+        "((state = '已确认' AND answer IS NOT NULL) OR (state = '已删除' AND answer IS NULL))"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "expected_schedules",
+      "label": "预期餐次版本",
+      "group": "实际与回顾",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "week_start",
+          "label": "自然周起始",
+          "kind": "date",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "revision",
+          "label": "修订号",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "confirmed_at",
+          "label": "用户确认时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "week_start",
+        "revision"
+      ],
+      "unique": [],
+      "checks": [],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "expected_slots",
+      "label": "预期餐次槽位",
+      "group": "实际与回顾",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "week_start",
+          "label": "自然周起始",
+          "kind": "date",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "schedule_revision",
+          "label": "预期餐次修订",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "meal_date",
+          "label": "餐次日期",
+          "kind": "date",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "meal_slot",
+          "label": "规范餐次",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "week_start",
+        "schedule_revision",
+        "meal_date",
+        "meal_slot"
+      ],
+      "unique": [],
+      "checks": [
+        "meal_slot IN ('早餐', '午餐', '晚餐', '加餐')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "week_start",
+            "schedule_revision"
+          ],
+          "target": "expected_schedules",
+          "target_columns": [
+            "user_id",
+            "week_start",
+            "revision"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "name": "recovery_episodes",
+      "label": "恢复周期确认",
+      "group": "实际与回顾",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "row_version",
+          "label": "并发版本",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "deviation_at",
+          "label": "确认偏离起点",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "return_at",
+          "label": "确认回归终点",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "reason",
+          "label": "用户确认情境",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "confirmed_at",
+          "label": "用户确认时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [
+        "return_at IS NULL OR (deviation_at IS NOT NULL AND return_at >= deviation_at)"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "recovery_exclusions",
+      "label": "恢复排除时段",
+      "group": "实际与回顾",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "episode_id",
+          "label": "恢复周期标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "starts_at",
+          "label": "排除开始",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "ends_at",
+          "label": "排除结束",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "reason",
+          "label": "排除原因",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "confirmed_at",
+          "label": "用户确认时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [
+        "ends_at >= starts_at"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "episode_id"
+          ],
+          "target": "recovery_episodes",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "episode_id"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "week_presentations",
+      "label": "连续周呈现修订",
+      "group": "实际与回顾",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "week_start",
+          "label": "自然周起始",
+          "kind": "date",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "revision",
+          "label": "修订号",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "override_kind",
+          "label": "呈现决定",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "reason",
+          "label": "用户确认依据",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "confirmed_at",
+          "label": "用户确认时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "week_start",
+        "revision"
+      ],
+      "unique": [],
+      "checks": [
+        "override_kind IN ('冻结', '取消冻结')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "command_receipts",
+      "label": "持久提交回执",
+      "group": "命令与数据控制",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "operation_key",
+          "label": "操作标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "request_hash",
+          "label": "规范化请求摘要",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "commit_id",
+          "label": "唯一提交标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "task_id",
+          "label": "来源任务标识",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": "任务过期后可清除此引用，不代表回执失效"
+        },
+        {
+          "name": "authorization_epoch",
+          "label": "提交授权修订",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "data_revision",
+          "label": "提交数据修订",
+          "kind": "positive",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "result_refs",
+          "label": "结果标识与版本",
+          "kind": "json",
+          "nullable": false,
+          "default": null,
+          "note": "只保留必要标识，恢复时重新授权读取"
+        },
+        {
+          "name": "issued_at",
+          "label": "操作令牌签发时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "expires_at",
+          "label": "回执过期时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "operation_key"
+      ],
+      "unique": [
+        [
+          "user_id",
+          "commit_id"
+        ]
+      ],
+      "checks": [],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "task_id"
+          ],
+          "target": "task_sessions",
+          "target_columns": [
+            "user_id",
+            "id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "task_id"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "expires_at"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "audit_events",
+      "label": "最小化业务事件",
+      "group": "命令与数据控制",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "事件标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "commit_id",
+          "label": "提交标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "event_kind",
+          "label": "事件类型",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "object_kind",
+          "label": "对象类型",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "object_id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "object_revision",
+          "label": "对象修订",
+          "kind": "positive",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "reason_code",
+          "label": "原因编码",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "retain_until",
+          "label": "保留截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": "初次不超过180天；明确续期须留审计依据"
+        },
+        {
+          "name": "renewed_at",
+          "label": "续期确认时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        },
+        {
+          "columns": [
+            "user_id",
+            "commit_id"
+          ],
+          "target": "command_receipts",
+          "target_columns": [
+            "user_id",
+            "commit_id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "user_id",
+            "commit_id"
+          ],
+          "unique": false
+        },
+        {
+          "columns": [
+            "retain_until"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "data_control_jobs",
+      "label": "导出删除清理任务",
+      "group": "命令与数据控制",
+      "columns": [
+        {
+          "name": "user_id",
+          "label": "所属用户",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "id",
+          "label": "对象标识",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "job_kind",
+          "label": "处理类型",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "state",
+          "label": "处理进度",
+          "kind": "text",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "scope_manifest",
+          "label": "范围与断点",
+          "kind": "json",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "requested_at",
+          "label": "请求时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "deadline_at",
+          "label": "目标截止",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "completed_at",
+          "label": "完成时间",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "artifact_key",
+          "label": "临时导出文件键",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "artifact_expires_at",
+          "label": "导出文件过期",
+          "kind": "time",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "failure_code",
+          "label": "失败原因编码",
+          "kind": "text",
+          "nullable": true,
+          "default": null,
+          "note": ""
+        },
+        {
+          "name": "created_at",
+          "label": "建立时间",
+          "kind": "time",
+          "nullable": false,
+          "default": null,
+          "note": ""
+        }
+      ],
+      "pk": [
+        "user_id",
+        "id"
+      ],
+      "unique": [],
+      "checks": [
+        "job_kind IN ('导出', '主动删除', '期限清理')",
+        "state IN ('待处理', '处理中', '已完成', '失败')"
+      ],
+      "fks": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "target": "user_control",
+          "target_columns": [
+            "user_id"
+          ],
+          "late": false
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "state",
+            "deadline_at"
+          ],
+          "unique": false
+        }
+      ]
+    }
+  ]
+}

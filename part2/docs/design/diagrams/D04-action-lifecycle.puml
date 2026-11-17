@@ -1,0 +1,41 @@
+@startuml
+title D04 · 行动决策与执行状态分离（第二轮领域候选版）
+skinparam backgroundColor #FCFBF7
+skinparam shadowing false
+skinparam defaultFontName Noto Sans CJK SC
+skinparam stateBackgroundColor #EDF3ED
+skinparam stateBorderColor #486958
+state "行动决策" as Decision {
+ state "已被替代" as Superseded
+ state "已跳过" as Skipped
+ state "已采纳" as Adopted
+ state "待决定提案" as Proposed
+ [*] --> Proposed
+ Proposed --> Adopted : 确认采纳\n行为、约束及行动窗口
+ Proposed --> Skipped : 用户跳过
+ Proposed --> Superseded : 修改或更换\n重新校验新提案
+}
+state "执行状态" as Execution {
+ state "待反馈" as PendingFeedback
+ state "执行未知" as Unknown
+ state "已有有效执行自述" as Reported
+ state "已删除退出处理" as Excluded
+ PendingFeedback --> Unknown : 窗口已结束且无有效执行自述
+ PendingFeedback --> Reported : 用户确认执行自述
+ Unknown --> Reported : 用户迟到确认执行自述
+ Reported --> Reported : 修正同一行动\n追加自述版本
+ Reported --> Unknown : 撤回有效执行自述\n[窗口已结束]
+Reported --> PendingFeedback : 撤回有效执行自述\n[窗口尚未结束]
+ PendingFeedback --> Excluded : 用户确认删除
+ Unknown --> Excluded : 用户确认删除
+ Reported --> Excluded : 用户确认删除
+}
+Adopted --> PendingFeedback : 仅已采纳时成立
+Decision -[hidden]down-> Execution
+legend bottom
+跳过没有执行状态。
+有效执行自述：完成、部分完成或未完成，取最新有效版本。
+迟到反馈不自动延长窗口。
+已删除事实不得恢复后继续处理。
+endlegend
+@enduml

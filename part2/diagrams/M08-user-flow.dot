@@ -1,0 +1,32 @@
+digraph G {
+graph [rankdir=TB, bgcolor="#fcfbf7", pad="0.3", nodesep="0.35", ranksep="0.55", fontname="Microsoft YaHei", fontsize=18, labelloc=t, label="M08 · 目标用户流程 / 各入口可独立使用"];
+node [shape=box, style="rounded,filled", fillcolor="#edf3ed", color="#486958", fontname="Microsoft YaHei", fontsize=12, margin="0.18,0.12"];
+edge [color="#627468", fontname="Microsoft YaHei", fontsize=10, arrowsize=0.7];
+entry [label="选择当前需要\n查食品 / 做计划 / 记餐 / 微行动 / 回顾"];
+food [label="输入菜单或标签\n核对来源和关键配料"];
+check [label="配料未知或冲突\n补充 / 换选项；阻止受影响推荐"];
+plan [label="日期、人数、指定餐次\n计划预览 → 确认计划"];
+shop [label="按人数汇总多食材\n库存核对 → 确认清单"];
+record [label="手输或计划预填\n个人实际情况 → 记录预览"];
+saved [label="确认保存实际餐食\n取消则不创建记录"];
+action [label="情境核对 → 单步行动\n采纳 / 跳过 / 修改"];
+feedback [label="仅采纳后待反馈\n完成 / 部分 / 未完成 / 未知"];
+review [label="授权后查看期间回顾\n计划 / 实际 / 行动分别汇总"];
+recovery [label="任一提交回执不明\n保留草稿 → 原键核对结果"];
+entry -> food [label="查资料"];
+entry -> plan [label="安排未来"];
+entry -> record [label="记录已吃"];
+entry -> action [label="试一个小改变"];
+entry -> review [label="看历史"];
+food -> check [label="受影响事实不足"];
+check -> food [label="用户补充"];
+food -> plan [label="已核对餐食可引用"];
+plan -> shop [label="准备入口"];
+plan -> record [label="到用餐时可预填"];
+record -> saved [label="用户确认"];
+action -> feedback [label="采纳"];
+saved -> review [label="按有效记录汇总"];
+feedback -> review [label="按有效反馈汇总"];
+saved -> recovery [label="未收到回执"];
+recovery -> saved [label="查明已提交：显示原记录"];
+}

@@ -1,0 +1,37 @@
+classDiagram
+direction TB
+class PlanVersion["计划版本"] {
+  计划标识
+  业务版本
+  日期范围
+  确认状态
+}
+class PlanItem["计划餐次"] {
+  条目标识
+  日期与餐次
+  多种食品与数量
+}
+class ActiveMealSlotRef["有效餐次引用"] {
+  用户与日期餐次
+  当前或历史条目
+  生效及失效时间
+}
+class ShoppingList["采购清单"] {
+  来源计划与覆盖餐次
+  手工调整与准备进度
+}
+class InventoryItem["库存条目"] {
+  食材数量与单位
+  有效期与更新时间
+}
+class MealRecord["实际餐食"] {
+  实际时间与餐次
+  可选历史来源
+  有效版本与营养依据
+}
+  PlanVersion "1" *-- "*" PlanItem : 包含
+  ActiveMealSlotRef ..> PlanItem : 引用条目
+  ShoppingList ..> ActiveMealSlotRef : 读取有效范围
+  ShoppingList ..> PlanVersion : 来源版本
+  ShoppingList ..> InventoryItem : 读取库存
+  MealRecord ..> PlanItem : 可选历史引用
