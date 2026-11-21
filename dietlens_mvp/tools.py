@@ -14,7 +14,8 @@ def build_context(store: Repository, user_id: str, meal: str, options: list[str]
     profile = store.get_profile(user_id)
     if not profile:
         raise ToolError("profile_not_found")
-    return Context(user_id, meal, options, profile.budget, profile.allergies, profile.dislikes, profile_version=profile.version, allergies_confirmed="allergies" in profile.confirmed_fields, hard_avoids=profile.hard_avoids)
+    confirmed = profile.allergy_status in {"none", "specified"}
+    return Context(user_id, meal, options, profile.budget, profile.allergies, profile.dislikes, profile_version=profile.version, allergies_confirmed=confirmed, hard_avoids=profile.hard_avoids, allergy_status=profile.allergy_status)
 
 
 def _contains(text: str, terms: list[str]) -> bool:
@@ -42,14 +43,19 @@ def generate_actions(context: Context, options: list[str], prior_actions: list[A
               and (a.cooldown_until is None or a.cooldown_until > now)
               for option in context.options if f"选择{option}" in a.behavior}
     if len(options) > 1:
-        options = sorted(options, key=lambda option: option in cooled)
+        # Soft dislikes only affect ordering.  They never remove a candidate;
+        # allergy and hard-avoid filtering has already happened separately.
+        options = sorted(options, key=lambda option: (
+            option in cooled,
+            _contains(option, context.dislikes),
+        ))
     dimensions = ("substitution", "add_on", "sequence", "timing")
     used_dimensions = {a.dimension for a in prior_actions if a.context and a.context.meal == context.meal}
     dimension = next((item for item in dimensions if item not in used_dimensions), dimensions[0])
     chosen = options[0]
     copy = {
-        "substitution": (f"选择{chosen}，并把饮料换成无糖或白水", "保留当前餐食，只调整一个维度；已按餐名排除明确过敏/忌口词，配料仍需核对。", "低：只改变饮品"),
-        "add_on": (f"选择{chosen}时，顺手加一份蔬菜或水果", "在原有选择上加一个容易执行的小动作，不要求改变整餐。", "低：只增加一项"),
+        "substitution": (f"选择{chosen}，并把饮料换成无糖或白水", "保留当前餐食，只调整一个维度；这里只按你提供的餐名排除了明确过敏/忌口词，餐厅菜品的实际配料仍需你核对。", "低：只改变饮品"),
+        "add_on": (f"选择{chosen}时，如果手边有蔬菜或水果，顺手加一份", "这是一个可选的小动作；只有手边已有时才需要执行，不假设你一定有额外食材。", "低：只增加一项"),
         "sequence": (f"选择{chosen}后，先吃蔬菜和蛋白质，再吃主食", "通过进食顺序降低一次性改变整餐的负担。", "低：只改变顺序"),
         "timing": (f"准备{context.meal}前先喝几口水，前几口慢一点", "把注意力放回进食节奏，不把一次结果当成能力评价。", "低：只改变节奏"),
     }
@@ -63,13 +69,14 @@ def generate_actions(context: Context, options: list[str], prior_actions: list[A
         effort=effort,
         rationale=rationale,
         dimension=dimension,
+        selected_option=chosen,
     )]
     if len(options) > 1:
         alt = options[1]
         alternative_dimension = dimensions[(dimensions.index(dimension) + 1) % len(dimensions)]
         alt_copy = {
             "substitution": (f"选择{alt}，饮料优先选无糖或白水", "这是同一情境下的可替换候选，需由你选择是否尝试。", "低：只改变饮品"),
-            "add_on": (f"选择{alt}时，加一份蔬菜或水果", "这是同一情境下的可替换候选，需由你选择是否尝试。", "低：只增加一项"),
+            "add_on": (f"选择{alt}时，如果手边有蔬菜或水果，顺手加一份", "这是同一情境下的可替换候选，需由你选择是否尝试，也不假设额外食材一定存在。", "低：只增加一项"),
             "sequence": (f"选择{alt}后，先吃蔬菜和蛋白质，再吃主食", "这是同一情境下的可替换候选，需由你选择是否尝试。", "低：只改变顺序"),
             "timing": (f"准备{context.meal}前先喝几口水，前几口慢一点", "这是同一情境下的可替换候选，需由你选择是否尝试。", "低：只改变节奏"),
         }
@@ -83,6 +90,7 @@ def generate_actions(context: Context, options: list[str], prior_actions: list[A
             effort=alt_effort,
             rationale=alt_rationale,
             dimension=alternative_dimension,
+            selected_option=alt,
         ))
     return actions
 

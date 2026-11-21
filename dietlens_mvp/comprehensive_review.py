@@ -96,6 +96,11 @@ class ComprehensiveReviewService:
                 entry["status"] = "matched" if any(item["item_id"] in linked_ids for item in entry["planned"]) else "same_slot"
             elif entry["recorded"]:
                 entry["status"] = "unplanned"
+        matched_plan_item_ids = {record.plan_item_id for record in records if record.plan_item_id}
+        matched_planned = sum(item.item_id in matched_plan_item_ids for item in planned_items)
+        same_slot_records = sum(1 for entry in timeline if entry["status"] == "same_slot")
+        unplanned_records = sum(1 for entry in timeline if entry["status"] == "unplanned")
+        unmatched_planned = len(planned_items) - matched_planned
         unknowns = []
         if not records:
             unknowns.append({"kind": "meal_record", "count": 0, "message": "没有实际餐食记录；这不代表没有用餐。"})
@@ -106,35 +111,43 @@ class ComprehensiveReviewService:
             unknowns.append({"kind": "action_feedback", "count": len(unknown_action_feedback), "message": "有些行动还没有反馈，不计作完成或失败。"})
 
         insights = []
-        if planned_items and not records:
+        if planned_items and unmatched_planned == len(planned_items):
             insights.append({"kind": "plan_gap", "tone": "gentle", "title": "计划还没有遇到真实的一餐",
                              "body": "这不代表计划失败，只说明目前还缺少实际记录。下一次愿意的话，记下一餐就能让计划和生活重新对上。",
                              "evidence": f"已安排 {len(planned_items)} 餐，实际记录 0 餐"})
-        elif planned_items and len(records) < len(planned_items):
+        elif planned_items and unmatched_planned:
             insights.append({"kind": "plan_gap", "tone": "warm", "title": "有些安排没有被记录下来",
                              "body": "可以先看看是时间、食材，还是临时变化让它没有发生；不需要为了补齐数字而回填。",
-                             "evidence": f"已记录 {len(records)} / {len(planned_items)} 餐"})
-        elif records and len(records) > len(planned_items) and planned_items:
+                             "evidence": f"已明确关联 {matched_planned} / {len(planned_items)} 餐；另有 {same_slot_records} 条同餐次记录待核对"})
+        elif unplanned_records and planned_items:
             insights.append({"kind": "unplanned", "tone": "blue", "title": "生活里出现了计划之外的选择",
                              "body": "这些记录不是偏离，而是帮助下一次计划更贴近真实节奏的线索。",
-                             "evidence": f"记录 {len(records)} 餐，计划 {len(planned_items)} 餐"})
+                             "evidence": f"有 {unplanned_records} 条计划外记录；计划项按明确关联单独核对"})
         if unknown_quantity:
             insights.append({"kind": "unknown_quantity", "tone": "quiet", "title": "份量仍然留有余地",
                              "body": "份量未知不会被当成零，也不影响先看餐次和节奏。以后想补充时，只需要改这一项。",
                              "evidence": f"{unknown_quantity} 条记录没有份量"})
         barrier_actions = [action for action in adopted if effective[action.action_id] in {Execution.PARTIAL.value, Execution.NOT_DONE.value}]
         completed_actions = [action for action in adopted if effective[action.action_id] == Execution.COMPLETE.value]
-        if len(barrier_actions) >= 2:
+        barrier_groups = {}
+        for action in barrier_actions:
+            option = action.selected_option
+            if not option:
+                continue
+            key = (action.context.meal if action.context else "", option)
+            barrier_groups[key] = barrier_groups.get(key, 0) + 1
+        repeated_barriers = max(barrier_groups.values(), default=0)
+        if repeated_barriers >= 2:
             insights.append({"kind": "barrier", "tone": "warm", "title": "同一类小行动反复遇到阻碍",
                              "body": "下一步可以调整行动的大小、触发时机或环境，而不是把原因归结为自控力。",
-                             "evidence": f"{len(barrier_actions)} 次反馈显示部分完成或未完成"})
+                             "evidence": f"同一餐食情境有 {repeated_barriers} 次反馈显示部分完成或未完成"})
         if len(completed_actions) >= 2:
             insights.append({"kind": "preference", "tone": "green", "title": "有做法已经被生活验证过",
-                             "body": "这些行动可以成为你的默认选项，系统会在后续建议里优先保留它们的方向。",
+                             "body": "这些行动曾被你完成多次，可以考虑把它们列为愿意继续尝试的选项；系统不会自动把它们当成长期偏好。",
                              "evidence": f"{len(completed_actions)} 次反馈显示完成"})
 
         next_steps = []
-        if planned_items and not records:
+        if planned_items and unmatched_planned:
             next_steps.append("如果你愿意，可以先记录一餐；不需要补齐过去的每一餐。")
         if unknown_action_feedback:
             next_steps.append("可以在方便时补充一次行动反馈，也可以保持未知。")
@@ -145,14 +158,16 @@ class ComprehensiveReviewService:
             "period": {"kind": period, "start": start.isoformat(), "end": end.isoformat()},
             "source": "deterministic_template",
             "model_failure_tolerant": True,
-            "plan": {"planned_meals": len(planned_items), "plans": len(links["plan_ids"]), "items": [
+            "plan": {"planned_meals": len(planned_items), "matched_meals": matched_planned,
+                     "unmatched_meals": unmatched_planned, "same_slot_records": same_slot_records,
+                     "unplanned_records": unplanned_records, "plans": len(links["plan_ids"]), "items": [
                 {"item_id": item.item_id, "date": item.meal_date, "slot": item.meal_slot, "name": item.name,
                  "plan_id": next(plan.plan_id for plan in plans if item in plan.items)} for item in planned_items]},
             "actual": {"recorded_meals": len(records), "records": [
                 {"record_id": record.record_id, "date": record.meal_date, "slot": record.meal_slot,
                  "name": record.name, "quantity": record.quantity, "unit": record.unit,
-                 "source": record.source, "plan_id": record.plan_id} for record in records],
-                "coverage": _ratio(len(records), len(planned_items))},
+                 "source": record.source, "plan_id": record.plan_id, "plan_item_id": record.plan_item_id} for record in records],
+                "coverage": _ratio(matched_planned, len(planned_items))},
             "timeline": timeline,
             "nutrition": {"known": 0, "unknown": len(records), "coverage": {
                 "numerator": 0, "denominator": len(records), "value": None,

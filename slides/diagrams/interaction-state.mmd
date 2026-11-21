@@ -1,0 +1,16 @@
+sequenceDiagram
+  actor User
+  participant Web as React/Vite
+  participant Harness
+  participant Rules as Domain rules
+  participant Store as Repository
+  User->>Web: Describe meal and options
+  Web->>Harness: Structured task request
+  Harness->>Rules: Validate profile and source fields
+  Rules-->>Harness: safe / blocked / needs_confirmation
+  Harness-->>Web: Bounded actions + rationale
+  User->>Web: Confirm action or record
+  Web->>Harness: Explicit write request
+  Harness->>Store: Persist with operation key
+  Store-->>Harness: Confirmed record
+  Harness-->>Web: Feedback and recoverable state

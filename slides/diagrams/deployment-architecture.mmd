@@ -1,0 +1,5 @@
+flowchart LR
+  B[Client Browser\nReact static assets] --> F[FastAPI Runtime\nHarness + domain services]
+  F --> D[(SQLite / WAL\nor Supabase Postgres)]
+  F --> X[Food-source adapters]
+  F -. optional .-> M[Model provider]

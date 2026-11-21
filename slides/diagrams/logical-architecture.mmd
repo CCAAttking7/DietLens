@@ -1,0 +1,14 @@
+flowchart LR
+  U[User] --> W[React / Vite Web App]
+  W --> A[FastAPI API Boundary]
+  A --> H[Harness Orchestrator]
+  H --> P[Profile & Consent Rules]
+  H --> F[Food Safety & Provenance]
+  H --> L[Planning & Meal Records]
+  H --> R[Review & Feedback]
+  P --> S[(Repository / Store)]
+  F --> S
+  L --> S
+  R --> S
+  M[[Optional Model Provider\nstructured intent only]] -.-> H
+  M -. cannot write or declare safety .-> H

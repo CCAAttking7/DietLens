@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from .harness import Harness
 
 CONSENT_SCOPES = ("history", "image_transfer", "review_history", "reminders")
-PROFILE_FIELDS = ("goal", "budget", "allergies", "hard_avoids", "dislikes")
+PROFILE_FIELDS = ("goal", "budget", "allergies", "allergy_status", "hard_avoids", "dislikes")
 
 
 class ProfileWorkflow:
@@ -40,6 +40,14 @@ class ProfileWorkflow:
             diff = {}
             for name, raw in changes.items():
                 value = self._clean_field(name, raw)
+                if name == "allergies" and "allergy_status" not in changes:
+                    # Presence of the field is the legacy programmatic API's
+                    # explicit answer. The web flow sends allergy_status so
+                    # an omitted input remains unknown.
+                    value_status = "specified" if value else "none"
+                    if proposed.allergy_status != value_status:
+                        diff["allergy_status"] = {"before": proposed.allergy_status, "after": value_status}
+                    proposed.allergy_status = value_status
                 before = getattr(proposed, name)
                 if value != before or name not in proposed.confirmed_fields or proposed.field_sources.get(name) != "user_confirmation":
                     diff[name] = {"before": before if previous else None, "after": value}
@@ -47,6 +55,27 @@ class ProfileWorkflow:
                 if name not in proposed.confirmed_fields:
                     proposed.confirmed_fields.append(name)
                 proposed.field_sources[name] = "user_confirmation"
+            if "allergy_status" in changes:
+                status = proposed.allergy_status
+                if status == "unknown":
+                    proposed.allergies = []
+                    proposed.confirmed_fields = [field for field in proposed.confirmed_fields if field != "allergies"]
+                    proposed.field_sources.pop("allergies", None)
+                elif status == "none":
+                    proposed.allergies = []
+                    if "allergies" not in proposed.confirmed_fields:
+                        proposed.confirmed_fields.append("allergies")
+                    proposed.field_sources["allergies"] = "user_confirmation"
+                elif status == "specified":
+                    # The allergy list may appear later in the same changes
+                    # object (as it does in the web payload); validate after
+                    # all fields have been applied below.
+                    pass
+                if "allergy_status" not in proposed.confirmed_fields:
+                    proposed.confirmed_fields.append("allergy_status")
+                proposed.field_sources["allergy_status"] = "user_confirmation"
+            if proposed.allergy_status == "specified" and not proposed.allergies:
+                raise ToolError("allergy_terms_required")
             for scope, granted in (consents or {}).items():
                 if proposed.consents.get(scope) != granted:
                     diff[f"consents.{scope}"] = {"before": proposed.consents.get(scope), "after": granted}
@@ -73,6 +102,10 @@ class ProfileWorkflow:
             if value is not None and not isinstance(value, str):
                 raise ToolError("invalid_goal")
             return clean_text(value) or None if value is not None else None
+        if name == "allergy_status":
+            if value not in {"unknown", "none", "specified"}:
+                raise ToolError("invalid_allergy_status")
+            return value
         if not isinstance(value, list) or any(not isinstance(v, str) for v in value):
             raise ToolError("invalid_profile_terms")
         cleaned = clean_terms(value)

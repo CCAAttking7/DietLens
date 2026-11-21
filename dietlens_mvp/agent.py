@@ -28,6 +28,7 @@ class DietLensAgent:
         changes = {"budget": budget, "goal": goal}
         if allergies is not None:
             changes["allergies"] = allergies
+            changes["allergy_status"] = "specified" if allergies else "none"
         if dislikes is not None:
             changes["dislikes"] = dislikes
         draft = self.preview_profile(user_id, changes, expected_version=current.version if current else 0, consents=consents)

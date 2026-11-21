@@ -54,7 +54,12 @@ def initialize_user(agent: DietLensAgent, input_fn=input, output_fn=print, *, fo
     for field, label in (("allergies", "过敏"), ("hard_avoids", "绝对忌口"), ("dislikes", "软偏好/不喜欢")):
         raw = input_fn(f"{label}（逗号分隔；无=明确没有；留空保留/未知）：").strip()
         if raw:
-            changes[field] = [] if raw == "无" or (raw == "!" and field == "dislikes") else clean_terms(raw.replace("，", ",").split(","))
+            if field == "allergies":
+                changes["allergy_status"] = "none" if raw == "无" else "specified"
+                if raw != "无":
+                    changes[field] = clean_terms(raw.replace("，", ",").split(","))
+            else:
+                changes[field] = [] if raw == "无" or (raw == "!" and field == "dislikes") else clean_terms(raw.replace("，", ",").split(","))
     consents = {}
     output_fn("分项授权均可拒绝，留空保留当前设置，新用户默认关闭。")
     for scope in CONSENT_SCOPES:

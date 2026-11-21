@@ -42,25 +42,51 @@ export function SettingsScreen({userId,onSignOut,onEditProfile,onDataDeleted,onR
   const [deleteOpen,setDeleteOpen]=useState(false)
   const deleteCancelRef=useRef<HTMLButtonElement>(null)
   const deleteTriggerRef=useRef<HTMLButtonElement>(null)
+  const deleteDialogRef=useRef<HTMLElement>(null)
+  const busyRef=useRef(busy)
+  busyRef.current=busy
   useEffect(()=>{
     if(!deleteOpen)return
-    const previous=document.activeElement as HTMLElement|null
+    const previous=deleteTriggerRef.current ?? document.activeElement as HTMLElement|null
     const focusTarget=deleteCancelRef.current
-    focusTarget?.focus()
+    if (focusTarget && !focusTarget.disabled) focusTarget.focus()
+    else deleteDialogRef.current?.focus()
     const onKeyDown=(event:KeyboardEvent)=>{
-      if(event.key==='Escape'&&!busy){event.preventDefault();setDeleteOpen(false);return}
+      if(event.key==='Escape'){
+        event.preventDefault()
+        event.stopPropagation()
+        if(!busyRef.current)setDeleteOpen(false)
+        return
+      }
       if(event.key!=='Tab')return
-      const dialog=document.querySelector<HTMLElement>('.confirm-modal')
+      event.stopPropagation()
+      const dialog=deleteDialogRef.current
       if(!dialog)return
-      const items=Array.from(dialog.querySelectorAll<HTMLElement>('button:not([disabled]),[href],input:not([disabled])'))
-      if(!items.length)return
+      if(busyRef.current){event.preventDefault();dialog.focus();return}
+      const items=Array.from(dialog.querySelectorAll<HTMLElement>('button:not([disabled]),[href]:not([aria-disabled="true"]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')).filter(item=>{
+        const style=window.getComputedStyle(item)
+        return style.display!=='none'&&style.visibility!=='hidden'&&item.getClientRects().length>0
+      })
+      if(!items.length){event.preventDefault();dialog.focus();return}
       const first=items[0],last=items[items.length-1]
-      if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
-      else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
+      const current=document.activeElement as HTMLElement|null
+      if(!dialog.contains(current)){event.preventDefault();first.focus();return}
+      if(current===dialog){event.preventDefault();(event.shiftKey?last:first).focus();return}
+      const index=current ? items.indexOf(current) : -1
+      if(index<0){event.preventDefault();(event.shiftKey?last:first).focus();return}
+      if(event.shiftKey&&index===0){event.preventDefault();last.focus()}
+      else if(!event.shiftKey&&index===items.length-1){event.preventDefault();first.focus()}
     }
-    document.addEventListener('keydown',onKeyDown)
-    return()=>{document.removeEventListener('keydown',onKeyDown);if(previous?.isConnected)previous.focus()}
-  },[deleteOpen,busy])
+    window.addEventListener('keydown',onKeyDown,true)
+    return()=>{window.removeEventListener('keydown',onKeyDown,true);if(previous?.isConnected)previous.focus()}
+  },[deleteOpen])
+  useEffect(()=>{
+    if(!deleteOpen||busy!=='delete')return
+    const keepFocus=()=>{if(deleteDialogRef.current&&!deleteDialogRef.current.contains(document.activeElement))deleteDialogRef.current.focus()}
+    keepFocus()
+    document.addEventListener('focusin',keepFocus,true)
+    return()=>document.removeEventListener('focusin',keepFocus,true)
+  },[busy,deleteOpen])
   useEffect(()=>{
     let active=true;setProfileLoading(true);setProfileError('')
     api.profile(userId).then(result=>{if(active)setProfile(result)}).catch(e=>{
@@ -112,7 +138,7 @@ export function SettingsScreen({userId,onSignOut,onEditProfile,onDataDeleted,onR
     <section className="settings-card" aria-label="档案设置"><h2>饮食档案与授权</h2>
       {profileLoading?<p role="status">正在读取饮食档案…</p>:profileError?<div className="error-state"><p className="error" role="alert">{profileError}</p><button onClick={()=>setProfileAttempt(value=>value+1)}>重新读取档案</button></div>:profile?<>
         <p>{profile.goal||'还没有填写饮食目标'}</p>
-        <dl className="profile-facts"><div><dt>参考预算</dt><dd>{profile.budget==null?'未设置':`${profile.budget} 元 / 餐`}</dd></div><div><dt>过敏信息</dt><dd>{profile.allergies?.length?profile.allergies.join('、'):'未提供过敏信息'}</dd></div><div><dt>不能接受</dt><dd>{profile.hard_avoids?.length?profile.hard_avoids.join('、'):'未提供'}</dd></div></dl>
+        <dl className="profile-facts"><div><dt>参考预算</dt><dd>{profile.budget==null?'未设置':`${profile.budget} 元 / 餐`}</dd></div><div><dt>过敏信息</dt><dd>{profile.allergy_status==='none'?'已确认没有已知过敏':profile.allergy_status==='specified'&&profile.allergies?.length?profile.allergies.join('、'):'暂未提供过敏信息'}</dd></div><div><dt>不能接受</dt><dd>{profile.hard_avoids?.length?profile.hard_avoids.join('、'):'未提供'}</dd></div></dl>
         <div className="setting-row"><span>历史回顾</span><strong>{profile.consents?.review_history?'已开启':'未开启'}</strong></div>
         <p className="field-help">仅在开启后汇总历史记录。随时可以在档案中关闭。</p>
         <div className="button-row"><button disabled={Boolean(busy)} onClick={onEditProfile}>编辑档案与授权</button></div>
@@ -131,10 +157,10 @@ export function SettingsScreen({userId,onSignOut,onEditProfile,onDataDeleted,onR
       {task&&<div className="lookup-result"><h3>{String(task.context?.meal??'待补充的餐次')}</h3><p>{taskSummary(task)}</p><StatusPill state={task.state}/><div className="button-row"><button disabled={Boolean(busy)} onClick={()=>resume(task)}>继续这一餐</button></div></div>}
     </details>
     <section className="settings-card" aria-label="数据管理"><h2>你的数据</h2><p>导出会下载包含档案、计划和记录的 JSON 文件。删除会清除当前账号的全部 DietLens 数据和本页草稿，需要再次确认。</p>
-      <div className="button-row"><button onClick={exportData} disabled={Boolean(busy)}>{busy==='export'?'正在准备导出…':'导出数据'}</button><button ref={deleteTriggerRef} className="secondary" onClick={()=>setDeleteOpen(true)} disabled={Boolean(busy)}>删除全部数据</button>{onSignOut&&<button className="secondary" onClick={signOut} disabled={Boolean(busy)}>{busy==='signout'?'正在退出…':'退出登录'}</button>}</div>
+      <div className="button-row"><button className="button-primary" onClick={exportData} disabled={Boolean(busy)}>{busy==='export'?'正在准备导出…':'导出数据'}</button><button ref={deleteTriggerRef} className="button-secondary secondary" onClick={()=>setDeleteOpen(true)} disabled={Boolean(busy)}>删除全部数据</button>{onSignOut&&<button className="button-secondary secondary" onClick={signOut} disabled={Boolean(busy)}>{busy==='signout'?'正在退出…':'退出登录'}</button>}</div>
       {notice&&<p className="notice" role="status">{notice}</p>}{dataError&&<p className="error" role="alert">{dataError}</p>}
     </section>
   </section><aside className="status-card"><p className="eyebrow">属于你的空间</p><h2>可以继续，也可以收回</h2><p>查找一餐只会读取它的状态。选择行动、反馈和修改数据，仍然需要你明确确认。</p></aside>
-  {deleteOpen&&<div className="confirm-modal-layer" role="presentation" onClick={()=>!busy&&setDeleteOpen(false)}><section className="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="delete-title" aria-describedby="delete-description" onClick={e=>e.stopPropagation()}><p className="eyebrow">关键操作 · 需要确认</p><h2 id="delete-title">删除当前账号的全部数据？</h2><p id="delete-description">档案、计划、餐食记录和本页草稿都会被清除。此操作无法撤回。</p><div className="button-row"><button ref={deleteCancelRef} className="secondary" onClick={()=>setDeleteOpen(false)} disabled={Boolean(busy)}>先保留</button><button className="danger-action" onClick={()=>void deleteData()} disabled={Boolean(busy)}>{busy==='delete'?'正在删除…':'确认删除'}</button></div></section></div>}
+  {deleteOpen&&<div className="confirm-modal-layer" role="presentation" onClick={()=>!busy&&setDeleteOpen(false)}><section ref={deleteDialogRef} className="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="delete-title" aria-describedby="delete-description" tabIndex={-1} onClick={e=>e.stopPropagation()} onKeyDownCapture={event=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();if(!busyRef.current)setDeleteOpen(false)}else if(event.key==='Tab'&&busyRef.current){event.preventDefault();event.stopPropagation();deleteDialogRef.current?.focus()}}}><p className="eyebrow">关键操作 · 需要确认</p><h2 id="delete-title">删除当前账号的全部数据？</h2><p id="delete-description">档案、计划、餐食记录和本页草稿都会被清除。此操作无法撤回。</p><div className="button-row"><button ref={deleteCancelRef} className="button-secondary secondary" onClick={()=>setDeleteOpen(false)} disabled={Boolean(busy)}>先保留</button><button className="button-destructive danger-action" onClick={()=>void deleteData()} disabled={Boolean(busy)}>{busy==='delete'?'正在删除…':'确认删除'}</button></div></section></div>}
   </div>
 }

@@ -44,6 +44,6 @@ h1 { letter-spacing: -.045em; }
 .onboarding-progress span, .dot.active { background: var(--accent); }
 .onboarding-actions button { background: var(--accent); }
 .mode-tabs button.active, .choice.selected { color: var(--accent-ink); background: var(--accent-soft); }
-.food-safe, .status-done { background: #dfe8e1; color: #4f6f5a; }
+.food-safe, .status-done { background: #dfe8e1; color: var(--success); }
 .notice { background: var(--accent-soft); color: var(--accent-ink); }
 @media(max-width:760px){ .main-stage { padding-top: 18px; } .chat-board { border-radius: 0; } }
